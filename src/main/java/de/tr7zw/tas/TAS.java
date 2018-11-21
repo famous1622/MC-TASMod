@@ -310,14 +310,14 @@ public class TAS {
 			}
 			else if (args.length==2&&args[1].equals("2")){
 				sendMessage(TextFormatting.GOLD+"Commands:\n"
-						+ TextFormatting.YELLOW+".r"+TextFormatting.AQUA+" (Filename)"+TextFormatting.GREEN+" (Record) Starts a recording (Filename is optional)\n"
-						+ TextFormatting.YELLOW+".s"+TextFormatting.GREEN+" (Stop) Stops the recording\n"
-						+ TextFormatting.YELLOW+".f"+TextFormatting.GREEN+" (Fail) Aborts the recording and tp's you back where you started\n"
-						+ TextFormatting.YELLOW+".p"+TextFormatting.AQUA+"<filename>"+TextFormatting.GREEN+" (Play) Plays back the recording, don't add a .tas to the filename\n"
-						+ TextFormatting.YELLOW+".tp"+TextFormatting.AQUA+"<filename>"+TextFormatting.GREEN+ "(Teleport) Teleports you to the starting location. Can be found in the first line of the .tas file\n"
-						+ TextFormatting.YELLOW+".fd"+TextFormatting.AQUA+"(info)"+TextFormatting.GREEN+"(FallDamage) Disables FallDamage, since taking damage has a chance of desyncing the TAS\n"
-						+ TextFormatting.YELLOW+".folder"+TextFormatting.GREEN+"Opens the directory where the .tas files will be saved\n"
-						+ TextFormatting.YELLOW+".help"+TextFormatting.AQUA+"<1,2>"+TextFormatting.GREEN+"Well guess what this does...");
+						+ TextFormatting.YELLOW+".r"+TextFormatting.AQUA+" (Filename)"+TextFormatting.GREEN+" -Starts a recording (Filename is optional)\n\n"
+						+ TextFormatting.YELLOW+".s"+TextFormatting.GREEN+" -Stops the recording\n\n"
+						+ TextFormatting.YELLOW+".f"+TextFormatting.GREEN+" -Aborts the recording and tp's you back where you started\n\n"
+						+ TextFormatting.YELLOW+".p"+TextFormatting.AQUA+" <filename>"+TextFormatting.GREEN+"  -Plays back the recording, don't add a .tas to the filename\n\n"
+						+ TextFormatting.YELLOW+".tp"+TextFormatting.AQUA+" <filename>"+TextFormatting.GREEN+ " -Teleports you to the starting location. Can be found in the first line of the .tas file\n\n"
+						+ TextFormatting.YELLOW+".fd"+TextFormatting.AQUA+" (info)"+TextFormatting.GREEN+" -Disables FallDamage, since taking damage has a chance of desyncing the TAS\n\n"
+						+ TextFormatting.YELLOW+".folder"+TextFormatting.GREEN+" -Opens the directory where the .tas files will be saved\n\n"
+						+ TextFormatting.YELLOW+".help"+TextFormatting.AQUA+" <1,2>"+TextFormatting.GREEN+" -Well guess what this does...");
 			} else sendMessage(TextFormatting.RED+"Too many arguments... Did you mean '.help 2'?");
 		}
 	}
