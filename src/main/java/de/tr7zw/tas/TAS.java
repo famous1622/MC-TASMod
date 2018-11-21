@@ -309,7 +309,7 @@ public class TAS {
 			sendMessage(TextFormatting.GOLD+"Enter '.help 2' for commands");
 			}
 			else if (args.length==2&&args[1].equals("2")){
-				sendMessage("§6Commands:\n"
+				sendMessage(TextFormatting.GOLD+"Commands:\n"
 						+ TextFormatting.YELLOW+".r"+TextFormatting.AQUA+" (Filename)"+TextFormatting.GREEN+" (Record) Starts a recording (Filename is optional)\n"
 						+ TextFormatting.YELLOW+".s"+TextFormatting.GREEN+" (Stop) Stops the recording\n"
 						+ TextFormatting.YELLOW+".f"+TextFormatting.GREEN+" (Fail) Aborts the recording and tp's you back where you started\n"
