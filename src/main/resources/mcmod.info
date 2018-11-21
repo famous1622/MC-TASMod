@@ -3,7 +3,7 @@
   "modid": "TAS-PlaybackMod 1.12.2",
   "name": "Tool Asisted Speedrun Mod",
   "description": "Enables to play prerecorded tickperfect inputs",
-  "version": "1.6",
+  "version": "1.6.1",
   "mcversion": "1.12",
   "url": "",
   "updateUrl": "",

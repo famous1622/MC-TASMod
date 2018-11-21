@@ -13,7 +13,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.MovementInputFromOptions;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
@@ -168,7 +172,7 @@ public class TAS {
 				
 			}else {
 				genname=true;
-				sendMessage("§cToo many arguments!");
+				sendMessage(TextFormatting.RED+"Too many arguments!");
 				return;
 			}
 			
@@ -185,7 +189,7 @@ public class TAS {
 		if(ev.getMessage().equals(".s")){
 			ev.setCanceled(true);
 			if(recorder == null){
-				sendMessage("§cNo recording running!");
+				sendMessage(TextFormatting.RED+"No recording running!");
 				return;
 			}
 			sendMessage("Stopped the tas recording!");
@@ -208,7 +212,7 @@ public class TAS {
 		if(ev.getMessage().equals(".f")){
 			ev.setCanceled(true);
 			if(recorder == null){
-				sendMessage("§cNo recording running!");
+				sendMessage(TextFormatting.RED+"No recording running!");
 				return;
 			}
 			sendMessage("§Aborting recording!");
@@ -221,7 +225,7 @@ public class TAS {
 			ev.setCanceled(true);
 			String[] args = ev.getMessage().split(" ");
 			if(args.length != 2){
-				sendMessage("§cExample: .p <filename>  (without .tas)");
+				sendMessage(TextFormatting.RED+"Example: .p <filename>  (without .tas)");
 				return;
 			}
 			if(Minecraft.getMinecraft().getIntegratedServer() != null && !loaded){
@@ -232,7 +236,7 @@ public class TAS {
 					mc.player.movementInput = new TASInput(this, keyFrames);
 					sendMessage("Loaded File");
 				}else{
-					sendMessage("§cFile not found: " + file.getAbsolutePath());
+					sendMessage(TextFormatting.RED+"File not found: " + file.getAbsolutePath());
 				}
 			}
 		}
@@ -240,7 +244,7 @@ public class TAS {
 			ev.setCanceled(true);
 			String[] args = ev.getMessage().split(" ");
 			if(args.length != 2){
-				sendMessage("§cWrong usage: Example: .tp <filename>");
+				sendMessage(TextFormatting.RED+"Wrong usage: Example: .tp <filename>");
 				return;
 			}
 			if(Minecraft.getMinecraft().getIntegratedServer() != null && !loaded){
@@ -263,7 +267,7 @@ public class TAS {
 					
 					
 				}else{
-					sendMessage("§cFile not found: " + file.getAbsolutePath());
+					sendMessage(TextFormatting.RED+"File not found: " + file.getAbsolutePath());
 				}
 			}
 		}
@@ -271,21 +275,21 @@ public class TAS {
 			ev.setCanceled(true);
 			String[] args = ev.getMessage().split(" ");
 			if(args.length == 2){
-				if(args[1].equalsIgnoreCase("info")&&FallDamage)sendMessage("§aFall Damage is enabled.");
-				if(args[1].equalsIgnoreCase("info")&&FallDamage==false)sendMessage("§aFall Damage is currently §c§ldisabled.§r§a This is to decrease desyncs");
+				if(args[1].equalsIgnoreCase("info")&&FallDamage)sendMessage(TextFormatting.GREEN+"Fall Damage is enabled.");
+				if(args[1].equalsIgnoreCase("info")&&FallDamage==false)sendMessage(TextFormatting.GREEN+"Fall Damage is currently"+ TextFormatting.RED+TextFormatting.BOLD+"disabled."+TextFormatting.RESET+TextFormatting.GREEN+" Taking Fall Damage has a chance to desyncs the TAS");
 				return;
 			}
 			else if(args.length==1){
 				if(FallDamage){
 					FallDamage=false;
-					sendMessage("§aFall Damage §c§ldisabled.");
+					sendMessage(TextFormatting.GREEN+"Fall Damage"+TextFormatting.RED+TextFormatting.BOLD+"disabled.");
 				}
 				else if(!FallDamage){
 					FallDamage=true;
-					sendMessage("§aFall Damage enabled.");
+					sendMessage(TextFormatting.GREEN+"Fall Damage enabled.");
 				}
 			}
-			else sendMessage("§cWrong usage! Either '.fd' or '.fd info'");
+			else sendMessage(TextFormatting.RED+"Wrong usage! Either '.fd' or '.fd info'");
 		}
 		if(ev.getMessage().equals(".folder")){
 			ev.setCanceled(true);
@@ -300,21 +304,21 @@ public class TAS {
 			ev.setCanceled(true);
 			String[] args = ev.getMessage().split(" ");
 			if (args.length==1||args[1].equals("1")){
-			sendMessage("§eThis is a WIP Tool-Assisted-Speedrun (TAS) Mod. It records your inputs and saves them in a file in your minecraft world, which then can be played back."
-					+ "\n§bMod by tr7zw and ScribbleLP");
-			sendMessage("§6Enter '.help 2' for commands");
+			sendMessage(TextFormatting.YELLOW+"This is a WIP Tool-Assisted-Speedrun (TAS) Mod. It records your inputs and saves them in a file in your minecraft world, which then can be played back."
+					+ "\n"+TextFormatting.AQUA+"Mod by tr7zw and ScribbleLP");
+			sendMessage(TextFormatting.GOLD+"Enter '.help 2' for commands");
 			}
 			else if (args.length==2&&args[1].equals("2")){
 				sendMessage("§6Commands:\n"
-						+ "§e.r §b(Filename)§r (Record) Starts a recording (Filename is optional)\n"
-						+ "§e.s §r(Stop) Stops the recording\n"
-						+ "§e.f §r(Fail) Aborts the recording and tp's you back where you started\n"
-						+ "§e.p §b<filename>§r (Play) Plays back the recording, don't add a .tas to the filename\n"
-						+ "§e.tp §b<filename>§r (Teleport) Teleports you to the starting location. Can be found in the first line of the .tas file\n"
-						+ "§e.fd §b(info)§r (FallDamage) Disables FallDamage, since taking damage has a chance of desyncing the TAS\n"
-						+ "§e.folder§r Opens the directory where the .tas files will be saved\n"
-						+ "§e.help §b<1,2>§r Well guess what this does...");
-			} else sendMessage("§cToo many arguments... Did you mean '.help 2'?");
+						+ TextFormatting.YELLOW+".r"+TextFormatting.AQUA+" (Filename)"+TextFormatting.GREEN+" (Record) Starts a recording (Filename is optional)\n"
+						+ TextFormatting.YELLOW+".s"+TextFormatting.GREEN+" (Stop) Stops the recording\n"
+						+ TextFormatting.YELLOW+".f"+TextFormatting.GREEN+" (Fail) Aborts the recording and tp's you back where you started\n"
+						+ TextFormatting.YELLOW+".p"+TextFormatting.AQUA+"<filename>"+TextFormatting.GREEN+" (Play) Plays back the recording, don't add a .tas to the filename\n"
+						+ TextFormatting.YELLOW+".tp"+TextFormatting.AQUA+"<filename>"+TextFormatting.GREEN+ "(Teleport) Teleports you to the starting location. Can be found in the first line of the .tas file\n"
+						+ TextFormatting.YELLOW+".fd"+TextFormatting.AQUA+"(info)"+TextFormatting.GREEN+"(FallDamage) Disables FallDamage, since taking damage has a chance of desyncing the TAS\n"
+						+ TextFormatting.YELLOW+".folder"+TextFormatting.GREEN+"Opens the directory where the .tas files will be saved\n"
+						+ TextFormatting.YELLOW+".help"+TextFormatting.AQUA+"<1,2>"+TextFormatting.GREEN+"Well guess what this does...");
+			} else sendMessage(TextFormatting.RED+"Too many arguments... Did you mean '.help 2'?");
 		}
 	}
 	@SubscribeEvent
@@ -339,9 +343,10 @@ public class TAS {
 		}
 	}
 	@SubscribeEvent
-	public void onOpenServer(PlayerEvent.PlayerLoggedInEvent ev){ 		//When hitting save and quit, recording stops
-			sendMessage("§aTASmod enabled, type in .help for more info");
+	public void onOpenServer(PlayerEvent.PlayerLoggedInEvent ev){ 		//When joining the world, help plays
+			sendMessage(TextFormatting.GREEN+"TASmod enabled, type in .help for more info");
 	}
+	//Cancel Fall Damage
 	@SubscribeEvent
 	public void onPlayerFalling(LivingFallEvent ev){
 			ev.setCanceled(!FallDamage);
