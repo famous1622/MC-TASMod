@@ -233,6 +233,7 @@ public class TAS {
 						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + args[1] + ".tas");
 				if(file.exists()){
 					loadData(file);
+					TASInput.donePlaying=false;
 					mc.player.movementInput = new TASInput(this, keyFrames);
 					sendMessage("Loaded File");
 				}else{
@@ -240,11 +241,22 @@ public class TAS {
 				}
 			}
 		}
+		if(ev.getMessage().equals(".b")){
+			ev.setCanceled(true);
+			if (TASInput.donePlaying==true){
+				sendMessage(TextFormatting.RED+"No playback running!");
+			}
+			else {
+				TASInput.donePlaying=true;
+				sendMessage(TextFormatting.GREEN+"Aborting playback...");
+			}
+		}
+		
 		if(ev.getMessage().startsWith(".tp")){
 			ev.setCanceled(true);
 			String[] args = ev.getMessage().split(" ");
 			if(args.length != 2){
-				sendMessage(TextFormatting.RED+"Wrong usage: Example: .tp <filename>");
+				sendMessage(TextFormatting.RED+"Wrong usage. Example: .tp <filename>");
 				return;
 			}
 			if(Minecraft.getMinecraft().getIntegratedServer() != null && !loaded){
@@ -276,13 +288,13 @@ public class TAS {
 			String[] args = ev.getMessage().split(" ");
 			if(args.length == 2){
 				if(args[1].equalsIgnoreCase("info")&&FallDamage)sendMessage(TextFormatting.GREEN+"Fall Damage is enabled.");
-				if(args[1].equalsIgnoreCase("info")&&FallDamage==false)sendMessage(TextFormatting.GREEN+"Fall Damage is currently"+ TextFormatting.RED+TextFormatting.BOLD+"disabled."+TextFormatting.RESET+TextFormatting.GREEN+" Taking Fall Damage has a chance to desyncs the TAS");
+				if(args[1].equalsIgnoreCase("info")&&FallDamage==false)sendMessage(TextFormatting.GREEN+"Fall Damage is currently"+ TextFormatting.RED+TextFormatting.BOLD+" disabled."+TextFormatting.RESET+TextFormatting.GREEN+" Taking Fall Damage has a chance to desync the TAS");
 				return;
 			}
 			else if(args.length==1){
 				if(FallDamage){
 					FallDamage=false;
-					sendMessage(TextFormatting.GREEN+"Fall Damage"+TextFormatting.RED+TextFormatting.BOLD+"disabled.");
+					sendMessage(TextFormatting.GREEN+"Fall Damage"+TextFormatting.RED+TextFormatting.BOLD+" disabled.");
 				}
 				else if(!FallDamage){
 					FallDamage=true;
@@ -314,6 +326,7 @@ public class TAS {
 						+ TextFormatting.YELLOW+".s"+TextFormatting.GREEN+" -Stops the recording\n\n"
 						+ TextFormatting.YELLOW+".f"+TextFormatting.GREEN+" -Aborts the recording and tp's you back where you started\n\n"
 						+ TextFormatting.YELLOW+".p"+TextFormatting.AQUA+" <filename>"+TextFormatting.GREEN+"  -Plays back the recording, don't add a .tas to the filename\n\n"
+						+ TextFormatting.YELLOW+".b"+TextFormatting.GREEN+" -Aborts the TAS-playback\n\n"
 						+ TextFormatting.YELLOW+".tp"+TextFormatting.AQUA+" <filename>"+TextFormatting.GREEN+ " -Teleports you to the starting location. Can be found in the first line of the .tas file\n\n"
 						+ TextFormatting.YELLOW+".fd"+TextFormatting.AQUA+" (info)"+TextFormatting.GREEN+" -Disables FallDamage, since taking damage has a chance of desyncing the TAS\n\n"
 						+ TextFormatting.YELLOW+".folder"+TextFormatting.GREEN+" -Opens the directory where the .tas files will be saved\n\n"

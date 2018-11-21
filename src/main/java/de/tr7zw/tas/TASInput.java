@@ -24,7 +24,7 @@ public class TASInput extends MovementInputFromOptions{
 	private Method rightClick;
 	private KeyFrame frame;
 	private int InvCont=1;
-	public boolean donePlaying = false;
+	public static boolean donePlaying = false;
 
 	public TASInput(TAS tas, ArrayList<KeyFrame> keyFrames) {
 		super(Minecraft.getMinecraft().gameSettings);
