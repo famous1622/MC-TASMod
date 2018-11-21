@@ -33,7 +33,7 @@ public class TASInput extends MovementInputFromOptions{
 	}
 
 	@Override
-	public void updatePlayerMoveState() {
+	public void updatePlayerMoveState() {				//When done playing, the game will pause...
 		if(step >= keyFrames.size()){
 			if(!donePlaying){
 				donePlaying = true;
@@ -57,10 +57,10 @@ public class TASInput extends MovementInputFromOptions{
 		}*/
 		
 		
-		KeyBinding.setKeyBindState(-100, frame.leftClick);
-		KeyBinding.setKeyBindState(-99, frame.rightClick);
-		KeyBinding.setKeyBindState(29, frame.sprint);
-		mc.player.inventory.currentItem=frame.slot;
+		KeyBinding.setKeyBindState(-100, frame.leftClick);			//Read Leftclick from File
+		KeyBinding.setKeyBindState(-99, frame.rightClick);			//Read RightClick from File
+		KeyBinding.setKeyBindState(29, frame.sprint);				//Read Sprint Key from File
+		mc.player.inventory.currentItem=frame.slot;					//Read Inventory Slot from File etc...
 		
 		
 		this.moveStrafe = 0.0F;
