@@ -4,7 +4,7 @@ import net.minecraft.inventory.Container;
 
 public class KeyFrame {
 
-	public boolean forwardKeyDown;
+	public boolean forwardKeyDown;		//Where all the Keys are saved!
     public boolean backKeyDown;
     public boolean leftKeyDown;
     public boolean rightKeyDown;

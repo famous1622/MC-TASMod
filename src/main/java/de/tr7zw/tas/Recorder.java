@@ -28,7 +28,7 @@ public class Recorder {
 	public void saveData(File file){
 		mc.player.movementInput = new MovementInputFromOptions(mc.gameSettings);
 		StringBuilder output = new StringBuilder();
-		String W;
+		String W;											//Well this is... Not the best solution for this buut hey it works I guess... I will definetely fix this once I know what I'm doing but for now it helps me visualize
 		String S;
 		String A;
 		String D;
@@ -53,6 +53,7 @@ public class Recorder {
 				if(frame.leftClick==true)LK="LK";else LK=" ";
 				if(frame.rightClick==true)RK="RK";else RK=" ";
 				
+				//Writing to the file
 				
 				output.append("1;" + W + ";" + S + ";" + A + ";" + D + ";"
 						+ Space + ";" + Shift + ";" + Ctrl + ";" + frame.pitch + ";" + frame.yaw + ";" + LK + ";" + RK
@@ -85,20 +86,9 @@ public class Recorder {
 		public void updatePlayerMoveState() {
 			super.updatePlayerMoveState();
 			MovementInput input = this;
-			int Hotbar;
-			if(GameSettings.isKeyDown(mc.gameSettings.keyBindsHotbar[0]))Hotbar=0;
-			else if (GameSettings.isKeyDown(mc.gameSettings.keyBindsHotbar[1]))Hotbar=1;
-			else if (GameSettings.isKeyDown(mc.gameSettings.keyBindsHotbar[2]))Hotbar=2;
-			else if (GameSettings.isKeyDown(mc.gameSettings.keyBindsHotbar[3]))Hotbar=3;
-			else if (GameSettings.isKeyDown(mc.gameSettings.keyBindsHotbar[4]))Hotbar=4;
-			else if (GameSettings.isKeyDown(mc.gameSettings.keyBindsHotbar[5]))Hotbar=5;
-			else if (GameSettings.isKeyDown(mc.gameSettings.keyBindsHotbar[6]))Hotbar=6;
-			else if (GameSettings.isKeyDown(mc.gameSettings.keyBindsHotbar[7]))Hotbar=7;
-			else if (GameSettings.isKeyDown(mc.gameSettings.keyBindsHotbar[8]))Hotbar=8;
-			else Hotbar=0;
-				
-				
-				
+			
+			//Read from the player movement
+			
 			recording.add(new KeyFrame(input.forwardKeyDown, input.backKeyDown, input.leftKeyDown, input.rightKeyDown, input.jump, input.sneak, GameSettings.isKeyDown(mc.gameSettings.keyBindSprint),
 					mc.player.rotationPitch, mc.player.rotationYaw, GameSettings.isKeyDown(mc.gameSettings.keyBindAttack),
 					GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem),mc.player.inventory.currentItem));

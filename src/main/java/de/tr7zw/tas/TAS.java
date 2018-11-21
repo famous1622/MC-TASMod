@@ -74,7 +74,7 @@ public class TAS {
 		}
 	}
 
-	public void parseLine(String line, int lineid){
+	public void parseLine(String line, int lineid){				//Reading a line of a file
 		if(line.startsWith("#") || line.startsWith("//"))return;//Comments
 		String[] args = line.split(";");
 		int repeats = 1;
@@ -82,7 +82,7 @@ public class TAS {
 			repeats = Integer.parseInt(args[0]);
 		}catch(Exception ex){}
 		try{
-			KeyFrame frame = new KeyFrame(args[1].equalsIgnoreCase("W"),
+			KeyFrame frame = new KeyFrame(args[1].equalsIgnoreCase("W"),	//up
 					args[2].equalsIgnoreCase("S"), //down
 					args[3].equalsIgnoreCase("A"), //left
 					args[4].equalsIgnoreCase("D"), //right
@@ -93,7 +93,7 @@ public class TAS {
 					Float.parseFloat(args[9]), //yaw
 					args[10].equalsIgnoreCase("LK"), //leftclick
 					args[11].equalsIgnoreCase("RK"), //rightclick
-					Integer.parseInt(args[12]));
+					Integer.parseInt(args[12])); //hotbar
 			
 			for(int i = 0; i < repeats; i++){
 				
@@ -132,10 +132,10 @@ public class TAS {
 	@SubscribeEvent
 	public void onChatSend(ServerChatEvent ev)
 	{
-		if(ev.getMessage().startsWith(".r")){							//Start Recording
+		if(ev.getMessage().startsWith(".r")){							//Command to start a tas recording
 			ev.setCanceled(true);
 			String[] args = ev.getMessage().split(" ");
-			if(recorder != null){
+			if(recorder != null){										//error messages
 				sendMessage("A recording is running!");
 				return;
 			}
@@ -147,7 +147,7 @@ public class TAS {
 				sendMessage("No filename set! Generating one...");
 				genname=true;
 			}
-			else if (args.length == 2){
+			else if (args.length == 2){									//Check for bad characters in filenames
 				FileName=args[1];
 				if(FileName.contains("/")
 						||FileName.contains(".")
@@ -177,7 +177,7 @@ public class TAS {
 			}
 			
 			sendMessage("Starting the tas recording!");
-			x=mc.player.posX;
+			x=mc.player.posX;							//Saving the position and headrotation where the command was issued... Is needed for '.f'
 			y=mc.player.posY;
 			z=mc.player.posZ;
 			pitch=mc.player.rotationPitch;
@@ -186,8 +186,8 @@ public class TAS {
 			MinecraftForge.EVENT_BUS.register(recorder);
 			return;
 		}
-		if(ev.getMessage().equals(".s")){
-			ev.setCanceled(true);
+		if(ev.getMessage().equals(".s")){				//Command to stop the tas recording you made with .r...
+			ev.setCanceled(true);						//The file is saved to the .minecraft/saves/world directory with a generated or custom filename
 			if(recorder == null){
 				sendMessage(TextFormatting.RED+"No recording running!");
 				return;
@@ -209,19 +209,19 @@ public class TAS {
 			return;
 			}
 		}
-		if(ev.getMessage().equals(".f")){
-			ev.setCanceled(true);
+		if(ev.getMessage().equals(".f")){				//Command to stop the recording, don't save it to a file,
+			ev.setCanceled(true);						//and teleports you back to the start, where you entered .r (basically a bit like a savestate)
 			if(recorder == null){
 				sendMessage(TextFormatting.RED+"No recording running!");
 				return;
 			}
-			sendMessage("§Aborting recording!");
+			sendMessage("Aborting recording!");
 			MinecraftForge.EVENT_BUS.unregister(recorder);
-			mc.player.setPositionAndRotation(x,y,z,yaw,pitch);
+			mc.player.setPositionAndRotation(x,y,z,yaw,pitch);			//Teleports you where the .r command was issued
 			recorder = null;
 			return;
 		}
-		if(ev.getMessage().startsWith(".p")){
+		if(ev.getMessage().startsWith(".p")){			//Command to play back the tas recording
 			ev.setCanceled(true);
 			String[] args = ev.getMessage().split(" ");
 			if(args.length != 2){
@@ -241,7 +241,7 @@ public class TAS {
 				}
 			}
 		}
-		if(ev.getMessage().equals(".b")){
+		if(ev.getMessage().equals(".b")){				//Command to break the current playback (.p)
 			ev.setCanceled(true);
 			if (TASInput.donePlaying==true){
 				sendMessage(TextFormatting.RED+"No playback running!");
@@ -252,7 +252,7 @@ public class TAS {
 			}
 		}
 		
-		if(ev.getMessage().startsWith(".tp")){
+		if(ev.getMessage().startsWith(".tp")){ 			//Command to Teleport you to the start of the TASfile
 			ev.setCanceled(true);
 			String[] args = ev.getMessage().split(" ");
 			if(args.length != 2){
@@ -283,7 +283,7 @@ public class TAS {
 				}
 			}
 		}
-		if(ev.getMessage().startsWith(".fd")){
+		if(ev.getMessage().startsWith(".fd")){			//Command to disable Fall Damage...
 			ev.setCanceled(true);
 			String[] args = ev.getMessage().split(" ");
 			if(args.length == 2){
@@ -303,7 +303,7 @@ public class TAS {
 			}
 			else sendMessage(TextFormatting.RED+"Wrong usage! Either '.fd' or '.fd info'");
 		}
-		if(ev.getMessage().equals(".folder")){
+		if(ev.getMessage().equals(".folder")){		//Command for opening the correct directory
 			ev.setCanceled(true);
 			try {
 				Desktop.getDesktop().open(new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
@@ -312,15 +312,15 @@ public class TAS {
 				e.printStackTrace();
 			}
 		}
-		if(ev.getMessage().startsWith(".help")){
+		if(ev.getMessage().startsWith(".help")){				//Command for help! Will probably added to real commands
 			ev.setCanceled(true);
 			String[] args = ev.getMessage().split(" ");
-			if (args.length==1||args[1].equals("1")){
+			if (args.length==1||args[1].equals("1")){			//Output for '.help' /.help 1'
 			sendMessage(TextFormatting.YELLOW+"This is a WIP Tool-Assisted-Speedrun (TAS) Mod. It records your inputs and saves them in a file in your minecraft world, which then can be played back."
 					+ "\n"+TextFormatting.AQUA+"Mod by tr7zw and ScribbleLP");
 			sendMessage(TextFormatting.GOLD+"Enter '.help 2' for commands");
 			}
-			else if (args.length==2&&args[1].equals("2")){
+			else if (args.length==2&&args[1].equals("2")){		//Output for '.help 2'
 				sendMessage(TextFormatting.GOLD+"Commands:\n"
 						+ TextFormatting.YELLOW+".r"+TextFormatting.AQUA+" (Filename)"+TextFormatting.GREEN+" -Starts a recording (Filename is optional)\n\n"
 						+ TextFormatting.YELLOW+".s"+TextFormatting.GREEN+" -Stops the recording\n\n"
@@ -335,7 +335,7 @@ public class TAS {
 		}
 	}
 	@SubscribeEvent
-	public void onCloseServer(PlayerEvent.PlayerLoggedOutEvent ev){ 		//When hitting save and quit, recording stops
+	public void onCloseServer(PlayerEvent.PlayerLoggedOutEvent ev){ 		//When hitting save and quit, recording (with .r) stops
 		if(recorder!=null){
 			MinecraftForge.EVENT_BUS.unregister(recorder);
 			//SAVE
