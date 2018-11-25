@@ -5,14 +5,8 @@ import java.util.ArrayList;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.MovementInput;
 import net.minecraft.util.MovementInputFromOptions;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.event.ServerChatEvent;
 
 public class TASInput extends MovementInputFromOptions{
 
@@ -24,29 +18,33 @@ public class TASInput extends MovementInputFromOptions{
 	private Method rightClick;
 	private KeyFrame frame;
 	private int InvCont=1;
-	public static boolean donePlaying = false;
+	public static boolean donePlaying = true;
+	public static boolean breaking =true;
 
 	public TASInput(TAS tas, ArrayList<KeyFrame> keyFrames) {
 		super(Minecraft.getMinecraft().gameSettings);
 		this.tas = tas;
 		this.keyFrames = keyFrames;
 	}
-
 	@Override
 	public void updatePlayerMoveState() {				//When done playing, the game will pause...
 		if(step >= keyFrames.size()){
 			if(!donePlaying){
-				donePlaying = true;
-				mc.player.motionX = 0;
-				mc.player.motionY = 0;
-				mc.player.motionZ = 0;
+				donePlaying=true;
+				mc.thePlayer.motionX = 0;
+				mc.thePlayer.motionY = 0;
+				mc.thePlayer.motionZ = 0;
 				Minecraft.getMinecraft().displayGuiScreen(new GuiScreen() {
 				});
+				
 			}
 			super.updatePlayerMoveState();
 			return;
 		}
 		frame = keyFrames.get(step++);
+		if (breaking){
+			step=keyFrames.size();
+		}
 		/*if(!(mc.gameSettings.keyBindAttack instanceof LeftClickKeyBind)){
 			try{
 				mc.gameSettings.keyBindAttack = new LeftClickKeyBind("key.attack", -100, "key.categories.gameplay");
@@ -60,9 +58,9 @@ public class TASInput extends MovementInputFromOptions{
 		KeyBinding.setKeyBindState(-100, frame.leftClick);			//Read Leftclick from File
 		KeyBinding.setKeyBindState(-99, frame.rightClick);			//Read RightClick from File
 		KeyBinding.setKeyBindState(29, frame.sprint);				//Read Sprint Key from File
-		mc.player.inventory.currentItem=frame.slot;					//Read Inventory Slot from File etc...
 		
-		InvCont=1;
+		mc.thePlayer.inventory.currentItem=frame.slot;					//Read Inventory Slot from File etc...
+		
 		
 		this.moveStrafe = 0.0F;
 		this.moveForward = 0.0F;
@@ -70,41 +68,41 @@ public class TASInput extends MovementInputFromOptions{
 		if (frame.forwardKeyDown)
 		{
 			++this.moveForward;
-			this.forwardKeyDown = true;
+			frame.forwardKeyDown = true;
 		}
 		else
 		{
-			this.forwardKeyDown = false;
+			frame.forwardKeyDown = false;
 		}
 
 		if (frame.backKeyDown)
 		{
 			--this.moveForward;
-			this.backKeyDown = true;
+			frame.backKeyDown = true;
 		}
 		else
 		{
-			this.backKeyDown = false;
+			frame.backKeyDown = false;
 		}
 
 		if (frame.leftKeyDown)
 		{
 			++this.moveStrafe;
-			this.leftKeyDown = true;
+			frame.leftKeyDown = true;
 		}
 		else
 		{
-			this.leftKeyDown = false;
+			frame.leftKeyDown = false;
 		}
 
 		if (frame.rightKeyDown)
 		{
 			--this.moveStrafe;
-			this.rightKeyDown = true;
+			frame.rightKeyDown = true;
 		}
 		else
 		{
-			this.rightKeyDown = false;
+			frame.rightKeyDown = false;
 		}
 
 		this.jump = frame.jump;
@@ -115,8 +113,8 @@ public class TASInput extends MovementInputFromOptions{
 			this.moveStrafe = (float)((double)this.moveStrafe * 0.3D);
 			this.moveForward = (float)((double)this.moveForward * 0.3D);
 		}
-		mc.player.rotationPitch = frame.pitch;
-		mc.player.rotationYaw = frame.yaw;
+		mc.thePlayer.rotationPitch = frame.pitch;
+		mc.thePlayer.rotationYaw = frame.yaw;
 		
 	}
 

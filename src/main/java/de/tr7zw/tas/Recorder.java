@@ -7,26 +7,26 @@ import java.util.ArrayList;
 import com.google.common.io.Files;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MovementInput;
 import net.minecraft.util.MovementInputFromOptions;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public class Recorder {
 
-	private ArrayList<Object> recording = new ArrayList<>();
+	private ArrayList<Object> recording = new ArrayList();
 	private Minecraft mc = Minecraft.getMinecraft();
 	
 	public Recorder() {
-		recording.add("#StartLocation: " + mc.player.getPositionVector().toString());
-		mc.player.movementInput = new RecordingInput(mc.gameSettings, recording);
+		recording.add("#StartLocation: " +mc.thePlayer.getPosition(0));
+		mc.thePlayer.movementInput = new RecordingInput(mc.gameSettings, recording);
 	}
 	
 	public void saveData(File file){
-		mc.player.movementInput = new MovementInputFromOptions(mc.gameSettings);
+		mc.thePlayer.movementInput = new MovementInputFromOptions(mc.gameSettings);
 		StringBuilder output = new StringBuilder();
 		String W;											//Well this is... Not the best solution for this buut hey it works I guess... I will definetely fix this once I know what I'm doing but for now it helps me visualize
 		String S;
@@ -66,7 +66,7 @@ public class Recorder {
 			e.printStackTrace();
 		}
 		try{
-			mc.ingameGUI.getChatGUI().printChatMessage(new TextComponentString("Saved to: " + file.getAbsolutePath()));
+			Minecraft.getMinecraft().thePlayer.sendChatMessage("Saved to: " + file.getAbsolutePath());
 		}catch(Exception exX){
 			exX.printStackTrace();
 		}
@@ -86,12 +86,20 @@ public class Recorder {
 		public void updatePlayerMoveState() {
 			super.updatePlayerMoveState();
 			MovementInput input = this;
+			boolean forwardKeyDown=false;
+			boolean backwardKeyDown=false;
+			boolean leftKeyDown=false;
+			boolean rightKeyDown=false;
+			if(input.moveForward>0)forwardKeyDown=true;
+			if(input.moveForward<0)backwardKeyDown=true;
+			if(input.moveStrafe>0)leftKeyDown=true;
+			if(input.moveStrafe<0)rightKeyDown=true;
 			
 			//Read from the player movement
 			
-			recording.add(new KeyFrame(input.forwardKeyDown, input.backKeyDown, input.leftKeyDown, input.rightKeyDown, input.jump, input.sneak, GameSettings.isKeyDown(mc.gameSettings.keyBindSprint),
-					mc.player.rotationPitch, mc.player.rotationYaw, GameSettings.isKeyDown(mc.gameSettings.keyBindAttack),
-					GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem),mc.player.inventory.currentItem));
+			recording.add(new KeyFrame(forwardKeyDown, backwardKeyDown, leftKeyDown, rightKeyDown, input.jump, input.sneak, GameSettings.isKeyDown(mc.gameSettings.keyBindSprint),
+					mc.thePlayer.rotationPitch, mc.thePlayer.rotationYaw, GameSettings.isKeyDown(mc.gameSettings.keyBindAttack),
+					GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem),mc.thePlayer.inventory.currentItem));
 		}
 		
 	}
