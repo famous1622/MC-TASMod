@@ -128,7 +128,7 @@ public class TAS {
 	}
 
 	public Recorder recorder = null;
-
+	
 	@SubscribeEvent
 	public void onChatSend(ServerChatEvent ev)
 	{
@@ -164,7 +164,7 @@ public class TAS {
 						||FileName.contains("|")
 						||FileName.contains("\"")
 						||FileName.contains(":")){
-					sendMessage("§cInvalid character(s) for your filename");
+					sendMessage(TextFormatting.RED+"Invalid character(s) for your filename");
 					FileName="null";
 					genname=true;
 					return;
@@ -194,6 +194,7 @@ public class TAS {
 			}
 			sendMessage("Stopped the tas recording!");
 			MinecraftForge.EVENT_BUS.unregister(recorder);
+			
 			if (genname==true||FileName.equals("null")){
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + "recording_" + System.currentTimeMillis() +".tas");
