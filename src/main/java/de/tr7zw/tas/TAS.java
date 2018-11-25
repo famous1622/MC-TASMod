@@ -266,7 +266,7 @@ public class TAS {
 			}
 			if(Minecraft.getMinecraft().getIntegratedServer() != null && !loaded){
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + args[1] + ".tas");
+						"tasfiles"+ File.separator + args[1] + ".tas");
 				if(file.exists()){
 					line = 0;
 					try{
@@ -312,7 +312,7 @@ public class TAS {
 			ev.setCanceled(true);
 			try {
 				Desktop.getDesktop().open(new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						Minecraft.getMinecraft().getIntegratedServer().getFolderName()));
+						"tasfiles"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
