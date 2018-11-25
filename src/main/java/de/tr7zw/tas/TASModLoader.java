@@ -1,9 +1,12 @@
 package de.tr7zw.tas;
 
+import java.io.File;
+
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 
-@cpw.mods.fml.common.Mod(modid = "tasmod", name = "Tool Asisted Speedrun Mod", version = "1.3")
+@cpw.mods.fml.common.Mod(modid = "tasmod", name = "Tool Asisted Speedrun Mod", version = "1.1")
 public class TASModLoader {
 
 	@cpw.mods.fml.common.Mod.Instance
@@ -13,6 +16,7 @@ public class TASModLoader {
 	public void init(FMLPreInitializationEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(new TAS());
+		new File (Minecraft.getMinecraft().mcDataDir,"saves"+File.separator+"tasfiles").mkdir();
 	}
 	
 }
