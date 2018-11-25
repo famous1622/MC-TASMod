@@ -107,7 +107,7 @@ public class TAS {
 	}
 
 	@SubscribeEvent
-	public void onClientTick(TickEvent.PlayerTickEvent ev)
+	public void onPlayerTick(TickEvent.PlayerTickEvent ev)
 	{
 		//if(ev.phase == Phase.START && loaded && mc.player != null && !(mc.player.movementInput instanceof TASInput))
 		//	mc.player.movementInput = new TASInput(this, keyFrames);
@@ -196,15 +196,19 @@ public class TAS {
 			MinecraftForge.EVENT_BUS.unregister(recorder);
 			
 			if (genname==true||FileName.equals("null")){
+				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
+						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + "recording_" + System.currentTimeMillis() +".tas");*/
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + "recording_" + System.currentTimeMillis() +".tas");
+						"tasfiles" + File.separator + "recording_" + System.currentTimeMillis() +".tas");
 				recorder.saveData(file);
 				recorder = null;
 			return;
 			}
 			else if (genname==false){
+				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
+						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + FileName +".tas");*/
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + FileName +".tas");
+						"tasfiles" + File.separator + FileName +".tas");
 				recorder.saveData(file);
 				recorder = null;
 			return;
@@ -231,7 +235,7 @@ public class TAS {
 			}
 			if(Minecraft.getMinecraft().getIntegratedServer() != null && !loaded){
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + args[1] + ".tas");
+						"tasfiles" + File.separator + args[1] + ".tas");
 				if(file.exists()){
 					loadData(file);
 					TASInput.donePlaying=false;
@@ -341,15 +345,19 @@ public class TAS {
 			MinecraftForge.EVENT_BUS.unregister(recorder);
 			//SAVE
 			if (genname==true||FileName.equals("null")){
+				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
+						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + "recording_" + System.currentTimeMillis() +".tas");*/
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + "recording_" + System.currentTimeMillis() +".tas");
+						"tasfiles" + File.separator + "recording_" + System.currentTimeMillis() +".tas");
 				recorder.saveData(file);
 				recorder = null;
 			return;
 			}
 			else if (genname==false){
+				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
+						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + FileName +".tas");*/
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + FileName +".tas");
+						"tasfiles" + File.separator + FileName +".tas");
 				recorder.saveData(file);
 				recorder = null;
 			return;
