@@ -25,10 +25,12 @@ public class TASModLoader {
 	{
 		MinecraftForge.EVENT_BUS.register(new TAS());
 		new File (Minecraft.getMinecraft().mcDataDir,"saves"+File.separator+"tasfiles").mkdir();
+		
 	}
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event){
 		event.registerServerCommand(new Tasmodc());
+		MinecraftForge.EVENT_BUS.register(new TASGui());
 	}
 	
 }

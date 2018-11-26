@@ -19,7 +19,7 @@ public class TASInput extends MovementInputFromOptions{
 	private Minecraft mc = Minecraft.getMinecraft();
 	private TAS tas;
 	private ArrayList<KeyFrame> keyFrames;
-	private int step = 0;
+	public static int step = 0;
 	private Method leftClick;
 	private Method rightClick;
 	private KeyFrame frame;

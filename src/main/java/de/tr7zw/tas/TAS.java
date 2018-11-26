@@ -239,6 +239,7 @@ public class TAS {
 				if(file.exists()){
 					loadData(file);
 					TASInput.donePlaying=false;
+					TASInput.step=0;
 					mc.player.movementInput = new TASInput(this, keyFrames);
 					sendMessage("Loaded File");
 				}else{
