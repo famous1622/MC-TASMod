@@ -74,7 +74,7 @@ public class TAS {
 		keyFrames = new ArrayList();
 	}
 
-	public static void sendMessage(String msg){
+	public void sendMessage(String msg){
 		try{
 			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new ChatComponentText(msg));
 		}catch(Exception ex){
@@ -231,7 +231,8 @@ public class TAS {
 			}
 			sendMessage("Aborting recording!");
 			MinecraftForge.EVENT_BUS.unregister(recorder);
-			mc.thePlayer.setPositionAndRotation(x,y,z,yaw,pitch);			//Teleports you where the .r command was issued
+			mc.thePlayer.sendChatMessage("/tp "+Double.toString(x)+" "+Double.toString((y-1.62))+" "+Double.toString(z));			//Teleports you where the .r command was issued
+			mc.thePlayer.setPositionAndRotation(x, y-1.62, z, pitch, yaw);
 			recorder = null;
 			return;
 		}
@@ -251,6 +252,7 @@ public class TAS {
 					loadData(file);
 					TASInput.donePlaying=false;
 					TASInput.breaking=false;
+					TASInput.step=0;
 					mc.thePlayer.movementInput = new TASInput(this, keyFrames);
 					sendMessage("Loaded File");
 				}else{
@@ -288,10 +290,10 @@ public class TAS {
 						BufferedReader Buff = new BufferedReader(new FileReader(file));
 						String[] Location= Buff.readLine().split("\\(|(, )|\\)");
 						
-						mc.thePlayer.setPositionAndUpdate(Double.parseDouble(Location[1]),
-											Double.parseDouble(Location[2]),
-											Double.parseDouble(Location[3]));
-						sendMessage("Teleporting...");
+						/*mc.thePlayer.setPositionAndUpdate(Double.parseDouble(Location[1]),
+											Double.parseDouble(Location[2])-1.620,
+											Double.parseDouble(Location[3]));*/
+						mc.thePlayer.sendChatMessage(("/tp "+ Double.parseDouble(Location[1])+" "+(Double.parseDouble(Location[2])-1.620+ " "+Double.parseDouble(Location[3]))));
 						Buff.close();
 					}catch(Exception ex){
 						ex.printStackTrace();
@@ -333,6 +335,12 @@ public class TAS {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
+		if(ev.message.equals(".info")){
+			ev.setCanceled(true);
+			if (InfoGui.enabled==true)InfoGui.enabled=false;
+			else if (InfoGui.enabled==false)InfoGui.enabled=true;
+			
 		}
 		if(ev.message.startsWith(".help")){				//Command for help! Will probably added to real commands
 			ev.setCanceled(true);
