@@ -19,10 +19,7 @@ public class TASModLoader {
 		MinecraftForge.EVENT_BUS.register(new TAS());
 		new File (Minecraft.getMinecraft().mcDataDir,"saves"+File.separator+"tasfiles").mkdir();
 		MinecraftForge.EVENT_BUS.register(new InfoGui());
-	}
-	@cpw.mods.fml.common.Mod.EventHandler
-	public void startup(FMLServerStartingEvent ev){
-		
+		MinecraftForge.EVENT_BUS.register(new ButtonsGUI());
 	}
 	
 }
