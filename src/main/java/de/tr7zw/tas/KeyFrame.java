@@ -1,7 +1,5 @@
 package de.tr7zw.tas;
 
-import net.minecraft.inventory.Container;
-
 public class KeyFrame {
 
 	public boolean forwardKeyDown;		//Where all the Keys are saved!

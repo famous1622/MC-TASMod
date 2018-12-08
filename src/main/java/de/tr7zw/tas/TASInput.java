@@ -20,6 +20,7 @@ public class TASInput extends MovementInputFromOptions{
 	private int InvCont=1;
 	public static boolean donePlaying = true;
 	public static boolean breaking =true;
+	public static boolean next=false;
 
 	public TASInput(TAS tas, ArrayList<KeyFrame> keyFrames) {
 		super(Minecraft.getMinecraft().gameSettings);
@@ -36,7 +37,6 @@ public class TASInput extends MovementInputFromOptions{
 				mc.thePlayer.motionZ = 0;
 				Minecraft.getMinecraft().displayGuiScreen(new GuiScreen() {
 				});
-				
 			}
 			super.updatePlayerMoveState();
 			return;
@@ -44,6 +44,10 @@ public class TASInput extends MovementInputFromOptions{
 		frame = keyFrames.get(step++);
 		if (breaking){
 			step=keyFrames.size();
+		}
+		if(next){
+			next=false;
+			Minecraft.getMinecraft().displayGuiScreen(new PauseGui());
 		}
 		/*if(!(mc.gameSettings.keyBindAttack instanceof LeftClickKeyBind)){
 			try{
