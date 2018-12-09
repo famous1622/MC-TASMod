@@ -10,7 +10,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 
-@cpw.mods.fml.common.Mod(modid = "tasmod", name = "Tool Asisted Speedrun Mod", version = "1.3")
+@cpw.mods.fml.common.Mod(modid = "tasmod", name = "Tool Asisted Speedrun Mod", version = "1.4")
 public class TASModLoader {
 
 	@cpw.mods.fml.common.Mod.Instance

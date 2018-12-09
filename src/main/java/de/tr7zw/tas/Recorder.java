@@ -15,6 +15,8 @@ public class Recorder {
 
 	private ArrayList<Object> recording = new ArrayList();
 	private Minecraft mc = Minecraft.getMinecraft();
+	public static int recordstep=0;
+	public static boolean donerecording=true;
 	
 	public Recorder() {
 		recording.add("#StartLocation: " +mc.thePlayer.getPosition(0));
@@ -96,6 +98,8 @@ public class Recorder {
 			recording.add(new KeyFrame(forwardKeyDown, backwardKeyDown, leftKeyDown, rightKeyDown, input.jump, input.sneak, GameSettings.isKeyDown(mc.gameSettings.keyBindSprint),
 					mc.thePlayer.rotationPitch, mc.thePlayer.rotationYaw, GameSettings.isKeyDown(mc.gameSettings.keyBindAttack),
 					GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem),mc.thePlayer.inventory.currentItem));
+			
+			if (!donerecording)recordstep++;
 		}
 		
 	}

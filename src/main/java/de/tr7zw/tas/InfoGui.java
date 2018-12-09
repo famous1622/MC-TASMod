@@ -43,7 +43,11 @@ public class InfoGui extends Gui{
 			new Gui().drawCenteredString(mc.fontRenderer, (Math.round((mc.thePlayer.posX-0.5))+" "+Math.round((mc.thePlayer.posY-1.62))+" "+Math.round((mc.thePlayer.posZ-0.5))), 50, 10, 0xFFFFFF);
 			new Gui().drawString(mc.fontRenderer, "Pitch: "+Float.toString(mc.thePlayer.rotationPitch), 16, 20, 0xFFFFFF);
 			new Gui().drawString(mc.fontRenderer, "Yaw: "+Float.toString(mc.thePlayer.rotationYaw), 22, 30, 0xFFFFFF);
-			new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(TASInput.step), 30, height-24, 0xFFFFFF);
+			if (Recorder.recordstep==0){
+				new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(TASInput.step+1), 30, height-24, 0xFFFFFF);
+			}else if(TASInput.step==0){
+				new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(Recorder.recordstep+1), 30, height-24, 0xFFFFFF);
+			}
 		}
 	}
 

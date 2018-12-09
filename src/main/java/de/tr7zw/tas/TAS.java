@@ -180,6 +180,9 @@ public class TAS {
 			z=mc.thePlayer.posZ;
 			pitch=mc.thePlayer.rotationPitch;
 			yaw=mc.thePlayer.rotationYaw;
+			Recorder.donerecording=false;
+			TASInput.step=0;
+			Recorder.recordstep=0;
 			recorder = new Recorder();
 			MinecraftForge.EVENT_BUS.register(recorder);
 			return;
@@ -198,6 +201,7 @@ public class TAS {
 
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 						"tasfiles" + File.separator + "recording_" + System.currentTimeMillis() +".tas");
+				Recorder.donerecording=true;
 				recorder.saveData(file);
 				recorder = null;
 			return;
@@ -207,6 +211,7 @@ public class TAS {
 						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + FileName +".tas");*/
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 						"tasfiles" + File.separator + FileName +".tas");
+				Recorder.donerecording=true;
 				recorder.saveData(file);
 				recorder = null;
 			return;
@@ -223,6 +228,7 @@ public class TAS {
 			mc.thePlayer.sendChatMessage("/tp "+Double.toString(x)+" "+Double.toString((y-1.62))+" "+Double.toString(z));			//Teleports you where the .r command was issued
 			mc.thePlayer.setPositionAndRotation(x, y-1.62, z, pitch, yaw);
 			recorder = null;
+			Recorder.donerecording=true;
 			return;
 		}
 		if(ev.message.startsWith(".p")){			//Command to play back the tas recording
@@ -242,6 +248,7 @@ public class TAS {
 					TASInput.donePlaying=false;
 					TASInput.breaking=false;
 					TASInput.step=0;
+					Recorder.recordstep=0;
 					mc.thePlayer.movementInput = new TASInput(this, keyFrames);
 					sendMessage("Loaded File");
 				}else{
@@ -381,6 +388,7 @@ public class TAS {
 						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + FileName +".tas");*/
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 						"tasfiles" + File.separator + FileName +".tas");
+				Recorder.donerecording=true;
 				recorder.saveData(file);
 				recorder = null;
 			return;
