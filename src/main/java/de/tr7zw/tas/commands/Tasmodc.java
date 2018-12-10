@@ -1,4 +1,4 @@
-package de.tr7zw.tas;
+package de.tr7zw.tas.commands;
 
 import net.minecraft.command.ICommand;
 
@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 public class Tasmodc extends CommandBase{
 
-	public static void sendMessage(String msg){
+	public void sendMessage(String msg){
 		try{
 			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
 		}catch(Exception ex){

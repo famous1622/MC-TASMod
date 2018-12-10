@@ -4,6 +4,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 
+import de.tr7zw.tas.commands.Playc;
+import de.tr7zw.tas.commands.Tasmodc;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -30,6 +32,7 @@ public class TASModLoader {
 	@EventHandler
 	public void serverStarting(FMLServerStartingEvent event){
 		event.registerServerCommand(new Tasmodc());
+		event.registerServerCommand(new Playc());
 		MinecraftForge.EVENT_BUS.register(new TASGui());
 	}
 	
