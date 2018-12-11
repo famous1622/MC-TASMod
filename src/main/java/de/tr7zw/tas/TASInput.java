@@ -117,7 +117,6 @@ public class TASInput extends MovementInputFromOptions{
 		}
 		mc.player.rotationPitch = frame.pitch;
 		mc.player.rotationYaw = frame.yaw;
-		
 	}
 
 	/*public class LeftClickKeyBind extends KeyBinding{

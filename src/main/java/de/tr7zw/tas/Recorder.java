@@ -14,6 +14,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import scala.reflect.internal.Types.RecoverableCyclicReference;
 
 public class Recorder {
 
@@ -25,6 +26,12 @@ public class Recorder {
 	public Recorder() {
 		recording.add("#StartLocation: " + mc.player.getPositionVector().toString());
 		mc.player.movementInput = new RecordingInput(mc.gameSettings, recording);
+	}
+	
+	public static Float recalcYaw(float Yaw){
+		while(Yaw>=180)Yaw-=360;
+		while(Yaw<-180)Yaw+=360;
+		return Yaw;
 	}
 	
 	public void saveData(File file){
@@ -92,7 +99,7 @@ public class Recorder {
 			//Read from the player movement
 			
 			recording.add(new KeyFrame(input.forwardKeyDown, input.backKeyDown, input.leftKeyDown, input.rightKeyDown, input.jump, input.sneak, GameSettings.isKeyDown(mc.gameSettings.keyBindSprint),
-					mc.player.rotationPitch, mc.player.rotationYaw, GameSettings.isKeyDown(mc.gameSettings.keyBindAttack),
+					mc.player.rotationPitch, recalcYaw(mc.player.rotationYaw), GameSettings.isKeyDown(mc.gameSettings.keyBindAttack),
 					GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem),mc.player.inventory.currentItem));
 			if (!donerecording)recordstep++;
 		}

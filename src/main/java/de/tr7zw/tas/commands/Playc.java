@@ -69,6 +69,7 @@ public class Playc extends CommandBase{
 		else if(!TASInput.donePlaying){
 			new TAS().abortTAS();
 		}
+		//TODO add teleport command...
 	}
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,

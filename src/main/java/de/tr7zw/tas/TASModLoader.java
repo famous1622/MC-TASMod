@@ -27,7 +27,7 @@ public class TASModLoader {
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		MinecraftForge.EVENT_BUS.register(new TAS());
+		MinecraftForge.EVENT_BUS.register(new TASEvents());
 		new File (Minecraft.getMinecraft().mcDataDir,"saves"+File.separator+"tasfiles").mkdir();
 		
 	}
@@ -37,7 +37,7 @@ public class TASModLoader {
 		event.registerServerCommand(new Playc());
 		event.registerServerCommand(new Recordc());
 		event.registerServerCommand(new Failc());
-		MinecraftForge.EVENT_BUS.register(new TASGui());
+		MinecraftForge.EVENT_BUS.register(new InfoGui());
 	}
 	
 }

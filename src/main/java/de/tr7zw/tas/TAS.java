@@ -39,7 +39,6 @@ public class TAS {
 	private double z=0.0;
 	private float pitch=0;
 	private float yaw=0;
-	private boolean FallDamage=true;
 	private String FileName= "null";
 	private boolean genname=true;
 	
@@ -141,6 +140,8 @@ public class TAS {
 		yaw=mc.player.rotationYaw;
 		recorder = new Recorder();
 		Recorder.donerecording=false;
+		Recorder.recordstep=0;
+		TASInput.step=0;
 		MinecraftForge.EVENT_BUS.register(recorder);
 		return;
 	}
@@ -194,6 +195,8 @@ public class TAS {
 			yaw=mc.player.rotationYaw;
 			Recorder.donerecording=false;
 			recorder = new Recorder();
+			Recorder.recordstep=0;
+			TASInput.step=0;
 			MinecraftForge.EVENT_BUS.register(recorder);
 			return;
 	}
@@ -250,6 +253,7 @@ public class TAS {
 				if(file.exists()){
 					loadData(file);
 					TASInput.donePlaying=false;
+					Recorder.recordstep=0;
 					TASInput.step=0;
 					mc.player.movementInput = new TASInput(this, keyFrames);
 					sendMessage("Loaded File");
@@ -297,24 +301,6 @@ public class TAS {
 				}
 			}
 		}
-		public void controlFallDamage(String[] args){			//Command to disable Fall Damage...
-			if(args.length == 2){
-				if(args[2].equalsIgnoreCase("info")&&FallDamage)sendMessage(TextFormatting.GREEN+"Fall Damage is enabled.");
-				if(args[2].equalsIgnoreCase("info")&&FallDamage==false)sendMessage(TextFormatting.GREEN+"Fall Damage is currently"+ TextFormatting.RED+TextFormatting.BOLD+" disabled."+TextFormatting.RESET+TextFormatting.GREEN+" Taking Fall Damage has a chance to desync the TAS");
-				return;
-			}
-			else if(args.length==1){
-				if(FallDamage){
-					FallDamage=false;
-					sendMessage(TextFormatting.GREEN+"Fall Damage"+TextFormatting.RED+TextFormatting.BOLD+" disabled.");
-				}
-				else if(!FallDamage){
-					FallDamage=true;
-					sendMessage(TextFormatting.GREEN+"Fall Damage enabled.");
-				}
-			}
-			else sendMessage(TextFormatting.RED+"Wrong usage! Either '.fd' or '.fd info'");
-		}
 		public void openWorkFolder(){		//Command for opening the correct directory
 			try {
 				Desktop.getDesktop().open(new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
@@ -343,40 +329,4 @@ public class TAS {
 						+ TextFormatting.YELLOW+".help"+TextFormatting.AQUA+" <1,2>"+TextFormatting.GREEN+" -Well guess what this does...");
 			} else sendMessage(TextFormatting.RED+"Too many arguments... Did you mean '.help 2'?");
 		}
-	
-	@SubscribeEvent
-	public void onCloseServer(PlayerEvent.PlayerLoggedOutEvent ev){ 		//When hitting save and quit, recording (with .r) stops
-		if(recorder!=null){
-			MinecraftForge.EVENT_BUS.unregister(recorder);
-			//SAVE
-			if (genname==true||FileName.equals("null")){
-				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + "recording_" + System.currentTimeMillis() +".tas");*/
-				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						"tasfiles" + File.separator + "recording_" + System.currentTimeMillis() +".tas");
-				recorder.saveData(file);
-				recorder = null;
-			return;
-			}
-			else if (genname==false){
-				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + FileName +".tas");*/
-				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						"tasfiles" + File.separator + FileName +".tas");
-				recorder.saveData(file);
-				recorder = null;
-			return;
-			}
-		}
-	}
-	@SubscribeEvent
-	public void onOpenServer(PlayerEvent.PlayerLoggedInEvent ev){ 		//When joining the world, help plays
-			sendMessage(TextFormatting.GREEN+"TASmod enabled, type in .help for more info");
-	}
-	//Cancel Fall Damage
-	@SubscribeEvent
-	public void onPlayerFalling(LivingFallEvent ev){
-			ev.setCanceled(!FallDamage);
-	}
-
 }

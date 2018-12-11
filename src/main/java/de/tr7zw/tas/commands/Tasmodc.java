@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.tr7zw.tas.TAS;
+import de.tr7zw.tas.TASEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -39,7 +40,7 @@ public class Tasmodc extends CommandBase{
 
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/tasmod [1,2]";
+		return "/tasmod falldamage [info], folder, help [1,2]";
 	}
     @Override
 	public int getRequiredPermissionLevel()
@@ -52,7 +53,7 @@ public class Tasmodc extends CommandBase{
 		if (args.length==0||args.length==1&&args[0].equals("help")
 				||(args.length==1&&args[0].equals("1"))
 				||(args.length==2&&(args[0].equals("help")&&args[1].equals("1")))){			//Output for '.help' /.help 1'
-			sendMessage(TextFormatting.YELLOW+"This is a WIP Tool-Assisted-Speedrun (TAS) Mod. It records your inputs and saves them in a file in your minecraft world, which then can be played back."
+			sendMessage(TextFormatting.YELLOW+"This is a WIP Tool-Assisted-Speedrun (TAS) Mod. It records your inputs and saves them in a file in .minecraft/saves/tasfiles, which then can be played back."
 					+ "\n"+TextFormatting.AQUA+"Mod by tr7zw and ScribbleLP");
 			sendMessage(TextFormatting.GOLD+"Enter '/tasmod help 2' for commands");
 			}
@@ -74,10 +75,22 @@ public class Tasmodc extends CommandBase{
 				new TAS().openWorkFolder();
 			}
 			else if (args.length==1&&args[0].equals("falldamage")){
-				new TAS().controlFallDamage(args);
+				if(!TASEvents.FallDamage){
+					sendMessage(TextFormatting.GREEN+"Falldamage enabled");
+					TASEvents.FallDamage=true;
+				}
+				else if(TASEvents.FallDamage){
+					sendMessage(TextFormatting.GREEN+"Falldamage "+TextFormatting.RED+TextFormatting.BOLD+"disabled");
+					TASEvents.FallDamage=false;
+				}
 			}
 			else if (args.length==2&&args[0].equals("falldamage")&&args[1].equals("info")){
-				new TAS().controlFallDamage(args);
+				if(TASEvents.FallDamage){
+					sendMessage(TextFormatting.GREEN+"Fall Damage is enabled.");
+				}
+				else if(!TASEvents.FallDamage){
+				sendMessage(TextFormatting.GREEN+"Fall Damage is currently"+ TextFormatting.RED+TextFormatting.BOLD+" disabled."+TextFormatting.RESET+TextFormatting.GREEN+" Taking Fall Damage has a chance to desync the TAS");
+				}
 			}
 		}
 		@Override
