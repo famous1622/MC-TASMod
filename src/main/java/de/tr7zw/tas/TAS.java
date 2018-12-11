@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
+import javax.swing.text.html.parser.Entity;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.settings.KeyBinding;
@@ -66,7 +68,7 @@ public class TAS {
 		keyFrames = new ArrayList<>();
 	}
 
-	public static void sendMessage(String msg){
+	public void sendMessage(String msg){
 		try{
 			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
 		}catch(Exception ex){
@@ -129,12 +131,20 @@ public class TAS {
 
 	public Recorder recorder = null;
 	
-	@SubscribeEvent
-	public void onChatSend(ServerChatEvent ev)
-	{
-		if(ev.getMessage().startsWith(".r")){							//Command to start a tas recording
-			ev.setCanceled(true);
-			String[] args = ev.getMessage().split(" ");
+	public void startRecord(){
+		genname=true;
+		sendMessage("Starting the tas recording!");
+		x=mc.player.posX;							//Saving the position and headrotation where the command was issued... Is needed for '.f'
+		y=mc.player.posY;
+		z=mc.player.posZ;
+		pitch=mc.player.rotationPitch;
+		yaw=mc.player.rotationYaw;
+		recorder = new Recorder();
+		Recorder.donerecording=false;
+		MinecraftForge.EVENT_BUS.register(recorder);
+		return;
+	}
+	public void startRecord(String [] args){
 			if(recorder != null){										//error messages
 				sendMessage("A recording is running!");
 				return;
@@ -143,12 +153,12 @@ public class TAS {
 				sendMessage("A record is playing!");
 				return;
 			}
-			if(args.length == 1){
+			if(args.length == 0){
 				sendMessage("No filename set! Generating one...");
 				genname=true;
 			}
-			else if (args.length == 2){									//Check for bad characters in filenames
-				FileName=args[1];
+			if (args.length == 1){									//Check for bad characters in filenames
+				FileName=args[0];
 				if(FileName.contains("/")
 						||FileName.contains(".")
 						||FileName.contains("\r")
@@ -182,13 +192,14 @@ public class TAS {
 			z=mc.player.posZ;
 			pitch=mc.player.rotationPitch;
 			yaw=mc.player.rotationYaw;
+			Recorder.donerecording=false;
 			recorder = new Recorder();
 			MinecraftForge.EVENT_BUS.register(recorder);
 			return;
-		}
-		if(ev.getMessage().equals(".s")){				//Command to stop the tas recording you made with .r...
-			ev.setCanceled(true);						//The file is saved to the .minecraft/saves/world directory with a generated or custom filename
-			if(recorder == null){
+	}
+	public void stopRecording(){
+			 if(Recorder.donerecording){
+			 
 				sendMessage(TextFormatting.RED+"No recording running!");
 				return;
 			}
@@ -200,42 +211,42 @@ public class TAS {
 						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + "recording_" + System.currentTimeMillis() +".tas");*/
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 						"tasfiles" + File.separator + "recording_" + System.currentTimeMillis() +".tas");
+				Recorder.donerecording=true;
 				recorder.saveData(file);
 				recorder = null;
-			return;
+			//return;
 			}
 			else if (genname==false){
 				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + FileName +".tas");*/
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 						"tasfiles" + File.separator + FileName +".tas");
+				Recorder.donerecording=true;
 				recorder.saveData(file);
 				recorder = null;
 			return;
 			}
 		}
-		if(ev.getMessage().equals(".f")){				//Command to stop the recording, don't save it to a file,
-			ev.setCanceled(true);						//and teleports you back to the start, where you entered .r (basically a bit like a savestate)
+		public void abortRecording(){
 			if(recorder == null){
 				sendMessage(TextFormatting.RED+"No recording running!");
 				return;
 			}
 			sendMessage("Aborting recording!");
 			MinecraftForge.EVENT_BUS.unregister(recorder);
-			mc.player.setPositionAndRotation(x,y,z,yaw,pitch);			//Teleports you where the .r command was issued
+			mc.player.sendChatMessage("/tp "+x+" "+y+" "+z+" "+yaw+" "+pitch);			//Teleports you where the .r command was issued
 			recorder = null;
+			Recorder.donerecording=true;
 			return;
 		}
-		if(ev.getMessage().startsWith(".p")){			//Command to play back the tas recording
-			ev.setCanceled(true);
-			String[] args = ev.getMessage().split(" ");
-			if(args.length != 2){
+		public void playTAS(String[] args){			//Command to play back the tas recording
+			if(args.length != 1){
 				sendMessage(TextFormatting.RED+"Example: .p <filename>  (without .tas)");
 				return;
 			}
 			if(Minecraft.getMinecraft().getIntegratedServer() != null && !loaded){
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						"tasfiles" + File.separator + args[1] + ".tas");
+						"tasfiles" + File.separator + args[0] + ".tas");
 				if(file.exists()){
 					loadData(file);
 					TASInput.donePlaying=false;
@@ -247,8 +258,7 @@ public class TAS {
 				}
 			}
 		}
-		if(ev.getMessage().equals(".b")){				//Command to break the current playback (.p)
-			ev.setCanceled(true);
+		public void abortTAS(){			//Command to break the current playback (.p)
 			if (TASInput.donePlaying==true){
 				sendMessage(TextFormatting.RED+"No playback running!");
 			}
@@ -258,9 +268,7 @@ public class TAS {
 			}
 		}
 		
-		if(ev.getMessage().startsWith(".tp")){ 			//Command to Teleport you to the start of the TASfile
-			ev.setCanceled(true);
-			String[] args = ev.getMessage().split(" ");
+		public void teleportToTAS(String[] args){ 			//Command to Teleport you to the start of the TASfile
 			if(args.length != 2){
 				sendMessage(TextFormatting.RED+"Wrong usage. Example: .tp <filename>");
 				return;
@@ -289,12 +297,10 @@ public class TAS {
 				}
 			}
 		}
-		if(ev.getMessage().startsWith(".fd")){			//Command to disable Fall Damage...
-			ev.setCanceled(true);
-			String[] args = ev.getMessage().split(" ");
+		public void controlFallDamage(String[] args){			//Command to disable Fall Damage...
 			if(args.length == 2){
-				if(args[1].equalsIgnoreCase("info")&&FallDamage)sendMessage(TextFormatting.GREEN+"Fall Damage is enabled.");
-				if(args[1].equalsIgnoreCase("info")&&FallDamage==false)sendMessage(TextFormatting.GREEN+"Fall Damage is currently"+ TextFormatting.RED+TextFormatting.BOLD+" disabled."+TextFormatting.RESET+TextFormatting.GREEN+" Taking Fall Damage has a chance to desync the TAS");
+				if(args[2].equalsIgnoreCase("info")&&FallDamage)sendMessage(TextFormatting.GREEN+"Fall Damage is enabled.");
+				if(args[2].equalsIgnoreCase("info")&&FallDamage==false)sendMessage(TextFormatting.GREEN+"Fall Damage is currently"+ TextFormatting.RED+TextFormatting.BOLD+" disabled."+TextFormatting.RESET+TextFormatting.GREEN+" Taking Fall Damage has a chance to desync the TAS");
 				return;
 			}
 			else if(args.length==1){
@@ -309,8 +315,7 @@ public class TAS {
 			}
 			else sendMessage(TextFormatting.RED+"Wrong usage! Either '.fd' or '.fd info'");
 		}
-		if(ev.getMessage().equals(".folder")){		//Command for opening the correct directory
-			ev.setCanceled(true);
+		public void openWorkFolder(){		//Command for opening the correct directory
 			try {
 				Desktop.getDesktop().open(new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 						"tasfiles"));
@@ -318,9 +323,8 @@ public class TAS {
 				e.printStackTrace();
 			}
 		}
-		if(ev.getMessage().startsWith(".help")){				//Command for help! Will probably added to real commands
-			ev.setCanceled(true);
-			String[] args = ev.getMessage().split(" ");
+		//Unused legacy method... was used in earlier versions
+		public void showHelp(String[] args){				//Command for help! Will probably added to real commands
 			if (args.length==1||args[1].equals("1")){			//Output for '.help' /.help 1'
 			sendMessage(TextFormatting.YELLOW+"This is a WIP Tool-Assisted-Speedrun (TAS) Mod. It records your inputs and saves them in a file in your minecraft world, which then can be played back."
 					+ "\n"+TextFormatting.AQUA+"Mod by tr7zw and ScribbleLP");
@@ -339,7 +343,7 @@ public class TAS {
 						+ TextFormatting.YELLOW+".help"+TextFormatting.AQUA+" <1,2>"+TextFormatting.GREEN+" -Well guess what this does...");
 			} else sendMessage(TextFormatting.RED+"Too many arguments... Did you mean '.help 2'?");
 		}
-	}
+	
 	@SubscribeEvent
 	public void onCloseServer(PlayerEvent.PlayerLoggedOutEvent ev){ 		//When hitting save and quit, recording (with .r) stops
 		if(recorder!=null){

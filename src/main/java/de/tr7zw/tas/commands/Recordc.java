@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
+import de.tr7zw.tas.Recorder;
 import de.tr7zw.tas.TAS;
 import de.tr7zw.tas.TASInput;
 import net.minecraft.client.Minecraft;
@@ -16,11 +17,14 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
-public class Playc extends CommandBase{
-
+public class Recordc extends CommandBase{
+	
 	private	 List<String> tab = new ArrayList<String>();
 	private Minecraft mc = Minecraft.getMinecraft();
+	public static TAS recorder= new TAS();
+	private boolean check=false;
 	
 	public List<String> getFilenames(){
 		List<String> tab = new ArrayList<String>();
@@ -40,11 +44,11 @@ public class Playc extends CommandBase{
 	}
 	@Override
 	public String getName() {
-		return "play";
+		return "record";
 	}
 	@Override
 	public String getUsage(ICommandSender sender) {
-		return "/play <filename> (without .tas)";
+		return "/record or /r or /rec [filename] (without .tas. If not set, it generates a filename)";
 	}
 	
 	@Override
@@ -54,27 +58,34 @@ public class Playc extends CommandBase{
 	
 	@Override
 	public List<String> getAliases() {
-		return ImmutableList.of("p");
+		return ImmutableList.of("r","rec");
 	}
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (TASInput.donePlaying){
-			if (args.length==0)sendMessage(ChatFormatting.RED+"/play <filename> (without .tas)");
+		if (Recorder.donerecording){
+			if (args.length==0){
+				sendMessage("No filename set! Generating one...");
+				recorder.startRecord();
+			}
 			if (args.length==1){
-				new TAS().playTAS(args);
+				recorder.startRecord(args);
 			}
 			if (args.length>1)sendMessage(ChatFormatting.RED+"Too many arguments");
 		}
-		else if(!TASInput.donePlaying){
-			new TAS().abortTAS();
+		else if(!Recorder.donerecording){
+			recorder.stopRecording();;
 		}
 	}
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
 				BlockPos targetPos) {
-		if(args.length < 1) return null;
 		if(args.length==1){
+			if (!check){
+				sendMessage(TextFormatting.BOLD+""+TextFormatting.RED+"WARNING!"+TextFormatting.RESET+TextFormatting.RED+
+						" Existing Filenames will be overwritten! /fail to abort the recording");
+				check=true;
+			}
 			tab=getFilenames();
 		}
 		if (tab.isEmpty()){
@@ -84,3 +95,4 @@ public class Playc extends CommandBase{
 		 
 	}
 }
+
