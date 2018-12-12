@@ -5,6 +5,7 @@ import net.minecraft.command.ICommand;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.tr7zw.tas.InfoGui;
 import de.tr7zw.tas.TAS;
 import de.tr7zw.tas.TASEvents;
 import net.minecraft.client.Minecraft;
@@ -31,6 +32,13 @@ public class Tasmodc extends CommandBase{
 		}catch(Exception ex){
 			ex.printStackTrace();
 		}
+	}
+	
+	public List<String> emptyList(List<String> full){
+		while(full.size()!=0){
+			full.remove(0);
+		}
+		return full;
 	}
 	
 	@Override
@@ -92,17 +100,24 @@ public class Tasmodc extends CommandBase{
 				sendMessage(TextFormatting.GREEN+"Fall Damage is currently"+ TextFormatting.RED+TextFormatting.BOLD+" disabled."+TextFormatting.RESET+TextFormatting.GREEN+" Taking Fall Damage has a chance to desync the TAS");
 				}
 			}
+			else if (args.length==1&&args[0].equals("gui")){
+				if (InfoGui.enabled)InfoGui.enabled=false;
+				else if (!InfoGui.enabled)InfoGui.enabled=true;
+			}
 		}
 		@Override
 		public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
 				BlockPos targetPos) {
 			List<String> tab = new ArrayList<String>();
 				if(args.length==1){
+					emptyList(tab);
 					tab.add("help");
 					tab.add("folder");
 					tab.add("falldamage");
+					tab.add("gui");
 				}
 				else if(args.length==2){
+					emptyList(tab);
 					if(args[0].equals("help")){
 						tab.add("2");
 					}

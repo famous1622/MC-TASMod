@@ -21,6 +21,13 @@ public class Playc extends CommandBase{
 
 	private	 List<String> tab = new ArrayList<String>();
 	private Minecraft mc = Minecraft.getMinecraft();
+
+	public List<String> emptyList(List<String> full){
+		while(full.size()!=0){
+			full.remove(0);
+		}
+		return full;
+	}
 	
 	public List<String> getFilenames(){
 		List<String> tab = new ArrayList<String>();
@@ -61,25 +68,36 @@ public class Playc extends CommandBase{
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 		if (TASInput.donePlaying){
 			if (args.length==0)sendMessage(ChatFormatting.RED+"/play <filename> (without .tas)");
-			if (args.length==1){
+			else if (args.length==1){
+				TASInput.breaking=false;
+				new TAS().teleportToTAS(args);
 				new TAS().playTAS(args);
 			}
-			if (args.length>1)sendMessage(ChatFormatting.RED+"Too many arguments");
+			else if(args.length==2&&args[1].equals("notp")){
+				TASInput.breaking=false;
+				new TAS().playTAS(args);
+			}
+			else if (args.length>2)sendMessage(ChatFormatting.RED+"Too many arguments");
 		}
 		else if(!TASInput.donePlaying){
-			new TAS().abortTAS();
+			TASInput.breaking=true;
+			TASInput.donePlaying=true;
 		}
-		//TODO add teleport command...
 	}
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
 				BlockPos targetPos) {
-		if(args.length < 1) return null;
 		if(args.length==1){
-			tab=getFilenames();
+			emptyList(tab);
+			tab.addAll(getFilenames());
+			if (tab.isEmpty()){
+				sendMessage(ChatFormatting.RED+"No files in directory");
+			}
 		}
-		if (tab.isEmpty()){
-			sendMessage(ChatFormatting.RED+"No files in directory");
+		else if (args.length==2){
+			emptyList(tab);
+			tab.add("notp");
+			
 		}
 		return tab;
 		 

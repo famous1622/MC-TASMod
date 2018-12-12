@@ -25,6 +25,8 @@ public class TASInput extends MovementInputFromOptions{
 	private KeyFrame frame;
 	private int InvCont=1;
 	public static boolean donePlaying = true;
+	public static boolean breaking=false;
+	
 
 	public TASInput(TAS tas, ArrayList<KeyFrame> keyFrames) {
 		super(Minecraft.getMinecraft().gameSettings);
@@ -47,6 +49,10 @@ public class TASInput extends MovementInputFromOptions{
 			return;
 		}
 		frame = keyFrames.get(step++);
+		
+		if (breaking){
+			step=keyFrames.size();
+		}
 		/*if(!(mc.gameSettings.keyBindAttack instanceof LeftClickKeyBind)){
 			try{
 				mc.gameSettings.keyBindAttack = new LeftClickKeyBind("key.attack", -100, "key.categories.gameplay");

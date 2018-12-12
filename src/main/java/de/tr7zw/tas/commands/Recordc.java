@@ -83,7 +83,7 @@ public class Recordc extends CommandBase{
 		if(args.length==1){
 			if (!check){
 				sendMessage(TextFormatting.BOLD+""+TextFormatting.RED+"WARNING!"+TextFormatting.RESET+TextFormatting.RED+
-						" Existing Filenames will be overwritten! /fail to abort the recording");
+						" Existing filenames will be overwritten! /fail to abort the recording if you accidentally started one");
 				check=true;
 			}
 			tab=getFilenames();

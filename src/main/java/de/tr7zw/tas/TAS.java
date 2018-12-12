@@ -146,18 +146,6 @@ public class TAS {
 		return;
 	}
 	public void startRecord(String [] args){
-			if(recorder != null){										//error messages
-				sendMessage("A recording is running!");
-				return;
-			}
-			if(mc.player.movementInput instanceof TASInput){		
-				sendMessage("A record is playing!");
-				return;
-			}
-			if(args.length == 0){
-				sendMessage("No filename set! Generating one...");
-				genname=true;
-			}
 			if (args.length == 1){									//Check for bad characters in filenames
 				FileName=args[0];
 				if(FileName.contains("/")
@@ -242,11 +230,7 @@ public class TAS {
 			Recorder.donerecording=true;
 			return;
 		}
-		public void playTAS(String[] args){			//Command to play back the tas recording
-			if(args.length != 1){
-				sendMessage(TextFormatting.RED+"Example: .p <filename>  (without .tas)");
-				return;
-			}
+		public void playTAS(String[] args){			//Command to play back the tas recordingS
 			if(Minecraft.getMinecraft().getIntegratedServer() != null && !loaded){
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 						"tasfiles" + File.separator + args[0] + ".tas");
@@ -273,22 +257,18 @@ public class TAS {
 		}
 		
 		public void teleportToTAS(String[] args){ 			//Command to Teleport you to the start of the TASfile
-			if(args.length != 2){
-				sendMessage(TextFormatting.RED+"Wrong usage. Example: .tp <filename>");
-				return;
-			}
 			if(Minecraft.getMinecraft().getIntegratedServer() != null && !loaded){
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						"tasfiles"+ File.separator + args[1] + ".tas");
+						"tasfiles"+ File.separator + args[0] + ".tas");
 				if(file.exists()){
 					line = 0;
 					try{
 						BufferedReader Buff = new BufferedReader(new FileReader(file));
 						String[] Location= Buff.readLine().split("\\(|(, )|\\)");
 						
-						mc.player.setPosition(Double.parseDouble(Location[1]),
-											Double.parseDouble(Location[2]),
-											Double.parseDouble(Location[3]));
+						mc.player.sendChatMessage("/tp "+Location[1]+" "+
+											Location[2]+" "+
+											Location[3]);
 						sendMessage("Teleporting...");
 						Buff.close();
 					}catch(Exception ex){
