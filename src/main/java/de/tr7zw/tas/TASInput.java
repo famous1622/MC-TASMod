@@ -26,12 +26,28 @@ public class TASInput extends MovementInputFromOptions{
 	private int InvCont=1;
 	public static boolean donePlaying = true;
 	public static boolean breaking=false;
+	private int calcstate=0;
 	
 
 	public TASInput(TAS tas, ArrayList<KeyFrame> keyFrames) {
 		super(Minecraft.getMinecraft().gameSettings);
 		this.tas = tas;
 		this.keyFrames = keyFrames;
+	}
+	public Float recalcYaw(float Yaw){
+		while(Yaw>=180)Yaw-=360;
+		while(Yaw<-180)Yaw+=360;
+		return Yaw;
+		
+	}
+	private float uncalc(float yaw){
+		if(recalcYaw(mc.player.rotationYaw)>=0&&(recalcYaw(mc.player.rotationYaw)-yaw)>180){
+			calcstate++;
+		}
+		if(recalcYaw(mc.player.rotationYaw)<0&&(recalcYaw(mc.player.rotationYaw)-yaw)<-180){
+			calcstate--;
+		}
+		return yaw+(360*calcstate);
 	}
 
 	@Override
@@ -122,7 +138,7 @@ public class TASInput extends MovementInputFromOptions{
 			this.moveForward = (float)((double)this.moveForward * 0.3D);
 		}
 		mc.player.rotationPitch = frame.pitch;
-		mc.player.rotationYaw = frame.yaw;
+		mc.player.rotationYaw = uncalc(frame.yaw);
 	}
 
 	/*public class LeftClickKeyBind extends KeyBinding{
