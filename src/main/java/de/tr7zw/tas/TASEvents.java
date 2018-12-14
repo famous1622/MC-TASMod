@@ -11,12 +11,17 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
-/**
+/**Events for the TASmod
  * @author ScribbleLP
  */
 public class TASEvents {
 	private Minecraft mc = Minecraft.getMinecraft();
-	public static boolean FallDamage=true;
+	/**
+	 * Variable to enable fall damage<br>
+	 * If true, fall damage will be enabled
+	 */
+	public static boolean FallDamage;
+	public static boolean StopRecOnWorldClose;
 	
 	public void sendMessage(String msg){
 		try{
@@ -36,10 +41,10 @@ public class TASEvents {
 	public void onOpenServer(PlayerEvent.PlayerLoggedInEvent ev){
 			sendMessage("TASmod enabled, type in /tasmod for more info");
 	}
-	
+	//When hitting save and quit, the recording (with /record) stops
 	@SubscribeEvent
-	public void onCloseServer(PlayerEvent.PlayerLoggedOutEvent ev){ 		//When hitting save and quit, recording (with .r) stops
-		if(!Recorder.donerecording){
+	public void onCloseServer(PlayerEvent.PlayerLoggedOutEvent ev){ 		
+		if(!Recorder.donerecording&&StopRecOnWorldClose){
 			Recordc.recorder.stopRecording();
 			return;
 		}
