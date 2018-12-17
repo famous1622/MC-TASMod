@@ -69,6 +69,7 @@ public class Recorder {
 						+ ";" + Integer.toString(frame.slot) +";\n");
 			}
 		}
+		output.append("END");
 		try {
 			Files.write(output.toString().getBytes(), file);
 		} catch (IOException e) {

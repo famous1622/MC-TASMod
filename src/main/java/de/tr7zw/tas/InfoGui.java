@@ -44,8 +44,8 @@ public class InfoGui extends Gui{
 			new Gui().drawString(mc.fontRenderer, "Yaw: "+Float.toString(recalcYaw(mc.player.rotationYaw)), 22, 30, 0xFFFFFF);		//Show the current Yaw (This comes from the modversion for 1.7.10 since 1.7 has just SOUTH as a yaw in F3)
 			//Draw the Tickcounter. Changes the value depending if it's playback or a recording
 			if (Recorder.recordstep==0){
-				new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(TASInput.step+1), 30, height-24, 0xFFFFFF);
-			}else if(TASInput.step==0){
+				new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(Playback.frame+1), 30, height-24, 0xFFFFFF);
+			}else if(Playback.frame==0){
 				new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(Recorder.recordstep+1), 30, height-24, 0xFFFFFF);
 			}
 		}

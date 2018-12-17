@@ -84,8 +84,6 @@ public class TASInput extends MovementInputFromOptions{
 		KeyBinding.setKeyBindState(29, frame.sprint);				//Read Sprint Key from File
 		mc.player.inventory.currentItem=frame.slot;					//Read Inventory Slot from File etc...
 		
-		InvCont=1;
-		
 		this.moveStrafe = 0.0F;
 		this.moveForward = 0.0F;
 

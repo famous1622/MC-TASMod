@@ -142,6 +142,7 @@ public class TAS {
 		Recorder.donerecording=false;
 		Recorder.recordstep=0;
 		TASInput.step=0;
+		Playback.frame=0;
 		MinecraftForge.EVENT_BUS.register(recorder);
 		return;
 	}
@@ -185,6 +186,7 @@ public class TAS {
 			recorder = new Recorder();
 			Recorder.recordstep=0;
 			TASInput.step=0;
+			Playback.frame=0;
 			MinecraftForge.EVENT_BUS.register(recorder);
 			return;
 	}
@@ -235,11 +237,13 @@ public class TAS {
 				File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 						"tasfiles" + File.separator + args[0] + ".tas");
 				if(file.exists()){
-					loadData(file);
+					//loadData(file);
 					TASInput.donePlaying=false;
 					Recorder.recordstep=0;
 					TASInput.step=0;
-					mc.player.movementInput = new TASInput(this, keyFrames);
+					Playback.frame=0;
+					//mc.player.movementInput = new TASInput(this, keyFrames);
+					mc.player.movementInput=new Playback(args);
 					sendMessage("Loaded File");
 				}else{
 					sendMessage(TextFormatting.RED+"File not found: " + file.getAbsolutePath());
@@ -273,6 +277,7 @@ public class TAS {
 						Buff.close();
 					}catch(Exception ex){
 						ex.printStackTrace();
+						return;
 					}
 					
 					
