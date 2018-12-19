@@ -7,6 +7,8 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
+import de.tr7zw.tas.InfoGui;
+import de.tr7zw.tas.Playback;
 import de.tr7zw.tas.TAS;
 import de.tr7zw.tas.TASInput;
 import net.minecraft.client.Minecraft;
@@ -16,6 +18,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 public class Playc extends CommandBase{
 
@@ -66,22 +69,32 @@ public class Playc extends CommandBase{
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (TASInput.donePlaying){
+		File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
+				"tasfiles"+ File.separator + args[0] + ".tas");
+		
+		if (Playback.donePlaying){
 			if (args.length==0)sendMessage(ChatFormatting.RED+"/play <filename> (without .tas)");
-			else if (args.length==1){
-				TASInput.breaking=false;
-				new TAS().teleportToTAS(args);
-				new TAS().playTAS(args);
+			
+			if (file.exists()){
+				if (args.length==1){
+					Playback.donePlaying=false;
+					new TAS().teleportToTAS(args);
+					new TAS().playTAS(args);
+				}
+			
+				else if(args.length==2&&args[1].equals("notp")){
+					Playback.donePlaying=false;
+					new TAS().playTAS(args);
+				}
 			}
-			else if(args.length==2&&args[1].equals("notp")){
-				TASInput.breaking=false;
-				new TAS().playTAS(args);
+			else{
+				sendMessage(TextFormatting.RED+"File '"+args[0]+"' does not exist");
 			}
-			else if (args.length>2)sendMessage(ChatFormatting.RED+"Too many arguments");
+			if (args.length>2)sendMessage(ChatFormatting.RED+"Too many arguments");
 		}
-		else if(!TASInput.donePlaying){
-			TASInput.breaking=true;
-			TASInput.donePlaying=true;
+		//Abort Playback
+		else if(!Playback.donePlaying){
+			Playback.donePlaying=true;
 		}
 	}
 	@Override

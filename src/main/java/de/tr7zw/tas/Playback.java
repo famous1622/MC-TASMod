@@ -37,6 +37,7 @@ public class Playback extends MovementInputFromOptions{
 	private int calcstate=0;
 	private String[] args;
 	public static int frame=0;
+	public static boolean donePlaying=true;
 
 	
 	
@@ -44,6 +45,7 @@ public class Playback extends MovementInputFromOptions{
 		super(Minecraft.getMinecraft().gameSettings);
 		args=Helloargs;
 	}
+	
 	
 	public void sendMessage(String msg){
 		try{
@@ -81,7 +83,7 @@ public class Playback extends MovementInputFromOptions{
 				if((s=Buff.readLine()).equalsIgnoreCase("END")){
 					break;
 				}
-				if(s.startsWith("#")||s.startsWith("/")){
+				else if(s.startsWith("#")||s.startsWith("/")){
 					continue;
 				}
 				else if(line==stopAt){
@@ -92,17 +94,17 @@ public class Playback extends MovementInputFromOptions{
 				line++;
 			}
 			sendMessage("Finished Playback");
-			TASInput.donePlaying=true;
+			donePlaying=true;
 			Buff.close();
 			return;
 		} catch (NullPointerException ex){
 				sendMessage(TextFormatting.RED+"Error while reading the file. Couldn't find an END");
-				TASInput.donePlaying=true;
+				donePlaying=true;
 				ex.printStackTrace();
 				
 			
 		} catch (IOException e) {
-			TASInput.donePlaying=true;
+			donePlaying=true;
 			e.printStackTrace();
 		}
 	}
@@ -125,10 +127,10 @@ public class Playback extends MovementInputFromOptions{
 
 	@Override
 	public void updatePlayerMoveState() {
-		if(!TASInput.donePlaying){
+		if(!donePlaying){
 			readingFile(args, frame++);
 		}
-		if (TASInput.donePlaying){
+		if (donePlaying){
 			super.updatePlayerMoveState();
 			return;
 		}
