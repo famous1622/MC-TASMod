@@ -7,11 +7,10 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
-import de.tr7zw.tas.InfoGui;
 import de.tr7zw.tas.Playback;
 import de.tr7zw.tas.TAS;
-import de.tr7zw.tas.TASInput;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -95,6 +94,9 @@ public class Playc extends CommandBase{
 		//Abort Playback
 		else if(!Playback.donePlaying){
 			Playback.donePlaying=true;
+			KeyBinding.setKeyBindState(-100, false);
+			KeyBinding.setKeyBindState(-99, false);
+			KeyBinding.setKeyBindState(29, false);
 		}
 	}
 	@Override

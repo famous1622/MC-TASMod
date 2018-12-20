@@ -1,15 +1,12 @@
 package de.tr7zw.tas;
 
-import java.awt.Robot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.MovementInput;
 import net.minecraft.util.MovementInputFromOptions;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -94,6 +91,9 @@ public class Playback extends MovementInputFromOptions{
 				line++;
 			}
 			sendMessage("Finished Playback");
+			KeyBinding.setKeyBindState(-100, false);
+			KeyBinding.setKeyBindState(-99, false);
+			KeyBinding.setKeyBindState(29, false);
 			donePlaying=true;
 			Buff.close();
 			return;
