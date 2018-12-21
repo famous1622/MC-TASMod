@@ -1,5 +1,7 @@
 package de.tr7zw.tas;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -10,6 +12,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.MovementInputFromOptions;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 /**
  * Newer version of TASInput.java<br>
  * Executes the input directly after reading the line in the file
@@ -35,8 +38,24 @@ public class Playback extends MovementInputFromOptions{
 	private String[] args;
 	public static int frame=0;
 	public static boolean donePlaying=true;
+	
 
 	
+	public void robLeftClick(boolean pressed){
+		try {
+			Robot rob=new Robot();
+			if (pressed&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
+	public void robRightClick(boolean pressed){
+		
+	}
 	
 	public Playback(String[] Helloargs) {
 		super(Minecraft.getMinecraft().gameSettings);
@@ -135,7 +154,8 @@ public class Playback extends MovementInputFromOptions{
 			return;
 		}
 		
-		KeyBinding.setKeyBindState(-100, leftclick);			//Read Leftclick from File
+		//KeyBinding.setKeyBindState(-100, leftclick);			//Read Leftclick from File
+		robLeftClick(leftclick);
 		KeyBinding.setKeyBindState(-99, rightclick);			//Read RightClick from File
 		KeyBinding.setKeyBindState(29, sprint);					//Read Sprint Key from File
 		mc.player.inventory.currentItem=hotbarslot;				//Read Inventory Slot from File etc...
