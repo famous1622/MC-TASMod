@@ -22,6 +22,8 @@ public class Recorder {
 	private Minecraft mc = Minecraft.getMinecraft();
 	public static int recordstep=0;
 	public static boolean donerecording=true;
+	private static int lkcounter=0;
+	private static boolean lkchecker=false;
 	
 	public Recorder() {
 		recording.add("#StartLocation: " + mc.player.getPositionVector().toString());
@@ -96,7 +98,6 @@ public class Recorder {
 		public void updatePlayerMoveState() {
 			super.updatePlayerMoveState();
 			MovementInput input = this;
-			
 			//Read from the player movement
 			
 			recording.add(new KeyFrame(input.forwardKeyDown, input.backKeyDown, input.leftKeyDown, input.rightKeyDown, input.jump, input.sneak, GameSettings.isKeyDown(mc.gameSettings.keyBindSprint),

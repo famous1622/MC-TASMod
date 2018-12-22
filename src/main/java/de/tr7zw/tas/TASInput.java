@@ -79,7 +79,7 @@ public class TASInput extends MovementInputFromOptions{
 		}*/
 		
 		
-		KeyBinding.setKeyBindState(-100, frame.leftClick);			//Read Leftclick from File
+	//	KeyBinding.setKeyBindState(-100, frame.leftClick);			//Read Leftclick from File
 		KeyBinding.setKeyBindState(-99, frame.rightClick);			//Read RightClick from File
 		KeyBinding.setKeyBindState(29, frame.sprint);				//Read Sprint Key from File
 		mc.player.inventory.currentItem=frame.slot;					//Read Inventory Slot from File etc...

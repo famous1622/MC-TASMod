@@ -29,8 +29,8 @@ public class Playback extends MovementInputFromOptions{
 	private boolean Jump;
 	private boolean Sneak;
 	private boolean sprint;
-	private boolean leftclick;
-	private boolean rightclick;
+	private int leftclick=0;
+	private int rightclick=0;
 	private float pitch;
 	private float yaw;
 	private int hotbarslot;
@@ -41,11 +41,17 @@ public class Playback extends MovementInputFromOptions{
 	
 
 	
-	public void robLeftClick(boolean pressed){
+	public void robLeftClick(int pressed){
 		try {
 			Robot rob=new Robot();
-			if (pressed&&mc.inGameHasFocus){
+			if (pressed==0&&mc.inGameHasFocus){
 				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			else if (pressed==1&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			else if (pressed==2&&mc.inGameHasFocus){
 				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
 			}
 			
@@ -53,8 +59,22 @@ public class Playback extends MovementInputFromOptions{
 			e.printStackTrace();
 		}
 	}
-	public void robRightClick(boolean pressed){
-		
+	public void robRightClick(int pressed){
+		try {
+			Robot rob=new Robot();
+			if (pressed==0&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON2_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON2_DOWN_MASK);
+			}
+			else if (pressed==1&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON2_DOWN_MASK);
+			}
+			else if (pressed==2&&mc.inGameHasFocus){
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON2_DOWN_MASK);
+			}
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Playback(String[] Helloargs) {
@@ -110,8 +130,8 @@ public class Playback extends MovementInputFromOptions{
 				line++;
 			}
 			sendMessage("Finished Playback");
-			KeyBinding.setKeyBindState(-100, false);
-			KeyBinding.setKeyBindState(-99, false);
+			robLeftClick(2);
+			robRightClick(2);
 			KeyBinding.setKeyBindState(29, false);
 			donePlaying=true;
 			Buff.close();
@@ -138,8 +158,12 @@ public class Playback extends MovementInputFromOptions{
 		sprint=field[7].equalsIgnoreCase("Ctrl");
 		pitch=Float.parseFloat(field[8]);
 		yaw=Float.parseFloat(field[9]);
-		leftclick=field[10].equalsIgnoreCase("LK");
-		rightclick=field[11].equalsIgnoreCase("RK");
+		if(field[10].equalsIgnoreCase("LK"))leftclick=0;
+		else if(field[10].equalsIgnoreCase("pLK"))leftclick=1;
+		else if(field[10].equalsIgnoreCase("rLK"))leftclick=2;
+		if(field[11].equalsIgnoreCase("RK"))rightclick=0;
+		else if(field[10].equalsIgnoreCase("pRK"))rightclick=1;
+		else if(field[10].equalsIgnoreCase("rRK"))rightclick=2;
 		hotbarslot=Integer.parseInt(field[12]);
 	}
 	
@@ -156,7 +180,8 @@ public class Playback extends MovementInputFromOptions{
 		
 		//KeyBinding.setKeyBindState(-100, leftclick);			//Read Leftclick from File
 		robLeftClick(leftclick);
-		KeyBinding.setKeyBindState(-99, rightclick);			//Read RightClick from File
+		//KeyBinding.setKeyBindState(-99, rightclick);			//Read RightClick from File
+		robRightClick(rightclick);
 		KeyBinding.setKeyBindState(29, sprint);					//Read Sprint Key from File
 		mc.player.inventory.currentItem=hotbarslot;				//Read Inventory Slot from File etc...
 		
