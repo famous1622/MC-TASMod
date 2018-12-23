@@ -22,8 +22,8 @@ public class Recorder {
 	private Minecraft mc = Minecraft.getMinecraft();
 	public static int recordstep=0;
 	public static boolean donerecording=true;
-	private static int lkcounter=0;
 	private static boolean lkchecker=false;
+	private static boolean rkchecker=false;
 	
 	public Recorder() {
 		recording.add("#StartLocation: " + mc.player.getPositionVector().toString());
@@ -61,13 +61,13 @@ public class Recorder {
 				if(frame.jump==true)Space="Space";else Space=" ";
 				if(frame.sneak==true)Shift="Shift";else Shift=" ";
 				if(frame.sprint==true)Ctrl="Ctrl";else Ctrl=" ";
-				if(frame.leftClick==true)LK="LK";else LK=" ";
-				if(frame.rightClick==true)RK="RK";else RK=" ";
+				//if(frame.leftClick==true)LK="LK";else LK=" ";
+				//if(frame.rightClick==true)RK="RK";else RK=" ";
 				
 				//Writing to the file
 				
 				output.append("1;" + W + ";" + S + ";" + A + ";" + D + ";"
-						+ Space + ";" + Shift + ";" + Ctrl + ";" + frame.pitch + ";" + frame.yaw + ";" + LK + ";" + RK
+						+ Space + ";" + Shift + ";" + Ctrl + ";" + frame.pitch + ";" + frame.yaw + ";" + frame.leftClick + ";" + frame.rightClick
 						+ ";" + Integer.toString(frame.slot) +";\n");
 			}
 		}
@@ -98,12 +98,44 @@ public class Recorder {
 		public void updatePlayerMoveState() {
 			super.updatePlayerMoveState();
 			MovementInput input = this;
+			String leftclack=" ";
+			String rightclack=" ";
+			boolean lefty=GameSettings.isKeyDown(mc.gameSettings.keyBindAttack);
+			boolean righty=GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem);
+			if (!lkchecker&&!lefty){
+				leftclack=" ";
+			}
+			else if (!lkchecker&&lefty){
+				leftclack="pLK";
+			}
+			else if(lkchecker&&lefty){
+				leftclack="hLK";
+			}
+			else if(lkchecker&&!lefty){
+				leftclack="rLK";
+			}
+			
+			
+			if (!rkchecker&&!righty){
+				rightclack=" ";
+			}
+			else if (!rkchecker&&righty){
+				rightclack="pRK";
+			}
+			else if(rkchecker&&righty){
+				rightclack="hRK";
+			}
+			else if(rkchecker&&!righty){
+				rightclack="rRK";
+			}
 			//Read from the player movement
 			
 			recording.add(new KeyFrame(input.forwardKeyDown, input.backKeyDown, input.leftKeyDown, input.rightKeyDown, input.jump, input.sneak, GameSettings.isKeyDown(mc.gameSettings.keyBindSprint),
-					mc.player.rotationPitch, recalcYaw(mc.player.rotationYaw), GameSettings.isKeyDown(mc.gameSettings.keyBindAttack),
-					GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem),mc.player.inventory.currentItem));
+					mc.player.rotationPitch, recalcYaw(mc.player.rotationYaw), leftclack,
+					rightclack ,mc.player.inventory.currentItem));
 			if (!donerecording)recordstep++;
+			rkchecker=righty;
+			lkchecker=lefty;
 		}
 		
 	}

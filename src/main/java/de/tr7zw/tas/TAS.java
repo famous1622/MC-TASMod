@@ -92,8 +92,8 @@ public class TAS {
 					args[7].equalsIgnoreCase("Ctrl"), //sprint
 					Float.parseFloat(args[8]), //pitch
 					Float.parseFloat(args[9]), //yaw
-					args[10].equalsIgnoreCase("LK"), //leftclick
-					args[11].equalsIgnoreCase("RK"), //rightclick
+					args[10], //leftclick
+					args[11], //rightclick
 					Integer.parseInt(args[12])); //hotbar
 			
 			for(int i = 0; i < repeats; i++){
@@ -136,6 +136,9 @@ public class TAS {
 		x=mc.player.posX;							//Saving the position and headrotation where the command was issued... Is needed for '.f'
 		y=mc.player.posY;
 		z=mc.player.posZ;
+		mc.player.motionX=0;
+		mc.player.motionY=0;
+		mc.player.motionZ=0;
 		pitch=mc.player.rotationPitch;
 		yaw=mc.player.rotationYaw;
 		recorder = new Recorder();

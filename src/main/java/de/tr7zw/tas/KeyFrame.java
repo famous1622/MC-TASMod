@@ -12,14 +12,14 @@ public class KeyFrame {
     public boolean sneak;
 	public float pitch;
 	public float yaw;
-	public boolean leftClick;
-	public boolean rightClick;
+	public String leftClick;
+	public String rightClick;
 	public boolean sprint;
     public boolean drop;
     public int slot;
     
 	public KeyFrame(boolean forwardKeyDown, boolean backKeyDown, boolean leftKeyDown, boolean rightKeyDown,
-			boolean jump, boolean sneak, boolean sprint, float pitch, float yaw, boolean leftClick, boolean rightClick, int slot) {
+			boolean jump, boolean sneak, boolean sprint, float pitch, float yaw, String leftClick, String rightClick, int slot) {
 		super();
 		this.forwardKeyDown = forwardKeyDown;
 		this.backKeyDown = backKeyDown;

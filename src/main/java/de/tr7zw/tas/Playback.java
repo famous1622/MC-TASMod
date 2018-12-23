@@ -44,6 +44,7 @@ public class Playback extends MovementInputFromOptions{
 	public void robLeftClick(int pressed){
 		try {
 			Robot rob=new Robot();
+			rob.setAutoDelay(0);
 			if (pressed==0&&mc.inGameHasFocus){
 				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
 				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
@@ -62,15 +63,16 @@ public class Playback extends MovementInputFromOptions{
 	public void robRightClick(int pressed){
 		try {
 			Robot rob=new Robot();
+			rob.setAutoDelay(0);
 			if (pressed==0&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON2_DOWN_MASK);
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON2_DOWN_MASK);
+				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
 			}
 			else if (pressed==1&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON2_DOWN_MASK);
+				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
 			}
 			else if (pressed==2&&mc.inGameHasFocus){
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON2_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
 			}
 		} catch (AWTException e) {
 			e.printStackTrace();
@@ -161,9 +163,11 @@ public class Playback extends MovementInputFromOptions{
 		if(field[10].equalsIgnoreCase("LK"))leftclick=0;
 		else if(field[10].equalsIgnoreCase("pLK"))leftclick=1;
 		else if(field[10].equalsIgnoreCase("rLK"))leftclick=2;
+		else leftclick=3;
 		if(field[11].equalsIgnoreCase("RK"))rightclick=0;
-		else if(field[10].equalsIgnoreCase("pRK"))rightclick=1;
-		else if(field[10].equalsIgnoreCase("rRK"))rightclick=2;
+		else if(field[11].equalsIgnoreCase("pRK"))rightclick=1;
+		else if(field[11].equalsIgnoreCase("rRK"))rightclick=2;
+		else rightclick=3;
 		hotbarslot=Integer.parseInt(field[12]);
 	}
 	
