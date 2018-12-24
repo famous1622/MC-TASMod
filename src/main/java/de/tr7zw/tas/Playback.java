@@ -39,46 +39,6 @@ public class Playback extends MovementInputFromOptions{
 	public static int frame=0;
 	public static boolean donePlaying=true;
 	
-
-	
-	public void robLeftClick(int pressed){
-		try {
-			Robot rob=new Robot();
-			rob.setAutoDelay(0);
-			if (pressed==0&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-			}
-			else if (pressed==1&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-			}
-			else if (pressed==2&&mc.inGameHasFocus){
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-			}
-			
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
-	}
-	public void robRightClick(int pressed){
-		try {
-			Robot rob=new Robot();
-			rob.setAutoDelay(0);
-			if (pressed==0&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-			}
-			else if (pressed==1&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-			}
-			else if (pressed==2&&mc.inGameHasFocus){
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-			}
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public Playback(String[] Helloargs) {
 		super(Minecraft.getMinecraft().gameSettings);
 		args=Helloargs;
@@ -132,8 +92,8 @@ public class Playback extends MovementInputFromOptions{
 				line++;
 			}
 			sendMessage("Finished Playback");
-			robLeftClick(2);
-			robRightClick(2);
+			new TASEvents().robLeftClick(2);
+			new TASEvents().robRightClick(2);
 			KeyBinding.setKeyBindState(29, false);
 			donePlaying=true;
 			Buff.close();
@@ -161,13 +121,13 @@ public class Playback extends MovementInputFromOptions{
 		pitch=Float.parseFloat(field[8]);
 		yaw=Float.parseFloat(field[9]);
 		if(field[10].equalsIgnoreCase("LK"))leftclick=0;
-		else if(field[10].equalsIgnoreCase("pLK"))leftclick=1;
-		else if(field[10].equalsIgnoreCase("rLK"))leftclick=2;
-		else leftclick=3;
-		if(field[11].equalsIgnoreCase("RK"))rightclick=0;
-		else if(field[11].equalsIgnoreCase("pRK"))rightclick=1;
-		else if(field[11].equalsIgnoreCase("rRK"))rightclick=2;
-		else rightclick=3;
+		else if(field[10].equalsIgnoreCase("pLK"))TASEvents.LKpressed=1;
+		else if(field[10].equalsIgnoreCase("rLK"))TASEvents.LKpressed=2;
+		else TASEvents.LKpressed=3;
+		if(field[11].equalsIgnoreCase("RK"))TASEvents.RKpressed=0;
+		else if(field[11].equalsIgnoreCase("pRK"))TASEvents.RKpressed=1;
+		else if(field[11].equalsIgnoreCase("rRK"))TASEvents.RKpressed=2;
+		else TASEvents.RKpressed=3;
 		hotbarslot=Integer.parseInt(field[12]);
 	}
 	
@@ -183,9 +143,9 @@ public class Playback extends MovementInputFromOptions{
 		}
 		
 		//KeyBinding.setKeyBindState(-100, leftclick);			//Read Leftclick from File
-		robLeftClick(leftclick);
-		//KeyBinding.setKeyBindState(-99, rightclick);			//Read RightClick from File
-		robRightClick(rightclick);
+		//robLeftClick(leftclick);
+		//KeyBinding.setKeyBindState(-99, rightclick<3);			//Read RightClick from File
+		//robRightClick(rightclick);
 		KeyBinding.setKeyBindState(29, sprint);					//Read Sprint Key from File
 		mc.player.inventory.currentItem=hotbarslot;				//Read Inventory Slot from File etc...
 		
