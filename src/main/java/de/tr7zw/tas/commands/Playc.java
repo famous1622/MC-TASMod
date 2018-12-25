@@ -9,7 +9,6 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 
 import de.tr7zw.tas.Playback;
 import de.tr7zw.tas.TAS;
-import de.tr7zw.tas.TASEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandBase;
@@ -95,8 +94,8 @@ public class Playc extends CommandBase{
 		//Abort Playback
 		else if(!Playback.donePlaying){
 			Playback.donePlaying=true;
-			new TASEvents().robLeftClick(2);
-			new TASEvents().robRightClick(2);
+			new Playback(args).robLeftClick(2);
+			new Playback(args).robRightClick(2);
 			KeyBinding.setKeyBindState(29, false);
 		}
 	}
