@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 public class Playback extends MovementInputFromOptions{
 
 	private Minecraft mc = Minecraft.getMinecraft();
+	//Variables for the Playback
 	private boolean forward;
 	private boolean backward;
 	private boolean left;
@@ -34,13 +35,25 @@ public class Playback extends MovementInputFromOptions{
 	private float pitch;
 	private float yaw;
 	private int hotbarslot;
+	//Used for calculating the yaw
 	private int calcstate=0;
+	//The arguments from entering the command in Playc
 	private String[] args;
+	/**
+	 * Current frame of the Playback
+	 */
 	public static int frame=0;
+	/**
+	 * Variable to see if a playback is currently running.<br>
+	 * If true, the playback stopped
+	 */
 	public static boolean donePlaying=true;
 	
-
-	
+	public Playback(String[] Helloargs) {
+		super(Minecraft.getMinecraft().gameSettings);
+		args=Helloargs;
+	}
+	//TODO Remake the integers... 0,1,2,3 is stupid to memorize
 	public void robLeftClick(int pressed){
 		try {
 			Robot rob=new Robot();
@@ -78,12 +91,6 @@ public class Playback extends MovementInputFromOptions{
 			e.printStackTrace();
 		}
 	}
-	
-	public Playback(String[] Helloargs) {
-		super(Minecraft.getMinecraft().gameSettings);
-		args=Helloargs;
-	}
-	
 	
 	public void sendMessage(String msg){
 		try{

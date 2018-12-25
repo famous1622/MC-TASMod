@@ -21,9 +21,17 @@ public class Recorder {
 	private ArrayList<Object> recording = new ArrayList<>();
 	private Minecraft mc = Minecraft.getMinecraft();
 	public static int recordstep=0;
+	/**
+	 * Variable to see if a recording is currently running.<br>
+	 * If true, the recording is stopped
+	 */
 	public static boolean donerecording=true;
 	private static boolean lkchecker=false;
 	private static boolean rkchecker=false;
+	public static boolean clicklefty=false;
+	public static boolean clickrighty=false;
+	static private boolean needsunpressLK=false;
+	static private boolean needsunpressRK=false;
 	
 	public Recorder() {
 		recording.add("#StartLocation: " + mc.player.getPositionVector().toString());
@@ -54,6 +62,14 @@ public class Recorder {
 				output.append(o + "\n");
 			}else if(o instanceof KeyFrame){
 				KeyFrame frame = (KeyFrame) o;
+				if (i<recording.size()-2){
+					Object next= recording.get(i+1);
+					KeyFrame nextframe= (KeyFrame) next;
+					frame.leftClick=nextframe.leftClick;
+					frame.rightClick=nextframe.rightClick;
+					//frame.pitch=nextframe.pitch;
+					//frame.yaw=nextframe.yaw;
+				}
 				if (frame.forwardKeyDown==true)W="W";else W=" ";
 				if(frame.backKeyDown==true)S="S";else S=" ";
 				if(frame.leftKeyDown==true)A="A";else A=" ";
@@ -97,37 +113,42 @@ public class Recorder {
 		@Override
 		public void updatePlayerMoveState() {
 			super.updatePlayerMoveState();
-			MovementInput input = this;
+			MovementInput input = this;			
 			String leftclack=" ";
 			String rightclack=" ";
 			boolean lefty=GameSettings.isKeyDown(mc.gameSettings.keyBindAttack);
 			boolean righty=GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem);
-			if (!lkchecker&&!lefty){
-				leftclack=" ";
-			}
-			else if (!lkchecker&&lefty){
+
+			if (clicklefty&&lefty){
 				leftclack="pLK";
+				clicklefty=false;
+				needsunpressLK=true;
 			}
 			else if(lkchecker&&lefty){
 				leftclack="hLK";
+				needsunpressLK=true;
 			}
-			else if(lkchecker&&!lefty){
+			else if(needsunpressLK){
 				leftclack="rLK";
+				needsunpressLK=false;
 			}
 			
 			
-			if (!rkchecker&&!righty){
-				rightclack=" ";
-			}
-			else if (!rkchecker&&righty){
+
+			if (clickrighty&&righty){
 				rightclack="pRK";
+				clickrighty=false;
+				needsunpressRK=true;
 			}
 			else if(rkchecker&&righty){
 				rightclack="hRK";
+				needsunpressRK=true;
 			}
-			else if(rkchecker&&!righty){
+			else if(needsunpressRK){
 				rightclack="rRK";
+				needsunpressRK=false;
 			}
+			//TODO Clean this up!
 			//Read from the player movement
 			
 			recording.add(new KeyFrame(input.forwardKeyDown, input.backKeyDown, input.leftKeyDown, input.rightKeyDown, input.jump, input.sneak, GameSettings.isKeyDown(mc.gameSettings.keyBindSprint),
@@ -136,6 +157,7 @@ public class Recorder {
 			if (!donerecording)recordstep++;
 			rkchecker=righty;
 			lkchecker=lefty;
+			
 		}
 		
 	}

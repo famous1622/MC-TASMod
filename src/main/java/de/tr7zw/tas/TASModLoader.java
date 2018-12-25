@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 
-@Mod(modid = "tasmod", name = "Tool Asisted Speedrun Mod", version = "1.11")
+@Mod(modid = "tasmod", name = "Tool Asisted Speedrun Mod", version = "1.13")
 
 public class TASModLoader {
 

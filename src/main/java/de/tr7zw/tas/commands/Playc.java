@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 import de.tr7zw.tas.Playback;
+import de.tr7zw.tas.Recorder;
 import de.tr7zw.tas.TAS;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -71,7 +72,7 @@ public class Playc extends CommandBase{
 		File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 				"tasfiles"+ File.separator + args[0] + ".tas");
 		
-		if (Playback.donePlaying){
+		if (Playback.donePlaying&&Recorder.donerecording){
 			if (args.length==0)sendMessage(ChatFormatting.RED+"/play <filename> (without .tas)");
 			
 			if (file.exists()){
@@ -90,6 +91,9 @@ public class Playc extends CommandBase{
 				sendMessage(TextFormatting.RED+"File '"+args[0]+"' does not exist");
 			}
 			if (args.length>2)sendMessage(ChatFormatting.RED+"Too many arguments");
+		}
+		else if(!Recorder.donerecording){
+			sendMessage(ChatFormatting.RED+"A recording is running. /record or /fail to abort recording");
 		}
 		//Abort Playback
 		else if(!Playback.donePlaying){

@@ -2,14 +2,20 @@ package de.tr7zw.tas;
 
 import java.io.File;
 
+import de.tr7zw.tas.commands.Playc;
 import de.tr7zw.tas.commands.Recordc;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 /**Events for the TASmod
  * @author ScribbleLP
@@ -23,6 +29,7 @@ public class TASEvents {
 	public static boolean FallDamage;
 	public static boolean StopRecOnWorldClose;
 	
+	
 	public void sendMessage(String msg){
 		try{
 			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
@@ -35,7 +42,6 @@ public class TASEvents {
 	public void onPlayerFalling(LivingFallEvent ev){
 			ev.setCanceled(!FallDamage);
 	}
-	
 	//Message when joining the server
 	@SubscribeEvent
 	public void onOpenServer(PlayerEvent.PlayerLoggedInEvent ev){
@@ -46,8 +52,23 @@ public class TASEvents {
 	public void onCloseServer(PlayerEvent.PlayerLoggedOutEvent ev){ 		
 		if(!Recorder.donerecording&&StopRecOnWorldClose){
 			Recordc.recorder.stopRecording();
+			Playback.donePlaying=true;
 			return;
 		}
+	}
+	//I'm not using InputEvent.MouseInput here, because it lags the game somehow
+	@SubscribeEvent
+	public void onMouseClick(MouseEvent ev){
+		if (!Recorder.donerecording){
+			if (ev.getButton()==0&!Recorder.clicklefty){
+				Recorder.clicklefty=true;
+			}
+			if (ev.getButton()==1&&!Recorder.clickrighty){
+				Recorder.clickrighty=true;
+				
+			}
+		}
+			
 	}
 }
 

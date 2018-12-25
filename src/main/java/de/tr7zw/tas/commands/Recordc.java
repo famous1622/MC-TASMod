@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
+import de.tr7zw.tas.Playback;
 import de.tr7zw.tas.Recorder;
 import de.tr7zw.tas.TAS;
 import de.tr7zw.tas.TASInput;
@@ -63,7 +64,7 @@ public class Recordc extends CommandBase{
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (Recorder.donerecording){
+		if (Recorder.donerecording&&Playback.donePlaying){
 			if (args.length==0){
 				sendMessage("No filename set! Generating one...");
 				recorder.startRecord();
@@ -75,6 +76,9 @@ public class Recordc extends CommandBase{
 		}
 		else if(!Recorder.donerecording){
 			recorder.stopRecording();;
+		}
+		else if (!Playback.donePlaying){
+			sendMessage(ChatFormatting.RED+"A playback is running. /play to abort");
 		}
 	}
 	@Override
