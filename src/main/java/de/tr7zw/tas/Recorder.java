@@ -119,7 +119,7 @@ public class Recorder {
 			boolean lefty=GameSettings.isKeyDown(mc.gameSettings.keyBindAttack);
 			boolean righty=GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem);
 
-			if (clicklefty&&lefty){
+			if (!lkchecker&&clicklefty){
 				leftclack="pLK";
 				clicklefty=false;
 				needsunpressLK=true;
@@ -135,7 +135,7 @@ public class Recorder {
 			
 			
 
-			if (clickrighty&&righty){
+			if (!rkchecker&&clickrighty){
 				rightclack="pRK";
 				clickrighty=false;
 				needsunpressRK=true;

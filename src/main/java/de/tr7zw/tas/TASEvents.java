@@ -58,12 +58,12 @@ public class TASEvents {
 	}
 	//I'm not using InputEvent.MouseInput here, because it lags the game somehow
 	@SubscribeEvent
-	public void onMouseClick(MouseEvent ev){
-		if (!Recorder.donerecording){
-			if (ev.getButton()==0&!Recorder.clicklefty){
+	public void onMouseClick(TickEvent.RenderTickEvent ev){
+		if (!Recorder.donerecording&&ev.phase == Phase.START){
+			if (GameSettings.isKeyDown(mc.gameSettings.keyBindAttack)&!Recorder.clicklefty){
 				Recorder.clicklefty=true;
 			}
-			if (ev.getButton()==1&&!Recorder.clickrighty){
+			if (GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem)&&!Recorder.clickrighty){
 				Recorder.clickrighty=true;
 				
 			}
