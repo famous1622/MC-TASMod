@@ -65,8 +65,8 @@ public class Recorder {
 				if (i<recording.size()-2){
 					Object next= recording.get(i+1);
 					KeyFrame nextframe= (KeyFrame) next;
-					frame.leftClick=nextframe.leftClick;
-					frame.rightClick=nextframe.rightClick;
+					//frame.leftClick=nextframe.leftClick;
+					//frame.rightClick=nextframe.rightClick;
 					//frame.pitch=nextframe.pitch;
 					//frame.yaw=nextframe.yaw;
 				}
@@ -137,7 +137,6 @@ public class Recorder {
 
 			if (!rkchecker&&clickrighty){
 				rightclack="pRK";
-				clickrighty=false;
 				needsunpressRK=true;
 			}
 			else if(rkchecker&&righty){
@@ -155,6 +154,7 @@ public class Recorder {
 					mc.player.rotationPitch, recalcYaw(mc.player.rotationYaw), leftclack,
 					rightclack ,mc.player.inventory.currentItem));
 			if (!donerecording)recordstep++;
+			clickrighty=false;
 			rkchecker=righty;
 			lkchecker=lefty;
 			

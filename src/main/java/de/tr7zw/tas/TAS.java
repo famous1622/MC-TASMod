@@ -198,8 +198,8 @@ public class TAS {
 				return;
 			}
 			sendMessage("Stopped the tas recording!");
-			/*Recorder.clicklefty=false;
-			Recorder.clickrighty=false;*/
+			Recorder.clicklefty=false;
+			Recorder.clickrighty=false;
 			MinecraftForge.EVENT_BUS.unregister(recorder);
 			
 			if (genname==true||FileName.equals("null")){
@@ -210,7 +210,7 @@ public class TAS {
 				Recorder.donerecording=true;
 				recorder.saveData(file);
 				recorder = null;
-			//return;
+			return;
 			}
 			else if (genname==false){
 				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
@@ -230,7 +230,7 @@ public class TAS {
 			}
 			sendMessage("Aborting recording!");
 			MinecraftForge.EVENT_BUS.unregister(recorder);
-			mc.player.sendChatMessage("/tp "+x+" "+y+" "+z+" "+yaw+" "+pitch);			//Teleports you where the .r command was issued
+			mc.player.sendChatMessage("/tp "+x+" "+y+" "+z+" "+yaw+" "+pitch);			//Teleports you where the /record command was issued
 			recorder = null;
 			/*Recorder.clicklefty=false;
 			Recorder.clickrighty=false;*/

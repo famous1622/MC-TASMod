@@ -98,8 +98,8 @@ public class Playc extends CommandBase{
 		//Abort Playback
 		else if(!Playback.donePlaying){
 			Playback.donePlaying=true;
-			new Playback(args).robLeftClick(2);
-			new Playback(args).robRightClick(2);
+			Playback.leftclick=2;
+			Playback.rightclick=2;
 			KeyBinding.setKeyBindState(29, false);
 		}
 	}

@@ -30,8 +30,8 @@ public class Playback extends MovementInputFromOptions{
 	private boolean Jump;
 	private boolean Sneak;
 	private boolean sprint;
-	private int leftclick=0;
-	private int rightclick=0;
+	public static int leftclick=0;
+	public static int rightclick=0;
 	private float pitch;
 	private float yaw;
 	private int hotbarslot;
@@ -54,43 +54,6 @@ public class Playback extends MovementInputFromOptions{
 		args=Helloargs;
 	}
 	//TODO Remake the integers... 0,1,2,3 is stupid to memorize
-	public void robLeftClick(int pressed){
-		try {
-			Robot rob=new Robot();
-			rob.setAutoDelay(0);
-			if (pressed==0&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-			}
-			else if (pressed==1&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-			}
-			else if (pressed==2&&mc.inGameHasFocus){
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-			}
-			
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
-	}
-	public void robRightClick(int pressed){
-		try {
-			Robot rob=new Robot();
-			rob.setAutoDelay(0);
-			if (pressed==0&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-			}
-			else if (pressed==1&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-			}
-			else if (pressed==2&&mc.inGameHasFocus){
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-			}
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public void sendMessage(String msg){
 		try{
@@ -139,9 +102,8 @@ public class Playback extends MovementInputFromOptions{
 				line++;
 			}
 			sendMessage("Finished Playback");
-			robLeftClick(2);
-			robRightClick(2);
-			KeyBinding.setKeyBindState(29, false);
+			leftclick=2;
+			rightclick=2;
 			donePlaying=true;
 			Buff.close();
 			return;
@@ -190,9 +152,7 @@ public class Playback extends MovementInputFromOptions{
 		}
 		
 		//KeyBinding.setKeyBindState(-100, leftclick);			//Read Leftclick from File
-		robLeftClick(leftclick);
 		//KeyBinding.setKeyBindState(-99, rightclick);			//Read RightClick from File
-		robRightClick(rightclick);
 		KeyBinding.setKeyBindState(29, sprint);					//Read Sprint Key from File
 		mc.player.inventory.currentItem=hotbarslot;				//Read Inventory Slot from File etc...
 		

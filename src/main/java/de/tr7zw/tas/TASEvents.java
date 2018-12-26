@@ -1,5 +1,7 @@
 package de.tr7zw.tas;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.io.File;
 
 import de.tr7zw.tas.commands.Playc;
@@ -37,6 +39,43 @@ public class TASEvents {
 			ex.printStackTrace();
 		}
 	}
+	public void robLeftClick(int pressed){
+		try {
+			Robot rob=new Robot();
+			rob.setAutoDelay(0);
+			if (pressed==0&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			else if (pressed==1&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			else if (pressed==2&&mc.inGameHasFocus){
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
+	public void robRightClick(int pressed){
+		try {
+			Robot rob=new Robot();
+			rob.setAutoDelay(0);
+			if (pressed==0&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+			}
+			else if (pressed==1&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+			}
+			else if (pressed==2&&mc.inGameHasFocus){
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+			}
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
 	//Cancel Fall Damage
 	@SubscribeEvent
 	public void onPlayerFalling(LivingFallEvent ev){
@@ -65,8 +104,13 @@ public class TASEvents {
 			}
 			if (GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem)&&!Recorder.clickrighty){
 				Recorder.clickrighty=true;
-				
 			}
+		}
+		if (!Playback.donePlaying&&ev.phase == Phase.START&&mc.inGameHasFocus){
+			robLeftClick(Playback.leftclick);
+			robRightClick(Playback.rightclick);
+			Playback.leftclick=3;
+			Playback.leftclick=3;
 		}
 			
 	}
