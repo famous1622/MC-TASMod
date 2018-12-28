@@ -120,10 +120,14 @@ public class TASEvents {
 			}
 		}
 		if (!Playback.donePlaying&&ev.phase == Phase.START&&mc.inGameHasFocus){
-			robLeftClick(Playback.leftclick);
-			robRightClick(Playback.rightclick);
-			Playback.leftclick=3;
-			Playback.leftclick=3;
+			if (!Playback.LKbreak){
+				robLeftClick(Playback.leftclick);
+				Playback.LKbreak=true;
+			}
+			if (!Playback.RKbreak){
+				robRightClick(Playback.rightclick);
+				Playback.RKbreak=true;
+			}
 		}
 			
 	}

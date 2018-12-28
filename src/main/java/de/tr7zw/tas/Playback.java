@@ -1,6 +1,7 @@
 package de.tr7zw.tas;
 
 import java.awt.AWTException;
+import java.awt.MouseInfo;
 import java.awt.Robot;
 import java.io.BufferedReader;
 import java.io.File;
@@ -35,6 +36,8 @@ public class Playback extends MovementInputFromOptions{
 	private float pitch;
 	private float yaw;
 	private int hotbarslot;
+	public static boolean LKbreak;
+	public static boolean RKbreak;
 	//Used for calculating the yaw
 	private int calcstate=0;
 	//The arguments from entering the command in Playc
@@ -60,6 +63,20 @@ public class Playback extends MovementInputFromOptions{
 			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
 		}catch(Exception ex){
 			ex.printStackTrace();
+		}
+	}
+	//TODO
+	public void moveMouse(float Pitch, float Yaw){
+		int fakepitch=(int) Pitch;
+		int fakeyaw=(int) Yaw;
+		fakepitch=fakepitch-(int)mc.player.cameraPitch;
+		fakeyaw=fakeyaw-(int)mc.player.cameraYaw;
+		try {
+			Robot rob= new Robot();
+			rob.setAutoDelay(0);
+			rob.mouseMove(MouseInfo.getPointerInfo().getLocation().y+fakeyaw, MouseInfo.getPointerInfo().getLocation().x+fakepitch);
+		} catch (AWTException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -208,6 +225,9 @@ public class Playback extends MovementInputFromOptions{
 		}
 		mc.player.rotationPitch = pitch;
 		mc.player.rotationYaw = uncalc(yaw);
+
+		LKbreak=false;
+		RKbreak=false;
 	}
 }
 

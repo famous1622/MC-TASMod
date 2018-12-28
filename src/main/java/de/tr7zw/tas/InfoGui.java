@@ -1,5 +1,6 @@
 package de.tr7zw.tas;
 
+import java.awt.MouseInfo;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -80,6 +81,8 @@ public class InfoGui extends Gui{
 			new Gui().drawCenteredString(mc.fontRenderer, (Math.round((mc.player.posX-0.5))+" "+Math.round((mc.player.posY))+" "+Math.round((mc.player.posZ-0.5))), 50, 10, 0xFFFFFF); 	//Coordinates
 			new Gui().drawString(mc.fontRenderer, "Pitch: "+Float.toString(mc.player.rotationPitch), 16, 20, 0xFFFFFF);				//Show the current Pitch
 			new Gui().drawString(mc.fontRenderer, "Yaw: "+Float.toString(recalcYaw(mc.player.rotationYaw)), 22, 30, 0xFFFFFF);		//Show the current Yaw (This comes from the modversion for 1.7.10 since 1.7 has just SOUTH as a yaw in F3)
+			
+			if(mc.inGameHasFocus)new Gui().drawString(mc.fontRenderer, MouseInfo.getPointerInfo().getLocation().toString(), 22, 40, 0xFFFFFF);
 			drawKeyStrokes(height, width);
 			//Draw the Tickcounter. Changes the value depending if it's playback or a recording
 			if (Recorder.recordstep==0){
