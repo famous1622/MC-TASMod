@@ -26,10 +26,10 @@ public class Recorder {
 	 * If true, the recording is stopped
 	 */
 	public static boolean donerecording=true;
-	private static boolean lkchecker=false;
-	private static boolean rkchecker=false;
-	public static boolean clicklefty=false;
-	public static boolean clickrighty=false;
+	public static boolean lkchecker=false;
+	public static boolean rkchecker=false;
+	public static int clicklefty=0;
+	public static int clickrighty=0;
 	static private boolean needsunpressLK=false;
 	static private boolean needsunpressRK=false;
 	
@@ -116,30 +116,35 @@ public class Recorder {
 			MovementInput input = this;			
 			String leftclack=" ";
 			String rightclack=" ";
-			boolean lefty=GameSettings.isKeyDown(mc.gameSettings.keyBindAttack);
-			boolean righty=GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem);
-
-			if (!lkchecker&&clicklefty){
+			
+			if(clicklefty==2){
 				leftclack="pLK";
-				clicklefty=false;
 				needsunpressLK=true;
 			}
-			else if(lkchecker&&lefty){
+			else if(clicklefty==1&&!lkchecker){
+				leftclack="pLK";
+				needsunpressLK=true;
+			}
+			else if(clicklefty==1&&lkchecker){
 				leftclack="hLK";
 				needsunpressLK=true;
 			}
 			else if(needsunpressLK){
 				leftclack="rLK";
 				needsunpressLK=false;
+				
 			}
 			
 			
-
-			if (!rkchecker&&clickrighty){
+			if(clickrighty==2){
 				rightclack="pRK";
 				needsunpressRK=true;
 			}
-			else if(rkchecker&&righty){
+			else if(clickrighty==1&&!rkchecker){
+				rightclack="pRK";
+				needsunpressRK=true;
+			}
+			else if(clickrighty==1&&rkchecker){
 				rightclack="hRK";
 				needsunpressRK=true;
 			}
@@ -147,17 +152,24 @@ public class Recorder {
 				rightclack="rRK";
 				needsunpressRK=false;
 			}
-			//TODO Clean this up!
+
+			
 			//Read from the player movement
 			
 			recording.add(new KeyFrame(input.forwardKeyDown, input.backKeyDown, input.leftKeyDown, input.rightKeyDown, input.jump, input.sneak, GameSettings.isKeyDown(mc.gameSettings.keyBindSprint),
 					mc.player.rotationPitch, recalcYaw(mc.player.rotationYaw), leftclack,
 					rightclack ,mc.player.inventory.currentItem));
 			if (!donerecording)recordstep++;
-			clickrighty=false;
-			rkchecker=righty;
-			lkchecker=lefty;
+
+			if (clicklefty==1){
+				lkchecker=true;
+			}else lkchecker=false;
 			
+			if (clickrighty==1){
+				rkchecker=true;
+			}else rkchecker=false;
+			clicklefty=0;
+			clickrighty=0;
 		}
 		
 	}

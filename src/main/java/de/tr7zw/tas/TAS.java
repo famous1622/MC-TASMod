@@ -198,8 +198,8 @@ public class TAS {
 				return;
 			}
 			sendMessage("Stopped the tas recording!");
-			Recorder.clicklefty=false;
-			Recorder.clickrighty=false;
+			Recorder.clicklefty=0;
+			Recorder.clickrighty=0;
 			MinecraftForge.EVENT_BUS.unregister(recorder);
 			
 			if (genname==true||FileName.equals("null")){
