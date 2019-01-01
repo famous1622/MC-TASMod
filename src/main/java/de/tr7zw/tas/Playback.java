@@ -147,14 +147,6 @@ public class Playback extends MovementInputFromOptions{
 		sprint=field[7].equalsIgnoreCase("Ctrl");
 		pitch=Float.parseFloat(field[8]);
 		yaw=Float.parseFloat(field[9]);
-		if(field[10].equalsIgnoreCase("LK"))leftclick=0;
-		else if(field[10].equalsIgnoreCase("pLK"))leftclick=1;
-		else if(field[10].equalsIgnoreCase("rLK"))leftclick=2;
-		else leftclick=3;
-		if(field[11].equalsIgnoreCase("RK"))rightclick=0;
-		else if(field[11].equalsIgnoreCase("pRK"))rightclick=1;
-		else if(field[11].equalsIgnoreCase("rRK"))rightclick=2;
-		else rightclick=3;
 		hotbarslot=Integer.parseInt(field[12]);
 	}
 	

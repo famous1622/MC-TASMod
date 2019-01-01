@@ -7,9 +7,11 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
+import de.tr7zw.tas.InfoGui;
 import de.tr7zw.tas.Playback;
 import de.tr7zw.tas.Recorder;
 import de.tr7zw.tas.TAS;
+import de.tr7zw.tas.TASEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandBase;
@@ -78,6 +80,8 @@ public class Playc extends CommandBase{
 			if (file.exists()){
 				if (args.length==1){
 					Playback.donePlaying=false;
+					new InfoGui().setArguments(args);
+					new TASEvents().setArguments(args);
 					new TAS().playTAS(args);
 				}
 			}

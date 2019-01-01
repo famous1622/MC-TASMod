@@ -59,20 +59,29 @@ public class Recorder {
 		String Ctrl;
 		String LK;
 		String RK;
+		Object buff1=recording.get(1);
+		Object buff2=recording.get(2);
 		for(int i = 0; i < recording.size(); i++){
 			Object o = recording.get(i);
 			if(o instanceof String){
 				output.append(o + "\n");
 			}else if(o instanceof KeyFrame){
 				KeyFrame frame = (KeyFrame) o;
-				if (i<recording.size()-2){
-					Object next= recording.get(i+1);
-					KeyFrame nextframe= (KeyFrame) next;
-					//frame.leftClick=nextframe.leftClick;
-					//frame.rightClick=nextframe.rightClick;
-					//frame.pitch=nextframe.pitch;
-					//frame.yaw=nextframe.yaw;
-				}
+				
+				KeyFrame buff1frame= (KeyFrame) buff1;
+				KeyFrame buff2frame= (KeyFrame) buff2;
+				buff1frame.leftClick=frame.leftClick;
+				frame.leftClick=buff2frame.leftClick;
+				buff2frame.leftClick=buff1frame.leftClick;
+					
+				buff1frame.rightClick=frame.rightClick;
+				frame.rightClick=buff2frame.rightClick;
+				buff2frame.rightClick=buff1frame.rightClick;
+				//frame.leftClick=nextframe.leftClick;
+				//frame.rightClick=nextframe.rightClick;
+				//frame.pitch=nextframe.pitch;
+				//frame.yaw=nextframe.yaw;
+				
 				if (frame.forwardKeyDown==true)W="W";else W=" ";
 				if(frame.backKeyDown==true)S="S";else S=" ";
 				if(frame.leftKeyDown==true)A="A";else A=" ";

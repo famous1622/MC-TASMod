@@ -245,7 +245,6 @@ public class TAS {
 					mc.player.motionY=0;
 					mc.player.motionZ=0;
 					mc.player.movementInput=new Playback(args);
-					new InfoGui().setArguments(args);
 		}
 		public void abortTAS(){			//Command to break the current playback (.p)
 			if (TASInput.donePlaying==true){

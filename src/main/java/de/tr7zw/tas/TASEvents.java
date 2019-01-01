@@ -2,7 +2,10 @@ package de.tr7zw.tas;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import de.tr7zw.tas.commands.Playc;
 import de.tr7zw.tas.commands.Recordc;
@@ -30,6 +33,8 @@ public class TASEvents {
 	 */
 	public static boolean FallDamage;
 	public static boolean StopRecOnWorldClose;
+	private static String[] arguments;
+	private String[] Buttons=null;
 	
 	
 	public void sendMessage(String msg){
@@ -37,6 +42,37 @@ public class TASEvents {
 			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
 		}catch(Exception ex){
 			ex.printStackTrace();
+		}
+	}
+	public void setArguments(String[] args){
+		arguments=args;
+	}
+	
+	public void readingFile(String[] args, int stopAt){
+		File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
+				"tasfiles"+ File.separator + args[0] + ".tas");
+		try{
+			BufferedReader Buff = new BufferedReader(new FileReader(file));
+			String s;
+			int line=0;
+			while (true){
+				if((s=Buff.readLine()).equalsIgnoreCase("END")||Playback.donePlaying){
+					break;
+				}
+				else if(s.startsWith("#")||s.startsWith("/")){
+					continue;
+				}
+				else if(line==stopAt){
+					Buttons=s.split(";");
+					Buff.close();
+					return;
+				}
+				line++;
+			}
+			Buff.close();
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	public void robLeftClick(int pressed){
@@ -122,24 +158,46 @@ public class TASEvents {
 				Recorder.clickrighty=0;
 			}
 		}
+	}
+	@SubscribeEvent
+	public void pressMouseButtons(TickEvent.RenderTickEvent ev){
 		if (!Playback.donePlaying&&ev.phase == Phase.START&&mc.inGameHasFocus){
-			if (!Playback.LKbreak&&Playback.leftclick<3){
-				robLeftClick(Playback.leftclick);
-				Playback.LKbreak=true;
+			if(!Playback.LKbreak){
+				readingFile(arguments, Playback.frame);
+				if(Buttons[10].equalsIgnoreCase("pLK")){
+					Playback.leftclick=1;
+					robLeftClick(1);
+					Playback.LKbreak=true;
+				}
+				if(Buttons[10].equalsIgnoreCase("rLK")){
+					Playback.leftclick=2;
+					robLeftClick(2);
+					Playback.LKbreak=true;
+				}
+				else{
+					Playback.leftclick=3;
+					Playback.LKbreak=true;
+				}
 			}
-			if (!Playback.RKbreak&&Playback.leftclick<3){
-				robRightClick(Playback.rightclick);
-				Playback.RKbreak=true;
+			if(!Playback.RKbreak){
+				readingFile(arguments, Playback.frame);
+				if(Buttons[11].equalsIgnoreCase("pRK")){
+					Playback.rightclick=1;
+					robRightClick(1);
+					Playback.RKbreak=true;
+				}
+				if(Buttons[11].equalsIgnoreCase("rRK")){
+					Playback.rightclick=2;
+					robRightClick(2);
+					Playback.RKbreak=true;
+				}
+				else{
+					Playback.rightclick=3;
+					Playback.RKbreak=true;
+				}
 			}
 		}
 			
 	}
-	/*@SubscribeEvent
-	public void resetClicksOnTick(TickEvent.PlayerTickEvent ev){
-		if(ev.phase==Phase.START&&!Recorder.donerecording){
-			Recorder.pitch=mc.player.rotationPitch;
-			Recorder.yaw=mc.player.rotationYaw;
-		}
-	}*/
 }
 
