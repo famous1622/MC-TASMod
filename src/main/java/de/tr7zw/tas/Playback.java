@@ -205,16 +205,20 @@ public class Playback extends MovementInputFromOptions{
 			super.updatePlayerMoveState();
 			return;
 		}
-
-		if(leftclick<3){
-			robLeftClick(leftclick);
-		}
-		if(rightclick<3){
-			robRightClick(rightclick);
-		}
+		if(mc.gameSettings.keyBindAttack.getKeyCode()==-99){
+			if(leftclick<3){
+				robLeftClick(leftclick);
+			}
+		}else KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(),leftclick<3);
+		
+		if(mc.gameSettings.keyBindUseItem.getKeyCode()==-100){
+			if(rightclick<3){
+				robRightClick(rightclick);
+			}
+		}else KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(),rightclick<3);
 		//KeyBinding.setKeyBindState(-100, leftclick);			//Read Leftclick from File
 		//KeyBinding.setKeyBindState(-99, rightclick);			//Read RightClick from File
-		KeyBinding.setKeyBindState(29, sprint);					//Read Sprint Key from File
+		KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), sprint);					//Read Sprint Key from File
 		mc.player.inventory.currentItem=hotbarslot;				//Read Inventory Slot from File etc...
 		
 		this.moveStrafe = 0.0F;

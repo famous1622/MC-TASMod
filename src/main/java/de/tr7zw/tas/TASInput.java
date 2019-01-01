@@ -117,30 +117,33 @@ public class TASInput extends MovementInputFromOptions{
 		}*/
 		
 		
+		if(mc.gameSettings.keyBindAttack.getKeyCode()==-99){
+			if(frame.leftClick.equalsIgnoreCase("pLK")){
+			Playback.leftclick=1;
+				robLeftClick(1);
+			}
+			if(frame.leftClick.equalsIgnoreCase("rLK")){
+				Playback.leftclick=2;
+				robLeftClick(2);
+			}
+			else{
+				Playback.leftclick=3;
+			}
+		}else KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(),(frame.leftClick.equalsIgnoreCase("pLK")||frame.leftClick.equalsIgnoreCase("hLK")));
 		
-		if(frame.leftClick.equalsIgnoreCase("pLK")){
-		Playback.leftclick=1;
-			robLeftClick(1);
-		}
-		if(frame.leftClick.equalsIgnoreCase("rLK")){
-			Playback.leftclick=2;
-			robLeftClick(2);
-		}
-		else{
-			Playback.leftclick=3;
-		}
-		
-		if(frame.rightClick.equalsIgnoreCase("pRK")){
-			Playback.rightclick=1;
-			robRightClick(1);
-		}
-		if(frame.rightClick.equalsIgnoreCase("rRK")){
-			Playback.rightclick=2;
-			robRightClick(2);
-		}
-		else{
-			Playback.rightclick=3;
-		}
+		if(mc.gameSettings.keyBindUseItem.getKeyCode()==-100){
+			if(frame.rightClick.equalsIgnoreCase("pRK")){
+				Playback.rightclick=1;
+				robRightClick(1);
+			}
+			if(frame.rightClick.equalsIgnoreCase("rRK")){
+				Playback.rightclick=2;
+				robRightClick(2);
+			}
+			else{
+				Playback.rightclick=3;
+			}
+		}else KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(),(frame.rightClick.equalsIgnoreCase("pRK")||frame.rightClick.equalsIgnoreCase("hRK")));
 		
 		KeyBinding.setKeyBindState(29, frame.sprint);				//Read Sprint Key from File
 		mc.player.inventory.currentItem=frame.slot;					//Read Inventory Slot from File etc...
