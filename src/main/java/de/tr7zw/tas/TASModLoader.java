@@ -7,6 +7,7 @@ import java.nio.file.LinkOption;
 import de.tr7zw.tas.commands.Failc;
 import de.tr7zw.tas.commands.Playc;
 import de.tr7zw.tas.commands.Recordc;
+import de.tr7zw.tas.commands.TasTpc;
 import de.tr7zw.tas.commands.Tasmodc;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,6 +52,7 @@ public class TASModLoader {
 		event.registerServerCommand(new Playc());
 		event.registerServerCommand(new Recordc());
 		event.registerServerCommand(new Failc());
+		event.registerServerCommand(new TasTpc());
 		MinecraftForge.EVENT_BUS.register(new InfoGui());
 	}
 	

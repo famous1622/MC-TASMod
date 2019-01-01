@@ -73,16 +73,10 @@ public class Playc extends CommandBase{
 				"tasfiles"+ File.separator + args[0] + ".tas");
 		
 		if (Playback.donePlaying&&Recorder.donerecording){
-			if (args.length==0)sendMessage(ChatFormatting.RED+"/play <filename> (without .tas)");
+			if (args.length==0)sendMessage(TextFormatting.RED+"/play <filename> (without .tas)");
 			
 			if (file.exists()){
 				if (args.length==1){
-					Playback.donePlaying=false;
-					new TAS().teleportToTAS(args);
-					new TAS().playTAS(args);
-				}
-			
-				else if(args.length==2&&args[1].equals("notp")){
 					Playback.donePlaying=false;
 					new TAS().playTAS(args);
 				}
@@ -93,7 +87,7 @@ public class Playc extends CommandBase{
 			if (args.length>2)sendMessage(ChatFormatting.RED+"Too many arguments");
 		}
 		else if(!Recorder.donerecording){
-			sendMessage(ChatFormatting.RED+"A recording is running. /record or /fail to abort recording");
+			sendMessage(TextFormatting.RED+"A recording is running. /record or /fail to abort recording");
 		}
 		//Abort Playback
 		else if(!Playback.donePlaying){
@@ -110,13 +104,8 @@ public class Playc extends CommandBase{
 			emptyList(tab);
 			tab.addAll(getFilenames());
 			if (tab.isEmpty()){
-				sendMessage(ChatFormatting.RED+"No files in directory");
+				sendMessage(TextFormatting.RED+"No files in directory");
 			}
-		}
-		else if (args.length==2){
-			emptyList(tab);
-			tab.add("notp");
-			
 		}
 		return tab;
 		 

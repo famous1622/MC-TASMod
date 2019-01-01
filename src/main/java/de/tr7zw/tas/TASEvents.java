@@ -106,7 +106,10 @@ public class TASEvents {
 			else if(!GameSettings.isKeyDown(mc.gameSettings.keyBindAttack)&&Recorder.clicklefty==1&&!Recorder.lkchecker){
 				//set to quick press
 				Recorder.clicklefty=2;
-			}else Recorder.clicklefty=0;
+			}
+			else if(!(Recorder.clicklefty==2)){
+				Recorder.clicklefty=0;
+			}
 			if (GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem)){
 				//set to pressed
 				Recorder.clickrighty=1;
@@ -120,11 +123,11 @@ public class TASEvents {
 			}
 		}
 		if (!Playback.donePlaying&&ev.phase == Phase.START&&mc.inGameHasFocus){
-			if (!Playback.LKbreak){
+			if (!Playback.LKbreak&&Playback.leftclick<3){
 				robLeftClick(Playback.leftclick);
 				Playback.LKbreak=true;
 			}
-			if (!Playback.RKbreak){
+			if (!Playback.RKbreak&&Playback.leftclick<3){
 				robRightClick(Playback.rightclick);
 				Playback.RKbreak=true;
 			}
@@ -133,9 +136,9 @@ public class TASEvents {
 	}
 	/*@SubscribeEvent
 	public void resetClicksOnTick(TickEvent.PlayerTickEvent ev){
-		if(ev.phase==Phase.END&&!Recorder.donerecording){
-			Recorder.clicklefty=0;
-			Recorder.clickrighty=0;
+		if(ev.phase==Phase.START&&!Recorder.donerecording){
+			Recorder.pitch=mc.player.rotationPitch;
+			Recorder.yaw=mc.player.rotationYaw;
 		}
 	}*/
 }

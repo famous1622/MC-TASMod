@@ -33,9 +33,12 @@ public class Recorder {
 	static private boolean needsunpressLK=false;
 	static private boolean needsunpressRK=false;
 	
+	
 	public Recorder() {
 		recording.add("#StartLocation: " + mc.player.getPositionVector().toString());
 		mc.player.movementInput = new RecordingInput(mc.gameSettings, recording);
+		needsunpressLK=false;
+		needsunpressRK=false;
 	}
 	
 	public static Float recalcYaw(float Yaw){

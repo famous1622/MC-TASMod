@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.MovementInputFromOptions;
 import net.minecraft.util.text.TextComponentString;
@@ -31,8 +32,8 @@ public class Playback extends MovementInputFromOptions{
 	private boolean Jump;
 	private boolean Sneak;
 	private boolean sprint;
-	public static int leftclick=0;
-	public static int rightclick=0;
+	public static int leftclick=3;
+	public static int rightclick=3;
 	private float pitch;
 	private float yaw;
 	private int hotbarslot;
@@ -225,6 +226,7 @@ public class Playback extends MovementInputFromOptions{
 		}
 		mc.player.rotationPitch = pitch;
 		mc.player.rotationYaw = uncalc(yaw);
+		
 
 		LKbreak=false;
 		RKbreak=false;

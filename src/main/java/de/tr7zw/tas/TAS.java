@@ -241,6 +241,9 @@ public class TAS {
 					Playback.donePlaying=false;
 					Recorder.recordstep=0;
 					Playback.frame=0;
+					mc.player.motionX=0;
+					mc.player.motionY=0;
+					mc.player.motionZ=0;
 					mc.player.movementInput=new Playback(args);
 					new InfoGui().setArguments(args);
 		}
