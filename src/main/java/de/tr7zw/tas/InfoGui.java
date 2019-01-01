@@ -85,10 +85,12 @@ public class InfoGui extends Gui{
 			if(mc.inGameHasFocus)new Gui().drawString(mc.fontRenderer, Integer.toString(MouseInfo.getPointerInfo().getLocation().x)+" "+Integer.toString(MouseInfo.getPointerInfo().getLocation().y), 22, 40, 0xFFFFFF);
 			drawKeyStrokes(height, width);
 			//Draw the Tickcounter. Changes the value depending if it's playback or a recording
-			if (Recorder.recordstep==0){
+			if (Recorder.recordstep==0&&TASInput.step==0){
 				new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(Playback.frame+1), 30, height-24, 0xFFFFFF);
-			}else if(Playback.frame==0){
+			}else if(Playback.frame==0&&TASInput.step==0){
 				new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(Recorder.recordstep+1), 30, height-24, 0xFFFFFF);
+			}else if(Recorder.recordstep==0&&Playback.frame==0){
+				new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(TASInput.step+1), 30, height-24, 0xFFFFFF);
 			}
 		}
 	}

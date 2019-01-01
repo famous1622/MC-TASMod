@@ -76,7 +76,7 @@ public class TAS {
 	}
 
 	public void parseLine(String line, int lineid){				//Reading a line of a file
-		if(line.startsWith("#") || line.startsWith("//"))return;//Comments
+		if(line.startsWith("#") || line.startsWith("//")||line.equalsIgnoreCase("END"))return;//Comments
 		String[] args = line.split(";");
 		int repeats = 1;
 		try{
@@ -144,6 +144,7 @@ public class TAS {
 		recorder = new Recorder();
 		Recorder.donerecording=false;
 		Recorder.recordstep=0;
+		TASInput.step=0;
 		Playback.frame=0;
 		MinecraftForge.EVENT_BUS.register(recorder);
 		return;
@@ -187,6 +188,7 @@ public class TAS {
 			Recorder.donerecording=false;
 			recorder = new Recorder();
 			Recorder.recordstep=0;
+			TASInput.step=0;
 			Playback.frame=0;
 			MinecraftForge.EVENT_BUS.register(recorder);
 			return;
@@ -238,14 +240,32 @@ public class TAS {
 			return;
 		}
 		public void playTAS(String[] args){			//Command to play back the tas recordingS
+			
 					Playback.donePlaying=false;
 					Recorder.recordstep=0;
 					Playback.frame=0;
+					TASInput.step=0;
 					mc.player.motionX=0;
 					mc.player.motionY=0;
 					mc.player.motionZ=0;
 					mc.player.movementInput=new Playback(args);
+					
 		}
+		public void playTAS(String[] args, File file){			//Command to play back the tas recordingS
+			
+
+			Recorder.recordstep=0;
+			Playback.frame=0;
+			TASInput.step=0;
+			mc.player.motionX=0;
+			mc.player.motionY=0;
+			mc.player.motionZ=0;
+			TASInput.breaking=false;
+			loadData(file);
+			TASInput.donePlaying=false;
+			mc.player.movementInput = new TASInput(this, keyFrames);
+			sendMessage("Loaded File");
+}
 		public void abortTAS(){			//Command to break the current playback (.p)
 			if (TASInput.donePlaying==true){
 				sendMessage(TextFormatting.RED+"No playback running!");

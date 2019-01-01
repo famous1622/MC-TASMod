@@ -12,6 +12,7 @@ import de.tr7zw.tas.Playback;
 import de.tr7zw.tas.Recorder;
 import de.tr7zw.tas.TAS;
 import de.tr7zw.tas.TASEvents;
+import de.tr7zw.tas.TASInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandBase;
@@ -74,7 +75,7 @@ public class Playc extends CommandBase{
 		File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 				"tasfiles"+ File.separator + args[0] + ".tas");
 		
-		if (Playback.donePlaying&&Recorder.donerecording){
+		if (Playback.donePlaying&&Recorder.donerecording&&TASInput.donePlaying){
 			if (args.length==0)sendMessage(TextFormatting.RED+"/play <filename> (without .tas)");
 			
 			if (file.exists()){
@@ -83,6 +84,12 @@ public class Playc extends CommandBase{
 					new InfoGui().setArguments(args);
 					new TASEvents().setArguments(args);
 					new TAS().playTAS(args);
+				}
+				else if (args.length==2&&args[1].equalsIgnoreCase("load")){
+					new TAS().playTAS(args,file);
+				}
+				else if (args.length==2&&!args[1].equalsIgnoreCase("load")){
+					sendMessage(TextFormatting.RED+"Wrong usage... /play <filename> (load)");
 				}
 			}
 			else{
@@ -96,8 +103,14 @@ public class Playc extends CommandBase{
 		//Abort Playback
 		else if(!Playback.donePlaying){
 			Playback.donePlaying=true;
-			Playback.leftclick=2;
-			Playback.rightclick=2;
+			new Playback(args).robLeftClick(2);
+			new Playback(args).robRightClick(2);
+			KeyBinding.setKeyBindState(29, false);
+		}
+		else if(!TASInput.donePlaying){
+			TASInput.breaking=true;
+			new Playback(args).robLeftClick(2);
+			new Playback(args).robRightClick(2);
 			KeyBinding.setKeyBindState(29, false);
 		}
 	}
@@ -110,6 +123,10 @@ public class Playc extends CommandBase{
 			if (tab.isEmpty()){
 				sendMessage(TextFormatting.RED+"No files in directory");
 			}
+		}
+		else if (args.length==2){
+			emptyList(tab);
+			tab.add("load");
 		}
 		return tab;
 		 

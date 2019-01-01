@@ -97,7 +97,44 @@ public class Playback extends MovementInputFromOptions{
 		return yaw+(360*calcstate);
 	}
 	
-
+	public void robLeftClick(int pressed){
+		try {
+			Robot rob=new Robot();
+			rob.setAutoDelay(0);
+			if (pressed==0&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			else if (pressed==1&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			else if (pressed==2&&mc.inGameHasFocus){
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
+	public void robRightClick(int pressed){
+		try {
+			Robot rob=new Robot();
+			rob.setAutoDelay(0);
+			if (pressed==0&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+			}
+			else if (pressed==1&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+			}
+			else if (pressed==2&&mc.inGameHasFocus){
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+			}
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void readingFile(String[] args, int stopAt){
 		File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
 				"tasfiles"+ File.separator + args[0] + ".tas");
@@ -147,6 +184,14 @@ public class Playback extends MovementInputFromOptions{
 		sprint=field[7].equalsIgnoreCase("Ctrl");
 		pitch=Float.parseFloat(field[8]);
 		yaw=Float.parseFloat(field[9]);
+		if(field[10].equalsIgnoreCase("LK"))leftclick=0;
+		else if(field[10].equalsIgnoreCase("pLK"))leftclick=1;
+		else if(field[10].equalsIgnoreCase("rLK"))leftclick=2;
+		else leftclick=3;
+		if(field[11].equalsIgnoreCase("RK"))rightclick=0;
+		else if(field[11].equalsIgnoreCase("pRK"))rightclick=1;
+		else if(field[11].equalsIgnoreCase("rRK"))rightclick=2;
+		else rightclick=3;
 		hotbarslot=Integer.parseInt(field[12]);
 	}
 	
@@ -160,7 +205,13 @@ public class Playback extends MovementInputFromOptions{
 			super.updatePlayerMoveState();
 			return;
 		}
-		
+
+		if(leftclick<3){
+			robLeftClick(leftclick);
+		}
+		if(rightclick<3){
+			robRightClick(rightclick);
+		}
 		//KeyBinding.setKeyBindState(-100, leftclick);			//Read Leftclick from File
 		//KeyBinding.setKeyBindState(-99, rightclick);			//Read RightClick from File
 		KeyBinding.setKeyBindState(29, sprint);					//Read Sprint Key from File
@@ -220,8 +271,6 @@ public class Playback extends MovementInputFromOptions{
 		mc.player.rotationYaw = uncalc(yaw);
 		
 
-		LKbreak=false;
-		RKbreak=false;
 	}
 }
 

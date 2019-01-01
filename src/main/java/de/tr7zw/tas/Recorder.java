@@ -67,7 +67,7 @@ public class Recorder {
 				output.append(o + "\n");
 			}else if(o instanceof KeyFrame){
 				KeyFrame frame = (KeyFrame) o;
-				
+				/*
 				KeyFrame buff1frame= (KeyFrame) buff1;
 				KeyFrame buff2frame= (KeyFrame) buff2;
 				buff1frame.leftClick=frame.leftClick;
@@ -77,11 +77,7 @@ public class Recorder {
 				buff1frame.rightClick=frame.rightClick;
 				frame.rightClick=buff2frame.rightClick;
 				buff2frame.rightClick=buff1frame.rightClick;
-				//frame.leftClick=nextframe.leftClick;
-				//frame.rightClick=nextframe.rightClick;
-				//frame.pitch=nextframe.pitch;
-				//frame.yaw=nextframe.yaw;
-				
+				*/
 				if (frame.forwardKeyDown==true)W="W";else W=" ";
 				if(frame.backKeyDown==true)S="S";else S=" ";
 				if(frame.leftKeyDown==true)A="A";else A=" ";

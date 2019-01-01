@@ -1,5 +1,7 @@
 package de.tr7zw.tas;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -24,7 +26,7 @@ public class TASInput extends MovementInputFromOptions{
 	private Method rightClick;
 	private KeyFrame frame;
 	private int InvCont=1;
-	public static boolean donePlaying = true;
+	public static boolean donePlaying=true;
 	public static boolean breaking=false;
 	private int calcstate=0;
 	
@@ -49,7 +51,43 @@ public class TASInput extends MovementInputFromOptions{
 		}
 		return yaw+(360*calcstate);
 	}
-
+	public void robLeftClick(int pressed){
+		try {
+			Robot rob=new Robot();
+			rob.setAutoDelay(0);
+			if (pressed==0&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			else if (pressed==1&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			else if (pressed==2&&mc.inGameHasFocus){
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
+			}
+			
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
+	public void robRightClick(int pressed){
+		try {
+			Robot rob=new Robot();
+			rob.setAutoDelay(0);
+			if (pressed==0&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+			}
+			else if (pressed==1&&mc.inGameHasFocus){
+				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+			}
+			else if (pressed==2&&mc.inGameHasFocus){
+				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
+			}
+		} catch (AWTException e) {
+			e.printStackTrace();
+		}
+	}
 	@Override
 	public void updatePlayerMoveState() {				//When done playing, the game will pause...
 		if(step >= keyFrames.size()){
@@ -79,8 +117,31 @@ public class TASInput extends MovementInputFromOptions{
 		}*/
 		
 		
-		//KeyBinding.setKeyBindState(-100, frame.leftClick);			//Read Leftclick from File
-		//KeyBinding.setKeyBindState(-99, frame.rightClick);			//Read RightClick from File
+		
+		if(frame.leftClick.equalsIgnoreCase("pLK")){
+		Playback.leftclick=1;
+			robLeftClick(1);
+		}
+		if(frame.leftClick.equalsIgnoreCase("rLK")){
+			Playback.leftclick=2;
+			robLeftClick(2);
+		}
+		else{
+			Playback.leftclick=3;
+		}
+		
+		if(frame.rightClick.equalsIgnoreCase("pRK")){
+			Playback.rightclick=1;
+			robRightClick(1);
+		}
+		if(frame.rightClick.equalsIgnoreCase("rRK")){
+			Playback.rightclick=2;
+			robRightClick(2);
+		}
+		else{
+			Playback.rightclick=3;
+		}
+		
 		KeyBinding.setKeyBindState(29, frame.sprint);				//Read Sprint Key from File
 		mc.player.inventory.currentItem=frame.slot;					//Read Inventory Slot from File etc...
 		
@@ -137,6 +198,8 @@ public class TASInput extends MovementInputFromOptions{
 		}
 		mc.player.rotationPitch = frame.pitch;
 		mc.player.rotationYaw = uncalc(frame.yaw);
+		Playback.LKbreak=false;
+		Playback.RKbreak=false;
 	}
 
 	/*public class LeftClickKeyBind extends KeyBinding{
