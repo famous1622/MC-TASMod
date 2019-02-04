@@ -125,6 +125,7 @@ public class Recorder {
 			String leftclack=" ";
 			String rightclack=" ";
 			
+			
 			if(clicklefty==2){
 				leftclack="pLK";
 				needsunpressLK=true;
@@ -165,8 +166,7 @@ public class Recorder {
 			//Read from the player movement
 			
 			recording.add(new KeyFrame(input.forwardKeyDown, input.backKeyDown, input.leftKeyDown, input.rightKeyDown, input.jump, input.sneak, GameSettings.isKeyDown(mc.gameSettings.keyBindSprint),
-					mc.player.rotationPitch, recalcYaw(mc.player.rotationYaw), leftclack,
-					rightclack ,mc.player.inventory.currentItem));
+					mc.player.rotationPitch, recalcYaw(mc.player.rotationYaw), leftclack, rightclack ,mc.player.inventory.currentItem));
 			if (!donerecording)recordstep++;
 
 			if (clicklefty==1){

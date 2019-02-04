@@ -117,7 +117,7 @@ public class TASInput extends MovementInputFromOptions{
 		}*/
 		
 		
-		if(mc.gameSettings.keyBindAttack.getKeyCode()==-99){
+		if(mc.gameSettings.keyBindAttack.getKeyCode()==-100){
 			if(frame.leftClick.equalsIgnoreCase("pLK")){
 			Playback.leftclick=1;
 				robLeftClick(1);
@@ -131,7 +131,7 @@ public class TASInput extends MovementInputFromOptions{
 			}
 		}else KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(),(frame.leftClick.equalsIgnoreCase("pLK")||frame.leftClick.equalsIgnoreCase("hLK")));
 		
-		if(mc.gameSettings.keyBindUseItem.getKeyCode()==-100){
+		if(mc.gameSettings.keyBindUseItem.getKeyCode()==-99){
 			if(frame.rightClick.equalsIgnoreCase("pRK")){
 				Playback.rightclick=1;
 				robRightClick(1);

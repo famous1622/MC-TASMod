@@ -25,7 +25,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  */
 public class InfoGui extends Gui{
 	private int line = 0;
-	public static boolean enabled;
+	public static boolean Infoenabled;
+	public static boolean Strokesenabled;
 	private static String[] arguments=null;
 
 	private Minecraft mc = Minecraft.getMinecraft();
@@ -77,14 +78,18 @@ public class InfoGui extends Gui{
 		ScaledResolution scaled = new ScaledResolution(mc);
 		int width = scaled.getScaledWidth();
 		int height = scaled.getScaledHeight();
-		if (enabled&&!(mc.gameSettings.showDebugInfo)){
-			new Gui().drawCenteredString(mc.fontRenderer, (mc.player.posX-0.5)+" "+Math.round((mc.player.posY))+" "+(mc.player.posZ-0.5), 130, 10, 0xFFFFFF); 	//Coordinates
-			new Gui().drawString(mc.fontRenderer, "Pitch: "+Float.toString(mc.player.rotationPitch), 16, 20, 0xFFFFFF);				//Show the current Pitch
-			new Gui().drawString(mc.fontRenderer, "Yaw: "+Float.toString(recalcYaw(mc.player.rotationYaw)), 22, 30, 0xFFFFFF);		//Show the current Yaw (This comes from the modversion for 1.7.10 since 1.7 has just SOUTH as a yaw in F3)
+		if (!(mc.gameSettings.showDebugInfo)){
+			if(Infoenabled){
+				new Gui().drawCenteredString(mc.fontRenderer, (mc.player.posX-0.5)+" "+Math.round((mc.player.posY))+" "+(mc.player.posZ-0.5), 130, 10, 0xFFFFFF); 	//Coordinates
+				new Gui().drawString(mc.fontRenderer, "Pitch: "+Float.toString(mc.player.rotationPitch), 16, 20, 0xFFFFFF);				//Show the current Pitch
+				new Gui().drawString(mc.fontRenderer, "Yaw: "+Float.toString(recalcYaw(mc.player.rotationYaw)), 22, 30, 0xFFFFFF);		//Show the current Yaw (This comes from the modversion for 1.7.10 since 1.7 has just SOUTH as a yaw in F3)
 			
-			if(mc.inGameHasFocus)new Gui().drawString(mc.fontRenderer, Integer.toString(MouseInfo.getPointerInfo().getLocation().x)+" "+Integer.toString(MouseInfo.getPointerInfo().getLocation().y), 22, 40, 0xFFFFFF);
-			drawKeyStrokes(height, width);
-			//Draw the Tickcounter. Changes the value depending if it's playback or a recording
+				new Gui().drawString(mc.fontRenderer, Integer.toString(MouseInfo.getPointerInfo().getLocation().x)+" "+Integer.toString(MouseInfo.getPointerInfo().getLocation().y), 22, 40, 0xFFFFFF); //Current Pointer location
+			}
+			if(Strokesenabled){
+				drawKeyStrokes(height, width);
+			}
+			//Draw the Tickcounter. Value depends if playback or a recording is playing.
 			if (Recorder.recordstep==0&&TASInput.step==0){
 				new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(Playback.frame+1), 30, height-24, 0xFFFFFF);
 			}else if(Playback.frame==0&&TASInput.step==0){
@@ -121,12 +126,9 @@ public class InfoGui extends Gui{
 			}
 			if(!Buttons[10].equalsIgnoreCase(" ")){
 				new Gui().drawString(mc.fontRenderer, Buttons[10], 112, height-13, 0xFFFFFF);
-				new Gui().drawString(mc.fontRenderer, Integer.toString(Playback.leftclick), 112, height-23, 0xFFFFFF);
-
 			}
 			if(!Buttons[11].equalsIgnoreCase(" ")){
 				new Gui().drawString(mc.fontRenderer, Buttons[11], 127, height-13, 0xFFFFFF);
-				new Gui().drawString(mc.fontRenderer, Integer.toString(Playback.rightclick), 127, height-23, 0xFFFFFF);
 			}
 		}
 		else if (Playback.donePlaying){

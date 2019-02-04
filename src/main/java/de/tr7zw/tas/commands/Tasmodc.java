@@ -100,8 +100,12 @@ public class Tasmodc extends CommandBase{
 				}
 			}
 			else if (args.length==1&&args[0].equals("gui")){
-				if (InfoGui.enabled)InfoGui.enabled=false;
-				else if (!InfoGui.enabled)InfoGui.enabled=true;
+				if (InfoGui.Infoenabled)InfoGui.Infoenabled=false;
+				else if (!InfoGui.Infoenabled)InfoGui.Infoenabled=true;
+			}
+			else if (args.length==1&&args[0].equals("strokes")){
+				if (InfoGui.Strokesenabled)InfoGui.Strokesenabled=false;
+				else if (!InfoGui.Strokesenabled)InfoGui.Strokesenabled=true;
 			}
 		}
 		@Override
@@ -114,6 +118,7 @@ public class Tasmodc extends CommandBase{
 					tab.add("folder");
 					tab.add("falldamage");
 					tab.add("gui");
+					tab.add("strokes");
 				}
 				else if(args.length==2){
 					emptyList(tab);

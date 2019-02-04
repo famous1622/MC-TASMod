@@ -205,13 +205,13 @@ public class Playback extends MovementInputFromOptions{
 			super.updatePlayerMoveState();
 			return;
 		}
-		if(mc.gameSettings.keyBindAttack.getKeyCode()==-99){
+		if(mc.gameSettings.keyBindAttack.getKeyCode()==-100){
 			if(leftclick<3){
 				robLeftClick(leftclick);
 			}
 		}else KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(),leftclick<3);
 		
-		if(mc.gameSettings.keyBindUseItem.getKeyCode()==-100){
+		if(mc.gameSettings.keyBindUseItem.getKeyCode()==-99){
 			if(rightclick<3){
 				robRightClick(rightclick);
 			}

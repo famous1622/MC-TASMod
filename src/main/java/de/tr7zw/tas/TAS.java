@@ -75,6 +75,7 @@ public class TAS {
 		}
 	}
 
+
 	public void parseLine(String line, int lineid){				//Reading a line of a file
 		if(line.startsWith("#") || line.startsWith("//")||line.equalsIgnoreCase("END"))return;//Comments
 		String[] args = line.split(";");

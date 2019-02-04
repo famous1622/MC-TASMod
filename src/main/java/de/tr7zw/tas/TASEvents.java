@@ -159,31 +159,6 @@ public class TASEvents {
 			}
 		}
 	}
-	/*@SubscribeEvent
-	public void pressMouseButtons(TickEvent.RenderTickEvent ev){
-		if (!Playback.donePlaying&&ev.phase == Phase.START&&mc.inGameHasFocus){
-			if(!Playback.LKbreak){
-				readingFile(arguments, Playback.frame);
-				if(Buttons[10].equalsIgnoreCase("pLK")){
-					Playback.leftclick=1;
-					robLeftClick(1);
-					Playback.LKbreak=true;
-				}
-				if(Buttons[10].equalsIgnoreCase("rLK")){
-					Playback.leftclick=2;
-					robLeftClick(2);
-					Playback.LKbreak=true;
-				}
-				else{
-					Playback.leftclick=3;
-					Playback.LKbreak=true;
-				}
-			}
-			if(!Playback.RKbreak){
-
-			}
-		}
-			
-	}*/
+	
 }
 
