@@ -90,7 +90,7 @@ public class TASInput extends MovementInputFromOptions{
 	}
 	@Override
 	public void updatePlayerMoveState() {				//When done playing, the game will pause...
-		if(step >= keyFrames.size()){
+		if(step >= keyFrames.size()||donePlaying){
 			if(!donePlaying){
 				donePlaying = true;
 				mc.player.motionX = 0;

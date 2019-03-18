@@ -250,7 +250,7 @@ public class TAS {
 					mc.player.movementInput=new Playback(args);
 					
 		}
-		public void playTAS(String[] args, File file){			//Command to play back the tas recordingS
+		public void playTAS(String[] args, File file){			//Command to play back the tas recording
 			
 
 			Recorder.recordstep=0;

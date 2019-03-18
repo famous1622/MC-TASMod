@@ -64,7 +64,7 @@ public class Recordc extends CommandBase{
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (Recorder.donerecording&&Playback.donePlaying){
+		if (Recorder.donerecording&&Playback.donePlaying&&TASInput.donePlaying){
 			if (args.length==0){
 				sendMessage("No filename set! Generating one...");
 				recorder.startRecord();
@@ -75,7 +75,7 @@ public class Recordc extends CommandBase{
 			if (args.length>1)sendMessage(ChatFormatting.RED+"Too many arguments");
 		}
 		else if(!Recorder.donerecording){
-			recorder.stopRecording();;
+			recorder.stopRecording();
 		}
 		else if (!Playback.donePlaying){
 			sendMessage(ChatFormatting.RED+"A playback is running. /play to abort");
