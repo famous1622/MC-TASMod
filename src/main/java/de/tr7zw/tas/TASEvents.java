@@ -131,34 +131,5 @@ public class TASEvents {
 			return;
 		}
 	}
-	
-	@SubscribeEvent
-	public void onMouseClick(TickEvent.RenderTickEvent ev){
-		if (!Recorder.donerecording&&ev.phase == Phase.START){
-			if (GameSettings.isKeyDown(mc.gameSettings.keyBindAttack)){
-				//set to pressed
-				Recorder.clicklefty=1;
-			}
-			else if(!GameSettings.isKeyDown(mc.gameSettings.keyBindAttack)&&Recorder.clicklefty==1&&!Recorder.lkchecker){
-				//set to quick press
-				Recorder.clicklefty=2;
-			}
-			else if(!(Recorder.clicklefty==2)){
-				Recorder.clicklefty=0;
-			}
-			if (GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem)){
-				//set to pressed
-				Recorder.clickrighty=1;
-			}
-			else if(!GameSettings.isKeyDown(mc.gameSettings.keyBindUseItem)&&Recorder.clickrighty==1&&!Recorder.rkchecker){
-				//set to quick press
-				Recorder.clickrighty=2;
-			}
-			else if(!(Recorder.clickrighty==2)){
-				Recorder.clickrighty=0;
-			}
-		}
-	}
-	
 }
 
