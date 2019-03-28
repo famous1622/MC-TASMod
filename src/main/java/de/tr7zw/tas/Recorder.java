@@ -47,30 +47,22 @@ public class Recorder {
 	 * Shows the status of the leftclick.
 	 * 0=unpressed, 1=pressed, 2=quickpress <br> Used for destinction if leftclick is held or pressed.
 	 */
-	private int clicklefty=0;
+	private static int clicklefty=0;
 	/**
 	 * Shows the status of the rightclick.
 	 * 0=unpressed, 1=pressed, 2=quickpress <br> Used for destinction if rightclick is held or pressed.
 	 */
-	private int clickrighty=0;
+	private static int clickrighty=0;
 	/**
 	 * Used to check if a leftclick was held and needs to print rLK in the next tick <br> Used for destinction if leftclick is held or pressed.
 	 */
-	private boolean needsunpressLK=false;
+	private static boolean needsunpressLK=false;
 	/**
 	 * Used to check if a rightclick was held and needs to print rRK in the next tick <br> Used for destinction if leftclick is held or pressed.
 	 */
-	private boolean needsunpressRK=false;
-	private static boolean wait=true;
-	private static boolean we=false;
-	private static boolean es=false;
-	private static boolean aa=false;
-	private static boolean de=false;
-	private static boolean schpace=false;
-	private static boolean schift=false;
-	private static boolean contrl=false;
-	private static String leftclack=" ";
-	private static String rightclack=" ";
+	private static boolean needsunpressRK=false;
+	private String leftclack=" ";
+	private String rightclack=" ";
 	private static float tickpitch;
 	private static float tickyaw;
 
@@ -87,6 +79,7 @@ public class Recorder {
 		recording.add("#StartLocation: " + mc.player.getPositionVector().toString());
 		needsunpressLK=false;
 		needsunpressRK=false;
+
 	}
 	/**
 	 * Make it, so the yaw is saved between -180 and +180 so it fits with the debug screen
@@ -102,19 +95,24 @@ public class Recorder {
 	 * Main recording function
 	 */
 	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent ev) {
-		GameSettings gameset=mc.gameSettings;
-		if(ev.phase==Phase.END&&!donerecording&&wait) {
-			we=false;
-			es=false;
-			aa=false;
-			de=false;
-			schpace=false;
-			schift=false;
-			contrl=false;
+	public void onClientTickEND(TickEvent.ClientTickEvent ev) {
+		
+		if(ev.phase==Phase.END&&!donerecording) {
+			
+		}
+		
+		
+	}
+	/**
+	 * Testmethod to let certain inputs record at the end of the tick
+	 * 
+	 */
+	@SubscribeEvent
+	public void onClientTickSTART(TickEvent.ClientTickEvent ev) {
+		if(ev.phase==Phase.END&&!donerecording) {
+			GameSettings gameset=mc.gameSettings;
 			leftclack=" ";
 			rightclack=" ";
-			
 			//Printing the correct string for leftclick from onMouseClick
 			if(clicklefty==2){						//Scenario for clicking and releasing within a tick
 				leftclack="pLK";
@@ -151,17 +149,16 @@ public class Recorder {
 				rightclack="rRK";
 				needsunpressRK=false;
 			}
-			we=gameset.keyBindForward.isKeyDown();
-			es=gameset.keyBindBack.isKeyDown();
-			aa=gameset.keyBindLeft.isKeyDown();
-			de=gameset.keyBindRight.isKeyDown();
-			schpace=gameset.keyBindJump.isKeyDown();
-			schift=gameset.keyBindSneak.isKeyDown();
-			contrl=gameset.keyBindSprint.isKeyDown();
+			tickpitch=mc.player.rotationPitch;
+			tickyaw=recalcYaw(mc.player.rotationYaw);
 			
 			
-			//Increment the tickcounter
-			if (!donerecording)recordstep++;
+			//Recording the movement
+			recording.add(new KeyFrame(gameset.keyBindForward.isKeyDown(), gameset.keyBindBack.isKeyDown(), gameset.keyBindLeft.isKeyDown(), gameset.keyBindRight.isKeyDown(),
+					gameset.keyBindJump.isKeyDown(), gameset.keyBindSneak.isKeyDown(), gameset.keyBindSprint.isKeyDown(),
+					tickpitch, tickyaw, 
+					leftclack, rightclack, 
+					mc.player.inventory.currentItem));
 			
 			/*Check if leftclick was pressed and not released
 			 * if it was pressed and immediately released in one tick, clicklefty would equal 2 and thus lkchecker would be false*/
@@ -177,17 +174,9 @@ public class Recorder {
 			//resetting values after the recording is done
 			clicklefty=0;
 			clickrighty=0;
+			//Increment the tickcounter
+			if (!donerecording)recordstep++;
 			
-			wait=false;
-		}else if(ev.phase==Phase.START&&!donerecording&&!wait) {
-			wait=true;
-			tickpitch=mc.player.prevRotationPitch;
-			tickyaw=recalcYaw(mc.player.prevRotationYaw);
-			//Recording the movement
-			recording.add(new KeyFrame(we, es, aa, de, schpace, schift, contrl,
-					tickpitch, tickyaw, 
-					leftclack, rightclack, 
-					mc.player.inventory.currentItem));
 		}
 	}
 	/**
@@ -284,5 +273,9 @@ public class Recorder {
 		}catch(Exception exX){
 			exX.printStackTrace();
 		}
+	}
+	
+	private void clicksnStuff() {
+
 	}
 }
