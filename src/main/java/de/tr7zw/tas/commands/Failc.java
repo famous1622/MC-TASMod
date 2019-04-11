@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -44,16 +45,19 @@ public class Failc extends CommandBase{
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		if(!(sender instanceof EntityPlayer)) {
+			return;
+		}
 		if (args.length==0){
 			if(Recorder.donerecording){
-				sendMessage(TextFormatting.RED+"Wrong usage. This command is used to abort a running recording!");
+				sender.sendMessage(new TextComponentString(TextFormatting.RED+"Wrong usage. This command is used to abort a running recording!"));
 			}
 			else if(!Recorder.donerecording){
 				Recordc.recorder.abortRecording();
 			}
 		}
 		else{
-			sendMessage(TextFormatting.RED+"Too many arguments!");
+			sender.sendMessage(new TextComponentString(TextFormatting.RED+"Too many arguments!"));
 		}
 	}
 }

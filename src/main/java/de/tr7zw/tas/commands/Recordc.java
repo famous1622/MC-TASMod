@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -22,7 +23,6 @@ import net.minecraft.util.text.TextFormatting;
 
 public class Recordc extends CommandBase{
 	
-	private	 List<String> tab = new ArrayList<String>();
 	private Minecraft mc = Minecraft.getMinecraft();
 	public static TAS recorder= new TAS();
 	private boolean check=false;
@@ -36,13 +36,7 @@ public class Recordc extends CommandBase{
 		}
 		return tab;
 	}
-	public void sendMessage(String msg){
-		try{
-			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-	}
+
 	@Override
 	public String getName() {
 		return "record";
@@ -64,38 +58,47 @@ public class Recordc extends CommandBase{
 
 	@Override
 	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		if(!(sender instanceof EntityPlayer)) {
+			return;
+		}
 		if (Recorder.donerecording&&Playback.donePlaying&&TASInput.donePlaying){
 			if (args.length==0){
-				sendMessage("No filename set! Generating one...");
+				sender.sendMessage(new TextComponentString("No filename set! Generating one..."));
 				recorder.startRecord();
 			}
 			if (args.length==1){
 				recorder.startRecord(args);
 			}
-			if (args.length>1)sendMessage(ChatFormatting.RED+"Too many arguments");
+			if (args.length>1) {
+				sender.sendMessage(new TextComponentString(TextFormatting.RED+"Too many arguments"));
+			}
 		}
 		else if(!Recorder.donerecording){
 			recorder.stopRecording();
+			return;
 		}
-		else if (!Playback.donePlaying){
-			sendMessage(ChatFormatting.RED+"A playback is running. /play to abort");
+		else if (!Playback.donePlaying||!TASInput.donePlaying){
+			sender.sendMessage(new TextComponentString(TextFormatting.RED+"A playback is running. /play to abort"));
 		}
 	}
 	@Override
 	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
 				BlockPos targetPos) {
+		List<String> tab = new ArrayList<String>();
 		if(args.length==1){
 			if (!check){
-				sendMessage(TextFormatting.BOLD+""+TextFormatting.RED+"WARNING!"+TextFormatting.RESET+TextFormatting.RED+
-						" Existing filenames will be overwritten! /fail to abort the recording if you accidentally started one");
+				sender.sendMessage(new TextComponentString(TextFormatting.BOLD+""+TextFormatting.RED+"WARNING!"+TextFormatting.RESET+TextFormatting.RED+
+						" Existing filenames will be overwritten! /fail to abort the recording if you accidentally started one"));
 				check=true;
 			}
 			tab=getFilenames();
-		}
-		if (tab.isEmpty()){
-			sendMessage(ChatFormatting.RED+"No files in directory");
-		}
-		return tab;
+			if (tab.isEmpty()){
+				sender.sendMessage(new TextComponentString(TextFormatting.RED+"No files in directory"));
+				return super.getTabCompletions(server, sender, args, targetPos);
+			}
+			return getListOfStringsMatchingLastWord(args, tab);
+		}else return super.getTabCompletions(server, sender, args, targetPos);
+		
 		 
 	}
 }
