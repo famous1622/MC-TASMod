@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
  * @author ScribbleLP
  *
  */
-public class Playback extends MovementInputFromOptions{
+public class Playback {
 
 	private Minecraft mc = Minecraft.getMinecraft();
 	//Variables for the Playback
@@ -52,13 +52,10 @@ public class Playback extends MovementInputFromOptions{
 	 * If true, the playback stopped
 	 */
 	public static boolean donePlaying=true;
-	
-	public Playback(String[] Helloargs) {
-		super(Minecraft.getMinecraft().gameSettings);
-		args=Helloargs;
-	}
+
+	public Playback(String[] Helloargs) { }
 	//TODO Remake the integers... 0,1,2,3 is stupid to memorize
-	
+
 	public void sendMessage(String msg){
 		try{
 			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
@@ -80,12 +77,12 @@ public class Playback extends MovementInputFromOptions{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Float recalcYaw(float Yaw){
 		while(Yaw>=180)Yaw-=360;
 		while(Yaw<-180)Yaw+=360;
 		return Yaw;
-		
+
 	}
 	private float uncalc(float yaw){
 		if(recalcYaw(mc.player.rotationYaw)>=0&&(recalcYaw(mc.player.rotationYaw)-yaw)>180){
@@ -96,7 +93,7 @@ public class Playback extends MovementInputFromOptions{
 		}
 		return yaw+(360*calcstate);
 	}
-	
+
 	public void robLeftClick(int pressed){
 		try {
 			Robot rob=new Robot();
@@ -111,7 +108,7 @@ public class Playback extends MovementInputFromOptions{
 			else if (pressed==2&&mc.inGameHasFocus){
 				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
 			}
-			
+
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
@@ -134,9 +131,9 @@ public class Playback extends MovementInputFromOptions{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void readingFile(String[] args, int stopAt){
-		File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
+		File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator +
 				"tasfiles"+ File.separator + args[0] + ".tas");
 		try{
 			BufferedReader Buff = new BufferedReader(new FileReader(file));
@@ -166,8 +163,8 @@ public class Playback extends MovementInputFromOptions{
 				sendMessage(TextFormatting.RED+"Error while reading the file. Couldn't find an END");
 				donePlaying=true;
 				ex.printStackTrace();
-				
-			
+
+
 		} catch (IOException e) {
 			donePlaying=true;
 			e.printStackTrace();
@@ -194,87 +191,26 @@ public class Playback extends MovementInputFromOptions{
 		else rightclick=3;
 		hotbarslot=Integer.parseInt(field[12]);
 	}
-	
 
-	@Override
 	public void updatePlayerMoveState() {
-		if(!donePlaying){
-			readingFile(args, frame++);
-		}
-		if (donePlaying){
-			super.updatePlayerMoveState();
+		if(donePlaying){
 			return;
 		}
-		if(mc.gameSettings.keyBindAttack.getKeyCode()==-100){
-			if(leftclick<3){
-				robLeftClick(leftclick);
-			}
-		}else KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(),leftclick<3);
-		
-		if(mc.gameSettings.keyBindUseItem.getKeyCode()==-99){
-			if(rightclick<3){
-				robRightClick(rightclick);
-			}
-		}else KeyBinding.setKeyBindState(mc.gameSettings.keyBindUseItem.getKeyCode(),rightclick<3);
-		//KeyBinding.setKeyBindState(-100, leftclick);			//Read Leftclick from File
-		//KeyBinding.setKeyBindState(-99, rightclick);			//Read RightClick from File
-		KeyBinding.setKeyBindState(mc.gameSettings.keyBindSprint.getKeyCode(), sprint);					//Read Sprint Key from File
-		mc.player.inventory.currentItem=hotbarslot;				//Read Inventory Slot from File etc...
-		
-		this.moveStrafe = 0.0F;
-		this.moveForward = 0.0F;
+		readingFile(args, frame++);
+		mc.gameSettings.keyBindAttack.pressed = leftclick<3;
 
-		if (forward)
-		{
-		++this.moveForward;
-		this.forwardKeyDown = true;
-		}
-		else
-		{
-			this.forwardKeyDown = false;
-		}
+		mc.gameSettings.keyBindUseItem.pressed = rightclick<3;
 
-		if (backward)
-		{
-			--this.moveForward;
-			this.backKeyDown = true;
-		}
-		else
-		{
-			this.backKeyDown = false;
-		}
+		mc.gameSettings.keyBindSprint.pressed = sprint;			//Read Sprint Key from File
+		mc.gameSettings.keyBindForward.pressed = forward;
+		mc.gameSettings.keyBindBack.pressed = backward;
+		mc.gameSettings.keyBindLeft.pressed = left;
+		mc.gameSettings.keyBindRight.pressed = right;
 
-		if (left)
-		{
-			++this.moveStrafe;
-			this.leftKeyDown = true;
-		}
-		else
-		{
-			this.leftKeyDown = false;
-		}
-	
-		if (right)
-		{
-		--this.moveStrafe;
-		this.rightKeyDown = true;
-		}
-		else
-		{
-			this.rightKeyDown = false;
-		}
-		this.jump=Jump;
-		this.sneak=Sneak;
-	
-		if (this.sneak)
-		{
-			this.moveStrafe = (float)((double)this.moveStrafe * 0.3D);
-			this.moveForward = (float)((double)this.moveForward * 0.3D);
-		}
+        mc.player.inventory.currentItem=hotbarslot;				//Read Inventory Slot from File etc...
+
 		mc.player.rotationPitch = pitch;
 		mc.player.rotationYaw = uncalc(yaw);
-		
-
 	}
 }
 
