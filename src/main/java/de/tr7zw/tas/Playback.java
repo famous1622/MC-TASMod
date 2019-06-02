@@ -53,7 +53,7 @@ public class Playback {
 	 */
 	public static boolean donePlaying=true;
 
-	public Playback(String[] Helloargs) { }
+	public Playback(String[] Helloargs) { args = Helloargs; }
 	//TODO Remake the integers... 0,1,2,3 is stupid to memorize
 
 	public void sendMessage(String msg){
@@ -206,6 +206,8 @@ public class Playback {
 		mc.gameSettings.keyBindBack.pressed = backward;
 		mc.gameSettings.keyBindLeft.pressed = left;
 		mc.gameSettings.keyBindRight.pressed = right;
+		mc.gameSettings.keyBindJump.pressed = Jump;
+		mc.gameSettings.keyBindSneak.pressed = Sneak;
 
         mc.player.inventory.currentItem=hotbarslot;				//Read Inventory Slot from File etc...
 

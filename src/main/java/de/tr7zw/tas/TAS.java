@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import javax.swing.text.html.parser.Entity;
 
+import de.tr7zw.tas.duck.PlaybackInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.settings.KeyBinding;
@@ -223,7 +224,8 @@ public class TAS {
         return;
     }
 
-    public void playTAS(String[] args) {            //Command to play back the tas recordingS
+    public void playTAS(String[] args) { //Command to play back the tas recordingS
+        ((PlaybackInput)mc.player.movementInput).setPlayback(new Playback(args));
         Playback.donePlaying = false;
         Recorder.recordstep = 0;
         Playback.frame = 0;
