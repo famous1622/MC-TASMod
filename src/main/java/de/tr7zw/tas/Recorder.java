@@ -232,19 +232,19 @@ public class Recorder {
 				frame.rightClick=buff2frame.rightClick;
 				buff2frame.rightClick=buff1frame.rightClick;*/
 
-                if (frame.forwardKeyDown == true) W = "W";
+                if (frame.forwardKeyDown) W = "W";
                 else W = " ";
-                if (frame.backKeyDown == true) S = "S";
+                if (frame.backKeyDown) S = "S";
                 else S = " ";
-                if (frame.leftKeyDown == true) A = "A";
+                if (frame.leftKeyDown) A = "A";
                 else A = " ";
-                if (frame.rightKeyDown == true) D = "D";
+                if (frame.rightKeyDown) D = "D";
                 else D = " ";
-                if (frame.jump == true) Space = "Space";
+                if (frame.jump) Space = "Space";
                 else Space = " ";
-                if (frame.sneak == true) Shift = "Shift";
+                if (frame.sneak) Shift = "Shift";
                 else Shift = " ";
-                if (frame.sprint == true) Ctrl = "Ctrl";
+                if (frame.sprint) Ctrl = "Ctrl";
                 else Ctrl = " ";
                 //This was used before the onMouseClick function. Didn't work so well.
                 //if(frame.leftClick==true)LK="LK";else LK=" ";
@@ -252,9 +252,24 @@ public class Recorder {
 
                 //Writing to the file
 
-                output.append("1;" + W + ";" + S + ";" + A + ";" + D + ";"
-                        + Space + ";" + Shift + ";" + Ctrl + ";" + frame.pitch + ";" + frame.yaw + ";" + frame.leftClick + ";" + frame.rightClick
-                        + ";" + frame.slot + ";\n");
+                output.append("1;")
+                        .append(W).append(";")
+                        .append(S).append(";")
+                        .append(A).append(";")
+                        .append(D).append(";")
+                        .append(Space).append(";")
+                        .append(Shift).append(";")
+                        .append(Ctrl).append(";")
+                        .append(frame.pitch).append(";")
+                        .append(frame.yaw).append(";")
+                        .append(frame.leftClick).append(";")
+                        .append(frame.rightClick).append(";")
+                        .append(frame.slot).append(";")
+                        .append(frame.mouseX).append(';')
+                        .append(frame.mouseY).append(';')
+                        .append(frame.drop).append(';')
+                        .append('\n');
+
             }
         }
         output.append("END");
