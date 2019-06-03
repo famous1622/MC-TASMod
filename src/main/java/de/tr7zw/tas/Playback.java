@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
  * @author ScribbleLP
  *
  */
-public class Playback {
+public class Playback implements PlaybackMethod{
 
 	private Minecraft mc = Minecraft.getMinecraft();
 	//Variables for the Playback
@@ -32,11 +32,14 @@ public class Playback {
 	private boolean Jump;
 	private boolean Sneak;
 	private boolean sprint;
+	private boolean drop;
 	public static int leftclick=3;
 	public static int rightclick=3;
 	private float pitch;
 	private float yaw;
 	private int hotbarslot;
+	private int mousex;
+	private int mousey;
 	public static boolean LKbreak;
 	public static boolean RKbreak;
 	//Used for calculating the yaw
@@ -52,6 +55,7 @@ public class Playback {
 	 * If true, the playback stopped
 	 */
 	public static boolean donePlaying=true;
+
 
 	public Playback(String[] Helloargs) { args = Helloargs; }
 	//TODO Remake the integers... 0,1,2,3 is stupid to memorize
@@ -92,44 +96,6 @@ public class Playback {
 			calcstate--;
 		}
 		return yaw+(360*calcstate);
-	}
-
-	public void robLeftClick(int pressed){
-		try {
-			Robot rob=new Robot();
-			rob.setAutoDelay(0);
-			if (pressed==0&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-			}
-			else if (pressed==1&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-			}
-			else if (pressed==2&&mc.inGameHasFocus){
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-			}
-
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
-	}
-	public void robRightClick(int pressed){
-		try {
-			Robot rob=new Robot();
-			rob.setAutoDelay(0);
-			if (pressed==0&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-			}
-			else if (pressed==1&&mc.inGameHasFocus){
-				rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-			}
-			else if (pressed==2&&mc.inGameHasFocus){
-				rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-			}
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void readingFile(String[] args, int stopAt){
@@ -190,6 +156,9 @@ public class Playback {
 		else if(field[11].equalsIgnoreCase("rRK"))rightclick=2;
 		else rightclick=3;
 		hotbarslot=Integer.parseInt(field[12]);
+		mousex = Integer.parseInt(field[13]);
+		mousey = Integer.parseInt(field[14]);
+		drop=field[15].equalsIgnoreCase("Q");
 	}
 
 	public void updatePlayerMoveState() {
@@ -208,6 +177,7 @@ public class Playback {
 		mc.gameSettings.keyBindRight.pressed = right;
 		mc.gameSettings.keyBindJump.pressed = Jump;
 		mc.gameSettings.keyBindSneak.pressed = Sneak;
+		mc.gameSettings.keyBindDrop.pressed = drop;
 
         mc.player.inventory.currentItem=hotbarslot;				//Read Inventory Slot from File etc...
 

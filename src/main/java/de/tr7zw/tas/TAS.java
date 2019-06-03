@@ -1,31 +1,21 @@
 package de.tr7zw.tas;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
-import javax.swing.text.html.parser.Entity;
-
 import de.tr7zw.tas.duck.PlaybackInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.MovementInputFromOptions;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
@@ -82,7 +72,7 @@ public class TAS {
         }
         try {
             KeyFrame frame = new KeyFrame(
-                    args[1].equalsIgnoreCase("W"),    //up
+                    mode, args[1].equalsIgnoreCase("W"),    //up
                     args[2].equalsIgnoreCase("S"), //down
                     args[3].equalsIgnoreCase("A"), //left
                     args[4].equalsIgnoreCase("D"), //right
@@ -93,7 +83,7 @@ public class TAS {
                     Float.parseFloat(args[9]), //yaw
                     args[10], //leftclick
                     args[11], //rightclick
-                    Integer.parseInt(args[12])); //hotbar
+                    Integer.parseInt(args[12]), MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y); //hotbar
 
             for (int i = 0; i < repeats; i++) {
 
@@ -108,9 +98,8 @@ public class TAS {
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent ev) {
-        if (ev.phase == Phase.START && mc.player != null && mc.player.movementInput instanceof TASInput) {
-            TASInput input = (TASInput) mc.player.movementInput;
-            if (input.donePlaying) {
+        if (ev.phase == Phase.START && mc.player != null && ((PlaybackInput)mc.player.movementInput).getPlayback() instanceof TASInput) {
+            if (TASInput.donePlaying) {
                 clearData();
             }
         }
@@ -245,7 +234,7 @@ public class TAS {
         TASInput.breaking = false;
         loadData(file);
         TASInput.donePlaying = false;
-        mc.player.movementInput = new TASInput(this, keyFrames);
+        ((PlaybackInput)mc.player.movementInput).setPlayback(new TASInput(this, keyFrames));
         sendMessage("Loaded File");
     }
 
@@ -312,11 +301,5 @@ public class TAS {
                     + TextFormatting.YELLOW + ".folder" + TextFormatting.GREEN + " -Opens the directory where the .tas files will be saved\n\n"
                     + TextFormatting.YELLOW + ".help" + TextFormatting.AQUA + " <1,2>" + TextFormatting.GREEN + " -Well guess what this does...");
         } else sendMessage(TextFormatting.RED + "Too many arguments... Did you mean '.help 2'?");
-    }
-
-    public void replayTas() {
-        for (KeyFrame frame: keyFrames){
-
-        }
     }
 }
