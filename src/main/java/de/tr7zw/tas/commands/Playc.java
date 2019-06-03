@@ -1,18 +1,7 @@
 package de.tr7zw.tas.commands;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.collect.ImmutableList;
-import com.mojang.realmsclient.gui.ChatFormatting;
-
-import de.tr7zw.tas.InfoGui;
-import de.tr7zw.tas.Playback;
-import de.tr7zw.tas.Recorder;
-import de.tr7zw.tas.TAS;
-import de.tr7zw.tas.TASEvents;
-import de.tr7zw.tas.TASInput;
+import de.tr7zw.tas.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.command.CommandBase;
@@ -24,112 +13,114 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
-public class Playc extends CommandBase{
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-	private Minecraft mc = Minecraft.getMinecraft();
+public class Playc extends CommandBase {
 
-	
-	public List<String> getFilenames(){
-		List<String> tab = new ArrayList<String>();
-		File folder = new File(Minecraft.getMinecraft().mcDataDir,"saves"+File.separator+"tasfiles");
-		File[] listOfFiles = folder.listFiles();
-		for(int i = 0;i<listOfFiles.length;i++){
-			tab.add(listOfFiles[i].getName().replaceAll("\\.tas", ""));
-		}
-		return tab;
-	}
-	public void sendMessage(String msg){
-		try{
-			Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-	}
-	@Override
-	public String getName() {
-		return "play";
-	}
-	@Override
-	public String getUsage(ICommandSender sender) {
-		return "/play <filename> (without .tas)";
-	}
-	
-	@Override
+    private Minecraft mc = Minecraft.getMinecraft();
+
+
+    public List<String> getFilenames() {
+        List<String> tab = new ArrayList<String>();
+        File folder = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + "tasfiles");
+        File[] listOfFiles = folder.listFiles();
+        for (int i = 0; i < listOfFiles.length; i++) {
+            tab.add(listOfFiles[i].getName().replaceAll("\\.tas", ""));
+        }
+        return tab;
+    }
+
+    public void sendMessage(String msg) {
+        try {
+            Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public String getName() {
+        return "play";
+    }
+
+    @Override
+    public String getUsage(ICommandSender sender) {
+        return "/play <filename> (without .tas)";
+    }
+
+    @Override
     public int getRequiredPermissionLevel() {
         return 2;
     }
-	
-	@Override
-	public List<String> getAliases() {
-		return ImmutableList.of("p");
-	}
 
-	@Override
-	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-		if (!(sender instanceof EntityPlayer)) {
-			return;
-		}
-		if (Playback.donePlaying&&Recorder.donerecording&&TASInput.donePlaying){
-			if (args.length==0) {
-				sender.sendMessage(new TextComponentString(TextFormatting.RED+"/play <filename> (without .tas)"));
-				return;
-			}
-			File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-					"tasfiles"+ File.separator + args[0] + ".tas");
-			if (file.exists()){
-				if (args.length==1){
-					Playback.donePlaying=false;
-					new InfoGui().setArguments(args);
-					new TASEvents().setArguments(args);
-					new TAS().playTAS(args);
-					return;
-				}
-				else if (args.length==2&&args[1].equalsIgnoreCase("load")){
-					new TAS().playTAS(args,file);
-					return;
-				}
-				else if (args.length==2&&!args[1].equalsIgnoreCase("load")){
-					sender.sendMessage(new TextComponentString(TextFormatting.RED+"Wrong usage! /play <filename> (load)"));
-					return;
-				}
-			}
-			else{
-				sender.sendMessage(new TextComponentString(TextFormatting.RED+"File '"+args[0]+"' does not exist"));
-			}
-			if (args.length>2)sender.sendMessage(new TextComponentString(TextFormatting.RED+"Too many arguments"));
-			return;
-		}
-		else if(!Recorder.donerecording){
-			sender.sendMessage(new TextComponentString(TextFormatting.RED+"A recording is running. /record or /fail to abort recording"));
-			return;
-		}
-		//Abort Playback
-		else if(!Playback.donePlaying){
-			Playback.donePlaying=true;
-			new Playback(args).robLeftClick(2);
-			new Playback(args).robRightClick(2);
-			KeyBinding.setKeyBindState(29, false);
-		}
-		else if(!TASInput.donePlaying){
-			TASInput.breaking=true;
-			new Playback(args).robLeftClick(2);
-			new Playback(args).robRightClick(2);
-			KeyBinding.setKeyBindState(29, false);
-		}
-	}
-	@Override
-	public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
-				BlockPos targetPos) {
-		List<String> tab = new ArrayList<String>();
-		if(args.length==1){
-			tab=getFilenames();
-			if (tab.isEmpty()){
-				sender.sendMessage(new TextComponentString(TextFormatting.RED+"No files in directory"));
-			}
-			return getListOfStringsMatchingLastWord(args, tab);
-		}
-		else if (args.length==2){
-			return getListOfStringsMatchingLastWord(args, new String[] {"load"});
-		}else return super.getTabCompletions(server, sender, args, targetPos);	 
-	}
+    @Override
+    public List<String> getAliases() {
+        return ImmutableList.of("p");
+    }
+
+    @Override
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+        if (!(sender instanceof EntityPlayer)) {
+            return;
+        }
+        if (Playback.donePlaying && Recorder.donerecording && TASInput.donePlaying) {
+            if (args.length == 0) {
+                sender.sendMessage(new TextComponentString(TextFormatting.RED + "/play <filename> (without .tas)"));
+                return;
+            }
+            File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator +
+                    "tasfiles" + File.separator + args[0] + ".tas");
+            if (file.exists()) {
+                if (args.length == 1) {
+                    Playback.donePlaying = false;
+                    new InfoGui().setArguments(args);
+                    new TASEvents().setArguments(args);
+                    new TAS().playTAS(args);
+                    return;
+                } else if (args.length == 2 && args[1].equalsIgnoreCase("load")) {
+                    new TAS().playTAS(args, file);
+                    return;
+                } else if (args.length == 2 && !args[1].equalsIgnoreCase("load")) {
+                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Wrong usage! /play <filename> (load)"));
+                    return;
+                }
+            } else {
+                sender.sendMessage(new TextComponentString(TextFormatting.RED + "File '" + args[0] + "' does not exist"));
+            }
+            if (args.length > 2) sender.sendMessage(new TextComponentString(TextFormatting.RED + "Too many arguments"));
+            return;
+        } else if (!Recorder.donerecording) {
+            sender.sendMessage(new TextComponentString(TextFormatting.RED + "A recording is running. /record or /fail to abort recording"));
+            return;
+        }
+        //Abort Playback
+        else if (!Playback.donePlaying) {
+            Playback.donePlaying = true;
+            new Playback(args).robLeftClick(2);
+            new Playback(args).robRightClick(2);
+            KeyBinding.setKeyBindState(29, false);
+        } else if (!TASInput.donePlaying) {
+            TASInput.breaking = true;
+            new Playback(args).robLeftClick(2);
+            new Playback(args).robRightClick(2);
+            KeyBinding.setKeyBindState(29, false);
+        }
+    }
+
+    @Override
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
+                                          BlockPos targetPos) {
+        List<String> tab = new ArrayList<String>();
+        if (args.length == 1) {
+            tab = getFilenames();
+            if (tab.isEmpty()) {
+                sender.sendMessage(new TextComponentString(TextFormatting.RED + "No files in directory"));
+            }
+            return getListOfStringsMatchingLastWord(args, tab);
+        } else if (args.length == 2) {
+            return getListOfStringsMatchingLastWord(args, "load");
+        } else return super.getTabCompletions(server, sender, args, targetPos);
+    }
 }

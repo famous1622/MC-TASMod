@@ -1,6 +1,5 @@
 package de.tr7zw.tas.mixin;
 
-import de.tr7zw.tas.Playback;
 import de.tr7zw.tas.PlaybackMethod;
 import de.tr7zw.tas.duck.PlaybackInput;
 import net.minecraft.util.MovementInput;

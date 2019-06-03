@@ -1,17 +1,10 @@
 package de.tr7zw.tas;
 
-import java.awt.*;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.stream.Stream;
-
+import de.tr7zw.tas.duck.CBGuiContainer;
 import de.tr7zw.tas.duck.PlaybackInput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,8 +12,18 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.stream.Stream;
+
 public class TAS {
 
+    public Recorder recorder = null;
     private Minecraft mc = Minecraft.getMinecraft();
     private boolean loaded = false;
     private ArrayList<KeyFrame> keyFrames = new ArrayList<>();
@@ -33,7 +36,6 @@ public class TAS {
     private String FileName = "null";
     private boolean genname = true;
     private boolean recording = false;
-
 
     public void loadData(File tasData) {
         loaded = true;
@@ -61,7 +63,6 @@ public class TAS {
         }
     }
 
-
     public void parseLine(String line, int lineid) {                //Reading a line of a file
         if (line.startsWith("#") || line.startsWith("//") || line.equalsIgnoreCase("END")) return;//Comments
         String[] args = line.split(";");
@@ -71,19 +72,21 @@ public class TAS {
         } catch (Exception ignored) {
         }
         try {
-            KeyFrame frame = new KeyFrame(
-                    mode, args[1].equalsIgnoreCase("W"),    //up
+            KeyFrame frame = new KeyFrame(args[1].equalsIgnoreCase("W"),    //up
                     args[2].equalsIgnoreCase("S"), //down
                     args[3].equalsIgnoreCase("A"), //left
                     args[4].equalsIgnoreCase("D"), //right
                     args[5].equalsIgnoreCase("Space"), //jump
                     args[6].equalsIgnoreCase("Shift"), //sneak
                     args[7].equalsIgnoreCase("Ctrl"), //sprint
+                    args[15].equalsIgnoreCase("Q"), //drop
                     Float.parseFloat(args[8]), //pitch
                     Float.parseFloat(args[9]), //yaw
                     args[10], //leftclick
                     args[11], //rightclick
-                    Integer.parseInt(args[12]), MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y); //hotbar
+                    Integer.parseInt(args[12]), //hotbar
+                    Integer.parseInt(args[13]), //mousex
+                    Integer.parseInt(args[14])); //mousey
 
             for (int i = 0; i < repeats; i++) {
 
@@ -98,7 +101,7 @@ public class TAS {
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent ev) {
-        if (ev.phase == Phase.START && mc.player != null && ((PlaybackInput)mc.player.movementInput).getPlayback() instanceof TASInput) {
+        if (ev.phase == Phase.START && mc.player != null && ((PlaybackInput) mc.player.movementInput).getPlayback() instanceof TASInput) {
             if (TASInput.donePlaying) {
                 clearData();
             }
@@ -109,10 +112,10 @@ public class TAS {
     public void onMenu(net.minecraftforge.client.event.GuiOpenEvent ev) {
         if (ev.getGui() instanceof GuiMainMenu) {
             clearData();
+        } else if (ev.getGui() instanceof GuiContainer && !Recorder.donerecording) {
+            ((CBGuiContainer) ev.getGui()).setRecorder(recorder);
         }
     }
-
-    public Recorder recorder = null;
 
     public void startRecord() {
         genname = true;
@@ -214,7 +217,7 @@ public class TAS {
     }
 
     public void playTAS(String[] args) { //Command to play back the tas recordingS
-        ((PlaybackInput)mc.player.movementInput).setPlayback(new Playback(args));
+        ((PlaybackInput) mc.player.movementInput).setPlayback(new Playback(args));
         Playback.donePlaying = false;
         Recorder.recordstep = 0;
         Playback.frame = 0;
@@ -234,7 +237,7 @@ public class TAS {
         TASInput.breaking = false;
         loadData(file);
         TASInput.donePlaying = false;
-        ((PlaybackInput)mc.player.movementInput).setPlayback(new TASInput(this, keyFrames));
+        ((PlaybackInput) mc.player.movementInput).setPlayback(new TASInput(this, keyFrames));
         sendMessage("Loaded File");
     }
 
