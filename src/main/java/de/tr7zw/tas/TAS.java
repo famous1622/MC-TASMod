@@ -1,5 +1,6 @@
 package de.tr7zw.tas;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tr7zw.tas.duck.CBGuiContainer;
 import de.tr7zw.tas.duck.PlaybackInput;
 import net.minecraft.client.Minecraft;
@@ -11,22 +12,22 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.stream.Stream;
+import java.util.List;
 
 public class TAS {
 
     public Recorder recorder = null;
     private Minecraft mc = Minecraft.getMinecraft();
     private boolean loaded = false;
-    private ArrayList<KeyFrame> keyFrames = new ArrayList<>();
+    private List<KeyFrame> keyFrames = new ArrayList<>();
     private int line = 0;
     private double x = 0.0;
     private double y = 0.0;
@@ -35,18 +36,18 @@ public class TAS {
     private float yaw = 0;
     private String FileName = "null";
     private boolean genname = true;
-    private boolean recording = false;
+
+    public TAS() {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
     public void loadData(File tasData) {
         loaded = true;
-        keyFrames = new ArrayList<>();
-        line = 0;
+        ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
         try {
-            try (Stream<String> stream = Files.lines(tasData.toPath())) {
-                stream.forEach(s -> parseLine(s, ++line));
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            keyFrames = objectMapper.readValue(tasData, Movie.class).frames;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -63,42 +64,6 @@ public class TAS {
         }
     }
 
-    public void parseLine(String line, int lineid) {                //Reading a line of a file
-        if (line.startsWith("#") || line.startsWith("//") || line.equalsIgnoreCase("END")) return;//Comments
-        String[] args = line.split(";");
-        int repeats = 1;
-        try {
-            repeats = Integer.parseInt(args[0]);
-        } catch (Exception ignored) {
-        }
-        try {
-            KeyFrame frame = new KeyFrame(args[1].equalsIgnoreCase("W"),    //up
-                    args[2].equalsIgnoreCase("S"), //down
-                    args[3].equalsIgnoreCase("A"), //left
-                    args[4].equalsIgnoreCase("D"), //right
-                    args[5].equalsIgnoreCase("Space"), //jump
-                    args[6].equalsIgnoreCase("Shift"), //sneak
-                    args[7].equalsIgnoreCase("Ctrl"), //sprint
-                    args[15].equalsIgnoreCase("Q"), //drop
-                    Float.parseFloat(args[8]), //pitch
-                    Float.parseFloat(args[9]), //yaw
-                    args[10], //leftclick
-                    args[11], //rightclick
-                    Integer.parseInt(args[12]), //hotbar
-                    Integer.parseInt(args[13]), //mousex
-                    Integer.parseInt(args[14])); //mousey
-
-            for (int i = 0; i < repeats; i++) {
-
-                keyFrames.add(frame);
-            }
-        } catch (Exception ex) {
-            System.err.println("Error parsing line " + lineid);
-            sendMessage("Error parsing line " + lineid);
-            ex.printStackTrace();
-        }
-    }
-
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent ev) {
         if (ev.phase == Phase.START && mc.player != null && ((PlaybackInput) mc.player.movementInput).getPlayback() instanceof TASInput) {
@@ -110,9 +75,12 @@ public class TAS {
 
     @SubscribeEvent()
     public void onMenu(net.minecraftforge.client.event.GuiOpenEvent ev) {
+        System.out.printf("Gui Opened %s%n", ev.getGui());
         if (ev.getGui() instanceof GuiMainMenu) {
+            System.out.println("Main menu, clearing data");
             clearData();
-        } else if (ev.getGui() instanceof GuiContainer && !Recorder.donerecording) {
+        } else if (ev.getGui() instanceof GuiContainer) {
+            System.out.printf("Gui Container, giving it recorder %s%n", recorder);
             ((CBGuiContainer) ev.getGui()).setRecorder(recorder);
         }
     }
@@ -155,7 +123,6 @@ public class TAS {
     }
 
     private void record() {
-        recording = true;
         sendMessage("Starting the tas recording!");
         x = mc.player.posX;                            //Saving the position and headrotation where the command was issued... Is needed for '.f'
         y = mc.player.posY;
@@ -183,23 +150,19 @@ public class TAS {
         MinecraftForge.EVENT_BUS.unregister(recorder);
 
         if (genname || FileName.equals("null")) {
-				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
+				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator +
 						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + "recording_" + System.currentTimeMillis() +".tas");*/
             File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator +
                     "tasfiles" + File.separator + "recording_" + System.currentTimeMillis() + ".tas");
             Recorder.donerecording = true;
             recorder.saveData(file);
             recorder = null;
-            return;
-        } else if (genname == false) {
-				/*File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + 
-						Minecraft.getMinecraft().getIntegratedServer().getFolderName() + File.separator + FileName +".tas");*/
+        } else {
             File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator +
                     "tasfiles" + File.separator + FileName + ".tas");
             Recorder.donerecording = true;
             recorder.saveData(file);
             recorder = null;
-            return;
         }
     }
 
@@ -257,20 +220,16 @@ public class TAS {
             if (file.exists()) {
                 line = 0;
                 try {
-                    BufferedReader Buff = new BufferedReader(new FileReader(file));
-                    String[] Location = Buff.readLine().split("\\(|(, )|\\)");
+                    ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
+                    String[] Location = objectMapper.readValue(file, Movie.class).location.split("\\(|(, )|\\)");
 
                     mc.player.sendChatMessage("/tp " + Location[1] + " " +
                             Location[2] + " " +
                             Location[3]);
                     sendMessage("Teleporting...");
-                    Buff.close();
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                    return;
                 }
-
-
             } else {
                 sendMessage(TextFormatting.RED + "File not found: " + file.getAbsolutePath());
             }

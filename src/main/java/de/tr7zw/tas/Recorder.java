@@ -1,14 +1,14 @@
 package de.tr7zw.tas;
 
-import com.google.common.io.Files;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.MovementInputFromOptions;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import org.msgpack.jackson.dataformat.MessagePackFactory;
 
 import java.awt.*;
 import java.io.File;
@@ -46,7 +46,8 @@ public class Recorder {
     private static boolean needsunpressRK = false;
     private static float tickpitch;
     private static float tickyaw;
-    private ArrayList<Object> recording = new ArrayList<>();
+    private String location;
+    private ArrayList<KeyFrame> recording = new ArrayList<>();
     private Minecraft mc = Minecraft.getMinecraft();
     /**
      * Variable to check if leftclick was pressed before.<br>
@@ -62,10 +63,18 @@ public class Recorder {
     private boolean rkchecker = false;
     private String leftclack = " ";
     private String rightclack = " ";
+    private boolean gui_clicked;
+    private int gui_mouseX;
+    private int gui_mouseY;
+    private int gui_mouseButton;
+    private int gui_slotUnderMouse;
+    private boolean gui_typed;
+    private char gui_typedChar;
+    private int gui_keyCode;
 
 
     public Recorder() {
-        recording.add("#StartLocation: " + mc.player.getPositionVector().toString());
+        location = "#StartLocation: " + mc.player.getPositionVector().toString();
         needsunpressLK = false;
         needsunpressRK = false;
 
@@ -152,7 +161,10 @@ public class Recorder {
                     gameset.keyBindJump.isKeyDown(), gameset.keyBindSneak.isKeyDown(), gameset.keyBindSprint.isKeyDown(),
                     gameset.keyBindDrop.isKeyDown(), tickpitch, tickyaw,
                     leftclack, rightclack,
-                    mc.player.inventory.currentItem, MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y));
+                    mc.player.inventory.currentItem,
+                    MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y,
+                    gui_slotUnderMouse, gui_clicked, gui_mouseX, gui_mouseY, gui_mouseButton,
+                    gui_typed, gui_typedChar, gui_keyCode));
 
             /*Check if leftclick was pressed and not released
              * if it was pressed and immediately released in one tick, clicklefty would equal 2 and thus lkchecker would be false*/
@@ -200,84 +212,16 @@ public class Recorder {
     }
 
     public void saveData(File file) {
-        mc.player.movementInput = new MovementInputFromOptions(mc.gameSettings);
-        StringBuilder output = new StringBuilder();
-        String W;                                            //Well this is... Not the best solution for this buut hey it works I guess...
-        String S;
-        String A;
-        String D;
-        String Space;
-        String Shift;
-        String Ctrl;
-        String LK;
-        String RK;
-        Object buff1 = recording.get(1);
-        Object buff2 = recording.get(2);
-        for (int i = 0; i < recording.size(); i++) {
-            Object o = recording.get(i);
-            if (o instanceof String) {
-                output.append(o + "\n");
-            } else if (o instanceof KeyFrame) {
-                KeyFrame frame = (KeyFrame) o;
-                //This here was a wierd way to delay certain inputs, to test if this syncs or desyncs the TAS
-				/*KeyFrame buff1frame= (KeyFrame) buff1;
-				KeyFrame buff2frame= (KeyFrame) buff2;
-				buff1frame.leftClick=frame.leftClick;
-				frame.leftClick=buff2frame.leftClick;
-				buff2frame.leftClick=buff1frame.leftClick;*/
-
-
-                //I think this was to quicken inputs e.g. rightclick was now one tick before you clicked it
-				/*buff1frame.rightClick=frame.rightClick;
-				frame.rightClick=buff2frame.rightClick;
-				buff2frame.rightClick=buff1frame.rightClick;*/
-
-                if (frame.forwardKeyDown) W = "W";
-                else W = " ";
-                if (frame.backKeyDown) S = "S";
-                else S = " ";
-                if (frame.leftKeyDown) A = "A";
-                else A = " ";
-                if (frame.rightKeyDown) D = "D";
-                else D = " ";
-                if (frame.jump) Space = "Space";
-                else Space = " ";
-                if (frame.sneak) Shift = "Shift";
-                else Shift = " ";
-                if (frame.sprint) Ctrl = "Ctrl";
-                else Ctrl = " ";
-                //This was used before the onMouseClick function. Didn't work so well.
-                //if(frame.leftClick==true)LK="LK";else LK=" ";
-                //if(frame.rightClick==true)RK="RK";else RK=" ";
-
-                //Writing to the file
-
-                output.append("1;")
-                        .append(W).append(";")
-                        .append(S).append(";")
-                        .append(A).append(";")
-                        .append(D).append(";")
-                        .append(Space).append(";")
-                        .append(Shift).append(";")
-                        .append(Ctrl).append(";")
-                        .append(frame.pitch).append(";")
-                        .append(frame.yaw).append(";")
-                        .append(frame.leftClick).append(";")
-                        .append(frame.rightClick).append(";")
-                        .append(frame.slot).append(";")
-                        .append(frame.mouseX).append(';')
-                        .append(frame.mouseY).append(';')
-                        .append(frame.drop).append(';')
-                        .append('\n');
-
-            }
-        }
-        output.append("END");
+        Movie movie = new Movie();
+        movie.location = location;
+        movie.frames = recording;
+        ObjectMapper mapper = new ObjectMapper(new MessagePackFactory());
         try {
-            Files.write(output.toString().getBytes(), file);
+            mapper.writeValue(file, movie);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         try {
             mc.ingameGUI.getChatGUI().printChatMessage(new TextComponentString("Saved to: " + file.getAbsolutePath()));
         } catch (Exception exX) {
@@ -285,13 +229,18 @@ public class Recorder {
         }
     }
 
-    private void clicksnStuff() {
-
-    }
-
     public void guiClicked(int mouseX, int mouseY, int mouseButton, Slot slotUnderMouse) {
+        gui_clicked = true;
+        gui_mouseX = mouseX;
+        gui_mouseY = mouseY;
+        gui_mouseButton = mouseButton;
+        gui_slotUnderMouse = slotUnderMouse.getSlotIndex();
     }
 
     public void guiTyped(char typedChar, int keyCode, Slot slotUnderMouse) {
+        gui_typed = true;
+        gui_typedChar = typedChar;
+        gui_keyCode = keyCode;
+        gui_slotUnderMouse = slotUnderMouse.getSlotIndex();
     }
 }

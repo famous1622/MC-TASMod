@@ -22,11 +22,6 @@ import java.util.List;
 
 public class TasTpc extends CommandBase {
 
-
-    public static TAS recorder = new TAS();
-    private Minecraft mc = Minecraft.getMinecraft();
-    private boolean check = false;
-
     public List<String> getFilenames() {
         List<String> tab = new ArrayList<String>();
         File folder = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + "tasfiles");

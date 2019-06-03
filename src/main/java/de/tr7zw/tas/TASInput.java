@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TASInput implements PlaybackMethod {
 
@@ -13,7 +14,7 @@ public class TASInput implements PlaybackMethod {
     public static boolean breaking = false;
     private Minecraft mc = Minecraft.getMinecraft();
     private TAS tas;
-    private ArrayList<KeyFrame> keyFrames;
+    private List<KeyFrame> keyFrames;
     private Method leftClick;
     private Method rightClick;
     private KeyFrame frame;
@@ -21,7 +22,7 @@ public class TASInput implements PlaybackMethod {
     private int calcstate = 0;
 
 
-    public TASInput(TAS tas, ArrayList<KeyFrame> keyFrames) {
+    public TASInput(TAS tas, List<KeyFrame> keyFrames) {
         this.tas = tas;
         this.keyFrames = keyFrames;
     }
