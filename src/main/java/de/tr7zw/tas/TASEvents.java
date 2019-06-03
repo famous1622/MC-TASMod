@@ -68,40 +68,6 @@ public class TASEvents {
         }
     }
 
-    public void robLeftClick(int pressed) {
-        try {
-            Robot rob = new Robot();
-            rob.setAutoDelay(0);
-            if (pressed == 0 && mc.inGameHasFocus) {
-                rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-                rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-            } else if (pressed == 1 && mc.inGameHasFocus) {
-                rob.mousePress(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-            } else if (pressed == 2 && mc.inGameHasFocus) {
-                rob.mouseRelease(java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
-            }
-
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void robRightClick(int pressed) {
-        try {
-            Robot rob = new Robot();
-            rob.setAutoDelay(0);
-            if (pressed == 0 && mc.inGameHasFocus) {
-                rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-                rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-            } else if (pressed == 1 && mc.inGameHasFocus) {
-                rob.mousePress(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-            } else if (pressed == 2 && mc.inGameHasFocus) {
-                rob.mouseRelease(java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
-            }
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-    }
 
     //Cancel Fall Damage
     @SubscribeEvent
