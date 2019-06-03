@@ -14,6 +14,8 @@ public class KeyFrame {
     public String rightClick;
     public boolean sprint;
     public boolean drop;
+    public int mouseX;
+    public int mouseY;
 
     public int slot;
 
@@ -29,6 +31,8 @@ public class KeyFrame {
         this.pitch = pitch;
         this.yaw = yaw;
         this.drop = drop;
+        this.mouseX = mousex;
+        this.mouseY = mousey;
         //if(this.pitch > 90)this.pitch = 90;
         //if(this.pitch < -90)this.pitch = -90;
         //if(this.yaw > 180)this.yaw = 180;
