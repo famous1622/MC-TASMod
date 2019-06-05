@@ -1,7 +1,6 @@
 package de.tr7zw.tas.mixin;
 
 import de.tr7zw.tas.Recorder;
-import de.tr7zw.tas.TASUtils;
 import de.tr7zw.tas.duck.TASGuiContainer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -45,9 +44,9 @@ public abstract class MixinGuiContainer extends GuiScreen implements TASGuiConta
         }
     }
 
-    @Inject(method = "mouseReleased", at=@At("HEAD"))
-    private void onMouseReleased(int mouseX, int mouseY, int state, CallbackInfo ci){
-        if (recorder != null){
+    @Inject(method = "mouseReleased", at = @At("HEAD"))
+    private void onMouseReleased(int mouseX, int mouseY, int state, CallbackInfo ci) {
+        if (recorder != null) {
             recorder.guiReleased(mouseX, mouseY, state);
         }
     }

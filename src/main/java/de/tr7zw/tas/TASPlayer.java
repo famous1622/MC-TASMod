@@ -7,7 +7,9 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -83,7 +85,7 @@ public class TASPlayer implements PlaybackMethod {
         if (frame.gui_clicked) {
             try {
                 TASUtils.sendMessage(String.format("(%d, %d) %d", frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton));
-                Mouse.setCursorPosition(frame.gui_mouseX + gui.getGuiLeft(), frame.gui_mouseY + gui.getGuiTop());
+                moveMouse(frame.gui_mouseX, frame.gui_mouseY);
                 ((TASGuiContainer) gui).callMouseClicked(frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton);
             } catch (IOException e) {
                 TASUtils.sendMessage(ChatFormatting.YELLOW + "Probably desyncing (GUI threw an error when clicking)");
@@ -97,12 +99,7 @@ public class TASPlayer implements PlaybackMethod {
             }
         } else if (frame.gui_clickmoved) {
             ((TASGuiContainer) gui).callMouseClickMoved(frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton, frame.gui_timeSinceLastClick);
-            ScaledResolution scaledResolution = new ScaledResolution(mc);
-            TASUtils.sendMessage(String.valueOf(scaledResolution.getScaleFactor()));
-            Mouse.setCursorPosition(
-                    (frame.gui_mouseX + gui.getGuiLeft()) * scaledResolution.getScaleFactor(),
-                    (frame.gui_mouseY + gui.getGuiTop()) * scaledResolution.getScaleFactor()
-            );
+            moveMouse(frame.gui_mouseX, frame.gui_mouseY);
         } else if (frame.gui_released) {
             try {
                 ((TASGuiContainer) gui).callMouseReleased(frame.gui_mouseX, frame.gui_mouseY, frame.gui_released_state);
@@ -110,5 +107,16 @@ public class TASPlayer implements PlaybackMethod {
                 TASUtils.sendMessage(ChatFormatting.YELLOW + "Probably desyncing (Release NPE?)");
             }
         }
+
+    }
+
+    private void moveMouse(int x, int y){
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+        int i1 = scaledResolution.getScaledWidth();
+        int j1 = scaledResolution.getScaledHeight();
+
+        int newX = (mc.displayWidth * x) / i1;
+        int newY = (mc.displayHeight * (j1 - y - 1)) / j1;
+        Mouse.setCursorPosition(newX, newY);
     }
 }
