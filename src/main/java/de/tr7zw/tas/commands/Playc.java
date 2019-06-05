@@ -65,7 +65,7 @@ public class Playc extends CommandBase {
         if (!(sender instanceof EntityPlayer)) {
             return;
         }
-        if (Playback.donePlaying && Recorder.donerecording && TASInput.donePlaying) {
+        if (TAS.doneRecording() && TAS.donePlaying()) {
             if (args.length == 0) {
                 sender.sendMessage(new TextComponentString(TextFormatting.RED + "/play <filename> (without .tas)"));
                 return;
@@ -74,13 +74,10 @@ public class Playc extends CommandBase {
                     "tasfiles" + File.separator + args[0] + ".tas");
             if (file.exists()) {
                 if (args.length == 1) {
-                    Playback.donePlaying = false;
-                    new InfoGui().setArguments(args);
-                    new TASEvents().setArguments(args);
-                    new TAS().playTAS(args);
+                    TAS.playTAS(file);
                     return;
                 } else if (args.length == 2 && args[1].equalsIgnoreCase("load")) {
-                    new TAS().playTAS(args, file);
+                    TAS.playTAS(file);
                     return;
                 } else if (args.length == 2 && !args[1].equalsIgnoreCase("load")) {
                     sender.sendMessage(new TextComponentString(TextFormatting.RED + "Wrong usage! /play <filename> (load)"));
@@ -91,16 +88,11 @@ public class Playc extends CommandBase {
             }
             if (args.length > 2) sender.sendMessage(new TextComponentString(TextFormatting.RED + "Too many arguments"));
             return;
-        } else if (!Recorder.donerecording) {
+        } else if (!TAS.doneRecording()) {
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "A recording is running. /record or /fail to abort recording"));
             return;
-        }
-        //Abort Playback
-        else if (!Playback.donePlaying) {
-            Playback.donePlaying = true;
-            KeyBinding.setKeyBindState(29, false);
         } else {
-            TASInput.breaking = true;
+            TAS.stopPlaying();
             KeyBinding.setKeyBindState(29, false);
         }
     }
@@ -108,7 +100,7 @@ public class Playc extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
                                           BlockPos targetPos) {
-        List<String> tab = new ArrayList<String>();
+        List<String> tab;
         if (args.length == 1) {
             tab = getFilenames();
             if (tab.isEmpty()) {

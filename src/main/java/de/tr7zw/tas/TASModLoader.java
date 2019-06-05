@@ -38,6 +38,7 @@ public class TASModLoader {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new TASEvents());
+        MinecraftForge.EVENT_BUS.register(TAS.class);
         new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator + "tasfiles").mkdir();
 
     }

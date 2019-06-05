@@ -2,6 +2,7 @@ package de.tr7zw.tas.commands;
 
 import com.google.common.collect.ImmutableList;
 import de.tr7zw.tas.Recorder;
+import de.tr7zw.tas.TAS;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -49,10 +50,10 @@ public class Failc extends CommandBase {
             return;
         }
         if (args.length == 0) {
-            if (Recorder.donerecording) {
+            if (TAS.doneRecording()) {
                 sender.sendMessage(new TextComponentString(TextFormatting.RED + "Wrong usage. This command is used to abort a running recording!"));
-            } else if (!Recorder.donerecording) {
-                Recordc.recorder.abortRecording();
+            } else {
+                TAS.abortRecording();
             }
         } else {
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "Too many arguments!"));

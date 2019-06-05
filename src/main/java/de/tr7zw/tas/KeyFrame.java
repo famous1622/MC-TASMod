@@ -27,12 +27,19 @@ public class KeyFrame {
     public boolean gui_typed;
     public char gui_typedChar;
     public int gui_keyCode;
+    public boolean gui_clickmoved;
+    public long gui_timeSinceLastClick;
+    public boolean gui_released;
+    public int gui_released_state;
+
+    @SuppressWarnings("unused")
+    public KeyFrame() {} //So that jackson can unpack keyframes
 
     public KeyFrame(boolean forwardKeyDown, boolean backKeyDown, boolean leftKeyDown, boolean rightKeyDown,
                     boolean jump, boolean sneak, boolean sprint, boolean drop, float pitch, float yaw,
                     String leftClick, String rightClick, int slot, int mousex, int mousey,
                     int gui_slotUnderMouse, boolean gui_clicked, int gui_mouseX, int gui_mouseY, int gui_mouseButton,
-                    boolean gui_typed, char gui_typedChar, int gui_keyCode) {
+                    boolean gui_typed, char gui_typedChar, int gui_keyCode, boolean gui_clickmoved, long gui_timeSinceLastClick, boolean gui_released, int gui_released_state) {
         super();
         this.forwardKeyDown = forwardKeyDown;
         this.backKeyDown = backKeyDown;
@@ -61,6 +68,10 @@ public class KeyFrame {
         this.gui_typed = gui_typed;
         this.gui_typedChar = gui_typedChar;
         this.gui_keyCode = gui_keyCode;
+        this.gui_clickmoved = gui_clickmoved;
+        this.gui_timeSinceLastClick = gui_timeSinceLastClick;
+        this.gui_released = gui_released;
+        this.gui_released_state = gui_released_state;
     }
 
 

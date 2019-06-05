@@ -17,14 +17,6 @@ import java.util.List;
 
 public class Tasmodc extends CommandBase {
 
-    public void sendMessage(String msg) {
-        try {
-            Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     public List<String> emptyList(List<String> full) {
         while (full.size() != 0) {
             full.remove(0);
@@ -68,27 +60,27 @@ public class Tasmodc extends CommandBase {
                     + TextFormatting.YELLOW + "/tasmod folder" + TextFormatting.GREEN + " -Opens the directory where the .tas files will be saved\n\n"
                     + TextFormatting.YELLOW + "/tasmod gui" + TextFormatting.GREEN + " Enables disables the gui"));
         } else if (args.length == 1 && args[0].equals("folder")) {
-            new TAS().openWorkFolder();
+            TAS.openWorkFolder();
         } else if (args.length == 1 && args[0].equals("falldamage")) {
             if (!TASEvents.FallDamage) {
                 sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Falldamage enabled"));
                 TASEvents.FallDamage = true;
-            } else if (TASEvents.FallDamage) {
+            } else {
                 sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Falldamage " + TextFormatting.RED + TextFormatting.BOLD + "disabled"));
                 TASEvents.FallDamage = false;
             }
         } else if (args.length == 2 && args[0].equals("falldamage") && args[1].equals("info")) {
             if (TASEvents.FallDamage) {
                 sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Fall Damage is enabled."));
-            } else if (!TASEvents.FallDamage) {
+            } else {
                 sender.sendMessage(new TextComponentString(TextFormatting.GREEN + "Fall Damage is currently" + TextFormatting.RED + TextFormatting.BOLD + " disabled." + TextFormatting.RESET + TextFormatting.GREEN + " Taking Fall Damage has a chance to desync the TAS"));
             }
-        } else if (args.length == 1 && args[0].equals("gui")) {
-            if (InfoGui.Infoenabled) InfoGui.Infoenabled = false;
-            else if (!InfoGui.Infoenabled) InfoGui.Infoenabled = true;
-        } else if (args.length == 1 && args[0].equals("strokes")) {
-            if (InfoGui.Strokesenabled) InfoGui.Strokesenabled = false;
-            else if (!InfoGui.Strokesenabled) InfoGui.Strokesenabled = true;
+        } else if (args.length == 1) {
+            if (args[0].equals("gui")) {
+                InfoGui.Infoenabled = !InfoGui.Infoenabled;
+            } else if (args[0].equals("strokes")) {
+                InfoGui.Strokesenabled = !InfoGui.Strokesenabled;
+            }
         }
     }
 

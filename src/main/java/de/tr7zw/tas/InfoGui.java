@@ -8,10 +8,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 /**
  * Gui-Overlay with useful information
@@ -21,7 +17,6 @@ import java.io.IOException;
 public class InfoGui extends Gui {
     public static boolean Infoenabled;
     public static boolean Strokesenabled;
-    private static String[] arguments = null;
     private int line = 0;
     private Minecraft mc = Minecraft.getMinecraft();
     private String[] Buttons = null;
@@ -30,36 +25,6 @@ public class InfoGui extends Gui {
         while (Yaw >= 180) Yaw -= 360;
         while (Yaw < -180) Yaw += 360;
         return Yaw;
-    }
-
-    public void setArguments(String[] args) {
-        arguments = args;
-    }
-
-    public void readingFile(String[] args, int stopAt) {
-        File file = new File(Minecraft.getMinecraft().mcDataDir, "saves" + File.separator +
-                "tasfiles" + File.separator + args[0] + ".tas");
-        try {
-            BufferedReader Buff = new BufferedReader(new FileReader(file));
-            String s;
-            int line = 0;
-            while (true) {
-                if ((s = Buff.readLine()).equalsIgnoreCase("END") || Playback.donePlaying) {
-                    break;
-                } else if (s.startsWith("#") || s.startsWith("/")) {
-                    continue;
-                } else if (line == stopAt) {
-                    Buttons = s.split(";");
-                    Buff.close();
-                    return;
-                }
-                line++;
-            }
-            Buff.close();
-            return;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @SubscribeEvent
@@ -82,76 +47,41 @@ public class InfoGui extends Gui {
                 drawKeyStrokes(height, width);
             }
             //Draw the Tickcounter. Value depends if playback or a recording is playing.
-            if (Recorder.recordstep == 0 && TASInput.step == 0) {
-                new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(Playback.frame + 1), 30, height - 24, 0xFFFFFF);
-            } else if (Playback.frame == 0 && TASInput.step == 0) {
-                new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(Recorder.recordstep + 1), 30, height - 24, 0xFFFFFF);
-            } else if (Recorder.recordstep == 0 && Playback.frame == 0) {
-                new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(TASInput.step + 1), 30, height - 24, 0xFFFFFF);
+            if (!TAS.doneRecording()) {
+                new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(TAS.recorder.recordstep + 1), 30, height - 24, 0xFFFFFF);
+            } else if (TAS.tasPlayer != null && !TAS.tasPlayer.donePlaying) {
+                new Gui().drawCenteredString(mc.fontRenderer, Integer.toString(TAS.tasPlayer.step + 1), 30, height - 24, 0xFFFFFF);
             }
         }
     }
 
     public void drawKeyStrokes(int height, int width) {
-        if (!Playback.donePlaying) {
-
-            readingFile(arguments, Playback.frame);
-            if (!Buttons[1].equalsIgnoreCase(" ")) {
-                new Gui().drawString(mc.fontRenderer, Buttons[1], 3, height - 13, 0xFFFFFF);
-            }
-            if (!Buttons[2].equalsIgnoreCase(" ")) {
-                new Gui().drawString(mc.fontRenderer, Buttons[2], 11, height - 13, 0xFFFFFF);
-            }
-            if (!Buttons[3].equalsIgnoreCase(" ")) {
-                new Gui().drawString(mc.fontRenderer, Buttons[3], 19, height - 13, 0xFFFFFF);
-            }
-            if (!Buttons[4].equalsIgnoreCase(" ")) {
-                new Gui().drawString(mc.fontRenderer, Buttons[4], 27, height - 13, 0xFFFFFF);
-            }
-            if (!Buttons[5].equalsIgnoreCase(" ")) {
-                new Gui().drawString(mc.fontRenderer, Buttons[5], 35, height - 13, 0xFFFFFF);
-            }
-            if (!Buttons[6].equalsIgnoreCase(" ")) {
-                new Gui().drawString(mc.fontRenderer, Buttons[6], 67, height - 13, 0xFFFFFF);
-            }
-            if (!Buttons[7].equalsIgnoreCase(" ")) {
-                new Gui().drawString(mc.fontRenderer, Buttons[7], 92, height - 13, 0xFFFFFF);
-            }
-            if (!Buttons[10].equalsIgnoreCase(" ")) {
-                new Gui().drawString(mc.fontRenderer, Buttons[10], 112, height - 13, 0xFFFFFF);
-            }
-            if (!Buttons[11].equalsIgnoreCase(" ")) {
-                new Gui().drawString(mc.fontRenderer, Buttons[11], 127, height - 13, 0xFFFFFF);
-            }
-        } else if (Playback.donePlaying) {
-            if (mc.gameSettings.keyBindForward.isKeyDown()) {
-                new Gui().drawString(mc.fontRenderer, "W", 3, height - 13, 0xFFFFFF);
-            }
-            if (mc.gameSettings.keyBindBack.isKeyDown()) {
-                new Gui().drawString(mc.fontRenderer, "S", 11, height - 13, 0xFFFFFF);
-            }
-            if (mc.gameSettings.keyBindLeft.isKeyDown()) {
-                new Gui().drawString(mc.fontRenderer, "A", 19, height - 13, 0xFFFFFF);
-            }
-            if (mc.gameSettings.keyBindRight.isKeyDown()) {
-                new Gui().drawString(mc.fontRenderer, "D", 27, height - 13, 0xFFFFFF);
-            }
-            if (mc.gameSettings.keyBindJump.isKeyDown()) {
-                new Gui().drawString(mc.fontRenderer, "Space", 35, height - 13, 0xFFFFFF);
-            }
-            if (mc.gameSettings.keyBindSneak.isKeyDown()) {
-                new Gui().drawString(mc.fontRenderer, "Shift", 67, height - 13, 0xFFFFFF);
-            }
-            if (mc.gameSettings.keyBindSprint.isKeyDown()) {
-                new Gui().drawString(mc.fontRenderer, "Ctrl", 92, height - 13, 0xFFFFFF);
-            }
-            if (mc.gameSettings.keyBindAttack.isKeyDown()) {
-                new Gui().drawString(mc.fontRenderer, "LK", 112, height - 13, 0xFFFFFF);
-            }
-            if (mc.gameSettings.keyBindUseItem.isKeyDown()) {
-                new Gui().drawString(mc.fontRenderer, "RK", 127, height - 13, 0xFFFFFF);
-            }
+        if (mc.gameSettings.keyBindForward.isKeyDown()) {
+            new Gui().drawString(mc.fontRenderer, "W", 3, height - 13, 0xFFFFFF);
+        }
+        if (mc.gameSettings.keyBindBack.isKeyDown()) {
+            new Gui().drawString(mc.fontRenderer, "S", 11, height - 13, 0xFFFFFF);
+        }
+        if (mc.gameSettings.keyBindLeft.isKeyDown()) {
+            new Gui().drawString(mc.fontRenderer, "A", 19, height - 13, 0xFFFFFF);
+        }
+        if (mc.gameSettings.keyBindRight.isKeyDown()) {
+            new Gui().drawString(mc.fontRenderer, "D", 27, height - 13, 0xFFFFFF);
+        }
+        if (mc.gameSettings.keyBindJump.isKeyDown()) {
+            new Gui().drawString(mc.fontRenderer, "Space", 35, height - 13, 0xFFFFFF);
+        }
+        if (mc.gameSettings.keyBindSneak.isKeyDown()) {
+            new Gui().drawString(mc.fontRenderer, "Shift", 67, height - 13, 0xFFFFFF);
+        }
+        if (mc.gameSettings.keyBindSprint.isKeyDown()) {
+            new Gui().drawString(mc.fontRenderer, "Ctrl", 92, height - 13, 0xFFFFFF);
+        }
+        if (mc.gameSettings.keyBindAttack.isKeyDown()) {
+            new Gui().drawString(mc.fontRenderer, "LK", 112, height - 13, 0xFFFFFF);
+        }
+        if (mc.gameSettings.keyBindUseItem.isKeyDown()) {
+            new Gui().drawString(mc.fontRenderer, "RK", 127, height - 13, 0xFFFFFF);
         }
     }
-
 }

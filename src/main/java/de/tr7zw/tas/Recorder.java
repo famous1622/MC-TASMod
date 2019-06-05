@@ -20,32 +20,32 @@ public class Recorder {
     /**
      * Indicates on which line the recorder is currently at
      */
-    public static int recordstep = 0;
+    public int recordstep = 0;
     /**
      * Variable to see if a recording is currently running.<br>
      * If true, the recording is stopped
      */
-    public static boolean donerecording = true;
+    public boolean donerecording = true;
     /**
      * Shows the status of the leftclick.
      * 0=unpressed, 1=pressed, 2=quickpress <br> Used for destinction if leftclick is held or pressed.
      */
-    private static int clicklefty = 0;
+    private int clicklefty = 0;
     /**
      * Shows the status of the rightclick.
      * 0=unpressed, 1=pressed, 2=quickpress <br> Used for destinction if rightclick is held or pressed.
      */
-    private static int clickrighty = 0;
+    private int clickrighty = 0;
     /**
      * Used to check if a leftclick was held and needs to print rLK in the next tick <br> Used for destinction if leftclick is held or pressed.
      */
-    private static boolean needsunpressLK = false;
+    private boolean needsunpressLK = false;
     /**
      * Used to check if a rightclick was held and needs to print rRK in the next tick <br> Used for destinction if leftclick is held or pressed.
      */
-    private static boolean needsunpressRK = false;
-    private static float tickpitch;
-    private static float tickyaw;
+    private boolean needsunpressRK = false;
+    private float tickpitch;
+    private float tickyaw;
     private String location;
     private ArrayList<KeyFrame> recording = new ArrayList<>();
     private Minecraft mc = Minecraft.getMinecraft();
@@ -71,21 +71,16 @@ public class Recorder {
     private boolean gui_typed;
     private char gui_typedChar;
     private int gui_keyCode;
+    private boolean gui_clickmoved;
+    private long gui_timeSinceLastClick;
+    private boolean gui_released;
+    private int gui_released_state;
 
 
     public Recorder() {
         location = "#StartLocation: " + mc.player.getPositionVector().toString();
         needsunpressLK = false;
         needsunpressRK = false;
-
-    }
-
-    private static void sendMessage(String msg) {
-        try {
-            Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new TextComponentString(msg));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
     /**
@@ -105,12 +100,9 @@ public class Recorder {
      */
     @SubscribeEvent
     public void onClientTickEND(TickEvent.ClientTickEvent ev) {
-
         if (ev.phase == Phase.END && !donerecording) {
 
         }
-
-
     }
 
     /**
@@ -129,13 +121,12 @@ public class Recorder {
             } else if (clicklefty == 1 && !lkchecker) {        //Scenario for clicking and not releasing within a tick
                 leftclack = "pLK";
                 needsunpressLK = true;
-            } else if (clicklefty == 1 && lkchecker) {        //Scenario for holding the button when entering a tick. This would be the case if the above (Scenario for clicking and not releasing within a tick) was the tick beforehand
+            } else if (clicklefty == 1) {        //Scenario for holding the button when entering a tick. This would be the case if the above (Scenario for clicking and not releasing within a tick) was the tick beforehand
                 leftclack = "hLK";
                 needsunpressLK = true;
             } else if (needsunpressLK) {                //Scenario when a button was held or pressed and now it's unpressed.
                 leftclack = "rLK";
                 needsunpressLK = false;
-
             }
 
             //Same as above, just for rightclick
@@ -145,7 +136,7 @@ public class Recorder {
             } else if (clickrighty == 1 && !rkchecker) {
                 rightclack = "pRK";
                 needsunpressRK = true;
-            } else if (clickrighty == 1 && rkchecker) {
+            } else if (clickrighty == 1) {
                 rightclack = "hRK";
                 needsunpressRK = true;
             } else if (needsunpressRK) {
@@ -164,7 +155,14 @@ public class Recorder {
                     mc.player.inventory.currentItem,
                     MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y,
                     gui_slotUnderMouse, gui_clicked, gui_mouseX, gui_mouseY, gui_mouseButton,
-                    gui_typed, gui_typedChar, gui_keyCode));
+                    gui_typed, gui_typedChar, gui_keyCode,
+                    gui_clickmoved, gui_timeSinceLastClick,
+                    gui_released, gui_released_state));
+
+            gui_clicked = false;
+            gui_typed = false;
+            gui_clickmoved = false;
+            gui_released = false;
 
             /*Check if leftclick was pressed and not released
              * if it was pressed and immediately released in one tick, clicklefty would equal 2 and thus lkchecker would be false*/
@@ -234,13 +232,28 @@ public class Recorder {
         gui_mouseX = mouseX;
         gui_mouseY = mouseY;
         gui_mouseButton = mouseButton;
-        gui_slotUnderMouse = slotUnderMouse.getSlotIndex();
+        gui_slotUnderMouse = -1 ;
     }
 
     public void guiTyped(char typedChar, int keyCode, Slot slotUnderMouse) {
         gui_typed = true;
         gui_typedChar = typedChar;
         gui_keyCode = keyCode;
-        gui_slotUnderMouse = slotUnderMouse.getSlotIndex();
+        gui_slotUnderMouse = -1;
+    }
+
+    public void guiClickMoved(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        gui_clickmoved = true;
+        gui_mouseX = mouseX;
+        gui_mouseY = mouseY;
+        gui_mouseButton = clickedMouseButton;
+        gui_timeSinceLastClick = timeSinceLastClick;
+    }
+
+    public void guiReleased(int mouseX, int mouseY, int state) {
+        gui_released = true;
+        gui_mouseX = mouseX;
+        gui_mouseY = mouseY;
+        gui_released_state = state;
     }
 }

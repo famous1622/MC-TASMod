@@ -1,10 +1,9 @@
 package de.tr7zw.tas.commands;
 
 import com.google.common.collect.ImmutableList;
-import de.tr7zw.tas.Playback;
 import de.tr7zw.tas.Recorder;
 import de.tr7zw.tas.TAS;
-import de.tr7zw.tas.TASInput;
+import de.tr7zw.tas.TASPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -21,7 +20,6 @@ import java.util.List;
 
 public class Recordc extends CommandBase {
 
-    public static TAS recorder = new TAS();
     private Minecraft mc = Minecraft.getMinecraft();
     private boolean check = false;
 
@@ -60,21 +58,20 @@ public class Recordc extends CommandBase {
         if (!(sender instanceof EntityPlayer)) {
             return;
         }
-        if (Recorder.donerecording && Playback.donePlaying && TASInput.donePlaying) {
+        if (TAS.doneRecording() && TAS.donePlaying()) {
             if (args.length == 0) {
                 sender.sendMessage(new TextComponentString("No filename set! Generating one..."));
-                recorder.startRecord();
+                TAS.startRecord();
             }
             if (args.length == 1) {
-                recorder.startRecord(args);
+                TAS.startRecord(args);
             }
             if (args.length > 1) {
                 sender.sendMessage(new TextComponentString(TextFormatting.RED + "Too many arguments"));
             }
-        } else if (!Recorder.donerecording) {
-            recorder.stopRecording();
-            return;
-        } else if (!Playback.donePlaying || !TASInput.donePlaying) {
+        } else if (!TAS.doneRecording()) {
+            TAS.stopRecording();
+        } else {
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "A playback is running. /play to abort"));
         }
     }
@@ -82,7 +79,7 @@ public class Recordc extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
                                           BlockPos targetPos) {
-        List<String> tab = new ArrayList<String>();
+        List<String> tab;
         if (args.length == 1) {
             if (!check) {
                 sender.sendMessage(new TextComponentString(TextFormatting.BOLD + "" + TextFormatting.RED + "WARNING!" + TextFormatting.RESET + TextFormatting.RED +
