@@ -61,8 +61,8 @@ public class Recorder {
      * If it's true, rightclick was pressed.
      */
     private boolean rkchecker = false;
-    private String leftclack = " ";
-    private String rightclack = " ";
+    private boolean leftclack = false;
+    private boolean rightclack = false;
     private boolean gui_clicked;
     private int gui_mouseX;
     private int gui_mouseY;
@@ -112,35 +112,35 @@ public class Recorder {
     public void onClientTickSTART(TickEvent.ClientTickEvent ev) {
         if (ev.phase == Phase.END && !donerecording) {
             GameSettings gameset = mc.gameSettings;
-            leftclack = " ";
-            rightclack = " ";
+            leftclack = false;
+            rightclack = false;
             //Printing the correct string for leftclick from onMouseClick
             if (clicklefty == 2) {                        //Scenario for clicking and releasing within a tick
-                leftclack = "pLK";
+                leftclack = true;
                 needsunpressLK = true;
             } else if (clicklefty == 1 && !lkchecker) {        //Scenario for clicking and not releasing within a tick
-                leftclack = "pLK";
+                leftclack = true;
                 needsunpressLK = true;
             } else if (clicklefty == 1) {        //Scenario for holding the button when entering a tick. This would be the case if the above (Scenario for clicking and not releasing within a tick) was the tick beforehand
-                leftclack = "hLK";
+                leftclack = true;
                 needsunpressLK = true;
             } else if (needsunpressLK) {                //Scenario when a button was held or pressed and now it's unpressed.
-                leftclack = "rLK";
+                leftclack = true;
                 needsunpressLK = false;
             }
 
             //Same as above, just for rightclick
             if (clickrighty == 2) {
-                rightclack = "pRK";
+                rightclack = false;
                 needsunpressRK = true;
             } else if (clickrighty == 1 && !rkchecker) {
-                rightclack = "pRK";
+                rightclack = false;
                 needsunpressRK = true;
             } else if (clickrighty == 1) {
-                rightclack = "hRK";
+                rightclack = false;
                 needsunpressRK = true;
             } else if (needsunpressRK) {
-                rightclack = "rRK";
+                rightclack = false;
                 needsunpressRK = false;
             }
             tickpitch = mc.player.rotationPitch;
@@ -150,7 +150,7 @@ public class Recorder {
             //Recording the movement
             recording.add(new KeyFrame(gameset.keyBindForward.isKeyDown(), gameset.keyBindBack.isKeyDown(), gameset.keyBindLeft.isKeyDown(), gameset.keyBindRight.isKeyDown(),
                     gameset.keyBindJump.isKeyDown(), gameset.keyBindSneak.isKeyDown(), gameset.keyBindSprint.isKeyDown(),
-                    gameset.keyBindDrop.isKeyDown(), tickpitch, tickyaw,
+                    gameset.keyBindDrop.isKeyDown(), gameset.keyBindInventory.isPressed(), tickpitch, tickyaw,
                     leftclack, rightclack,
                     mc.player.inventory.currentItem,
                     MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y,

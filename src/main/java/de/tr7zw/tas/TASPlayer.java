@@ -65,49 +65,64 @@ public class TASPlayer implements PlaybackMethod {
             step = keyFrames.size();
         }
 
-        mc.gameSettings.keyBindAttack.pressed = (frame.leftClick.equalsIgnoreCase("pLK") || frame.leftClick.equalsIgnoreCase("hLK"));
-        mc.gameSettings.keyBindUseItem.pressed = (frame.rightClick.equalsIgnoreCase("pRK") || frame.rightClick.equalsIgnoreCase("hRK"));
+        mc.gameSettings.keyBindAttack.pressed = frame.leftClick;
+        mc.gameSettings.keyBindUseItem.pressed = frame.rightClick;
         mc.gameSettings.keyBindForward.pressed = frame.forwardKeyDown;
         mc.gameSettings.keyBindBack.pressed = frame.backKeyDown;
         mc.gameSettings.keyBindLeft.pressed = frame.leftKeyDown;
         mc.gameSettings.keyBindRight.pressed = frame.rightKeyDown;
         mc.gameSettings.keyBindJump.pressed = frame.jump;
         mc.gameSettings.keyBindSneak.pressed = frame.sneak;
-        mc.gameSettings.keyBindSprint.pressed = frame.sprint;                //Read Sprint Key from File
+        mc.gameSettings.keyBindSprint.pressed = frame.sprint;
+        mc.gameSettings.keyBindInventory.pressed = frame.inventory; //Read Sprint Key from File
         mc.player.inventory.currentItem = frame.slot;                    //Read Inventory Slot from File etc...
         mc.player.rotationPitch = frame.pitch;
         mc.player.rotationYaw = uncalc(frame.yaw);
 
         if ((frame.gui_clicked || frame.gui_typed || frame.gui_clickmoved || frame.gui_released) && (gui == null)) {
-            TASUtils.sendMessage(ChatFormatting.RED + "Definitely desyncing (no GUI when one was expected), killing TAS now!");
-            TAS.stopPlaying();
+            TASUtils.sendMessage(ChatFormatting.RED + "(Almost) Definitely desyncing (no GUI when one was expected)");
+            return;
         }
+
         if (frame.gui_clicked) {
             try {
-                TASUtils.sendMessage(String.format("(%d, %d) %d", frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton));
+//                TASUtils.sendMessage(String.format("(%d, %d) %d", frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton));
                 moveMouse(frame.gui_mouseX, frame.gui_mouseY);
                 ((TASGuiContainer) gui).callMouseClicked(frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton);
             } catch (IOException e) {
                 TASUtils.sendMessage(ChatFormatting.YELLOW + "Probably desyncing (GUI threw an error when clicking)");
             }
-        } else if (frame.gui_typed) {
+        }
+
+        if (frame.gui_typed) {
             try {
+                moveMouse(frame.gui_mouseX, frame.gui_mouseY);
                 ((TASGuiContainer) gui).callKeyPressed(frame.gui_typedChar, frame.gui_keyCode);
-                TASUtils.sendMessage(String.format("%s %d", frame.gui_typedChar, frame.gui_keyCode));
+//                TASUtils.sendMessage(String.format("%s %d", frame.gui_typedChar, frame.gui_keyCode));
             } catch (IOException e) {
                 TASUtils.sendMessage(ChatFormatting.YELLOW + "Probably desyncing (GUI threw an error when typing)");
             }
-        } else if (frame.gui_clickmoved) {
-            ((TASGuiContainer) gui).callMouseClickMoved(frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton, frame.gui_timeSinceLastClick);
+        }
+
+        if (frame.gui_clickmoved) {
             moveMouse(frame.gui_mouseX, frame.gui_mouseY);
-        } else if (frame.gui_released) {
+            ((TASGuiContainer) gui).callMouseClickMoved(frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton, frame.gui_timeSinceLastClick);
+        }
+
+        if (frame.gui_released) {
             try {
+                moveMouse(frame.gui_mouseX, frame.gui_mouseY);
                 ((TASGuiContainer) gui).callMouseReleased(frame.gui_mouseX, frame.gui_mouseY, frame.gui_released_state);
             } catch (NullPointerException e) {
                 TASUtils.sendMessage(ChatFormatting.YELLOW + "Probably desyncing (Release NPE?)");
             }
         }
 
+        KeyFrame nextframe = keyFrames.get(step);
+
+        if (nextframe != null && (nextframe.gui_clicked || nextframe.gui_clickmoved || nextframe.gui_released || nextframe.gui_typed)) {
+            moveMouse(nextframe.gui_mouseX, nextframe.gui_mouseY);
+        }
     }
 
     private void moveMouse(int x, int y){

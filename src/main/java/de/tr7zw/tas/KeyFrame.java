@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class KeyFrame {
+    public boolean inventory;
     public boolean forwardKeyDown;        //Where all the Keys are saved!
     public boolean backKeyDown;
     public boolean leftKeyDown;
@@ -12,8 +13,8 @@ public class KeyFrame {
     public boolean sneak;
     public float pitch;
     public float yaw;
-    public String leftClick;
-    public String rightClick;
+    public boolean leftClick;
+    public boolean rightClick;
     public boolean sprint;
     public boolean drop;
     public int mouseX;
@@ -36,8 +37,8 @@ public class KeyFrame {
     public KeyFrame() {} //So that jackson can unpack keyframes
 
     public KeyFrame(boolean forwardKeyDown, boolean backKeyDown, boolean leftKeyDown, boolean rightKeyDown,
-                    boolean jump, boolean sneak, boolean sprint, boolean drop, float pitch, float yaw,
-                    String leftClick, String rightClick, int slot, int mousex, int mousey,
+                    boolean jump, boolean sneak, boolean sprint, boolean drop, boolean inventory, float pitch, float yaw,
+                    boolean leftClick, boolean rightClick, int slot, int mousex, int mousey,
                     int gui_slotUnderMouse, boolean gui_clicked, int gui_mouseX, int gui_mouseY, int gui_mouseButton,
                     boolean gui_typed, char gui_typedChar, int gui_keyCode, boolean gui_clickmoved, long gui_timeSinceLastClick, boolean gui_released, int gui_released_state) {
         super();
@@ -72,6 +73,7 @@ public class KeyFrame {
         this.gui_timeSinceLastClick = gui_timeSinceLastClick;
         this.gui_released = gui_released;
         this.gui_released_state = gui_released_state;
+        this.inventory = inventory;
     }
 
 
