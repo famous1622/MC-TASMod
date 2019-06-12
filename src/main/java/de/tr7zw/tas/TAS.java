@@ -30,8 +30,9 @@ public class TAS {
     private static double z = 0.0;
     private static float pitch = 0;
     private static float yaw = 0;
-    private static String FileName = "null";
     private static boolean genname = true;
+    private static String FileName = "null";
+
 
     public TAS() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -70,11 +71,13 @@ public class TAS {
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent ev) {
-        if (ev.phase == Phase.START && mc.player != null && ((PlaybackInput) mc.player.movementInput).getPlayback() instanceof TASPlayer) {
-            if (donePlaying()) {
-                clearData();
+        try {
+            if (ev.phase == Phase.START && mc.player != null && ((PlaybackInput) mc.player.movementInput).getPlayback() instanceof TASPlayer) {
+                if (donePlaying()) {
+                    clearData();
+                }
             }
-        }
+        } catch (NullPointerException ignored) {}
     }
 
     @SubscribeEvent()

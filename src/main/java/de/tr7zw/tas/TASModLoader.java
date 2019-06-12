@@ -23,7 +23,6 @@ public class TASModLoader {
     public static TASModLoader instance = new TASModLoader();
 
     @EventHandler
-
     public void preInit(FMLPreInitializationEvent event) {
         //Config File
         Configuration config = new Configuration(event.getSuggestedConfigurationFile());
