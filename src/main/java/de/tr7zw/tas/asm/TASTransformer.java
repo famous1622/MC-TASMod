@@ -25,7 +25,7 @@ public class TASTransformer implements IClassTransformer {
         reader.accept(adapter, 0);
         byte[] result = writer.toByteArray();
 
-        if (name.endsWith("Entity")) {
+        if (name.endsWith(".Entity") && !name.endsWith("RenderEntity")) {
             try {
                 FileOutputStream out = new FileOutputStream("Entity.class");
                 out.write(result);
@@ -56,8 +56,8 @@ public class TASTransformer implements IClassTransformer {
         public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
             MethodVisitor mv;
             mv = super.visitMethod(access, name, desc, signature, exceptions);
-            if (FMLDeobfuscatingRemapper.INSTANCE.map(className).endsWith("Entity") && name.equals("<init>")) {
-                return new EntityVisitor(new RandomVisitor(mv));
+            if (FMLDeobfuscatingRemapper.INSTANCE.map(className).endsWith("Entity")) {
+                return new EntityVisitor(mv);
             }
             return new RandomVisitor(mv);
 
@@ -89,12 +89,18 @@ public class TASTransformer implements IClassTransformer {
 
         @Override
         public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-            if (desc.equals("Ljava/util/Random;)Ljava/util/UUID;")) {
+            if (owner.equals("java/util/Random") && name.equals("<init>") && desc.equals("()V")) {
+                super.visitLdcInsn(0L);
+                super.visitMethodInsn(opcode, owner, name, "(J)V", itf);
+            } else if (desc.equals("(Ljava/util/Random;)Ljava/util/UUID;")) {
+                super.visitInsn(POP);
                 super.visitTypeInsn(NEW, "java/util/Random");
                 super.visitInsn(DUP);
-                super.visitMethodInsn(INVOKESPECIAL, "java/util/Random", "<init>", "();V", false);
+                super.visitMethodInsn(INVOKESPECIAL, "java/util/Random", "<init>", "()V", false);
+                super.visitMethodInsn(opcode, owner, name, desc, itf);
+            } else {
+                super.visitMethodInsn(opcode, owner, name, desc, itf);
             }
-            super.visitMethodInsn(opcode, owner, name, desc, itf);
         }
     }
 }
