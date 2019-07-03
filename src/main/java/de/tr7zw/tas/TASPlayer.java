@@ -11,6 +11,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,10 +24,15 @@ public class TASPlayer implements PlaybackMethod {
     private Minecraft mc = Minecraft.getMinecraft();
     private List<KeyFrame> keyFrames;
     private int calcstate = 0;
-
+    private Robot rob;
 
     public TASPlayer(List<KeyFrame> keyFrames) {
         this.keyFrames = keyFrames;
+        try {
+            this.rob = new Robot();
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
     }
 
     public Float recalcYaw(float Yaw) {
@@ -86,15 +92,15 @@ public class TASPlayer implements PlaybackMethod {
             return;
         }
 
-        if (frame.gui_clicked) {
-            try {
-//                TASUtils.sendMessage(String.format("(%d, %d) %d", frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton));
-                moveMouse(frame.gui_mouseX, frame.gui_mouseY);
-                ((TASGuiContainer) gui).callMouseClicked(frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton);
-            } catch (IOException e) {
-                TASUtils.sendMessage(ChatFormatting.YELLOW + "Probably desyncing (GUI threw an error when clicking)");
-            }
-        }
+//        if (frame.gui_clicked) {
+//            try {
+////                TASUtils.sendMessage(String.format("(%d, %d) %d", frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton));
+//                //moveMouse(frame.gui_mouseX, frame.gui_mouseY);
+//                //((TASGuiContainer) gui).callMouseClicked(frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton);
+//            } catch (IOException e) {
+//                TASUtils.sendMessage(ChatFormatting.YELLOW + "Probably desyncing (GUI threw an error when clicking)");
+//            }
+//        }
 
         if (frame.gui_typed) {
             try {
@@ -107,14 +113,14 @@ public class TASPlayer implements PlaybackMethod {
         }
 
         if (frame.gui_clickmoved) {
-            moveMouse(frame.gui_mouseX, frame.gui_mouseY);
-            ((TASGuiContainer) gui).callMouseClickMoved(frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton, frame.gui_timeSinceLastClick);
+            //moveMouse(frame.gui_mouseX, frame.gui_mouseY);
+            //((TASGuiContainer) gui).callMouseClickMoved(frame.gui_mouseX, frame.gui_mouseY, frame.gui_mouseButton, frame.gui_timeSinceLastClick);
         }
 
         if (frame.gui_released) {
             try {
-                moveMouse(frame.gui_mouseX, frame.gui_mouseY);
-                ((TASGuiContainer) gui).callMouseReleased(frame.gui_mouseX, frame.gui_mouseY, frame.gui_released_state);
+                //moveMouse(frame.gui_mouseX, frame.gui_mouseY);
+                //((TASGuiContainer) gui).callMouseReleased(frame.gui_mouseX, frame.gui_mouseY, frame.gui_released_state);
             } catch (NullPointerException e) {
                 TASUtils.sendMessage(ChatFormatting.YELLOW + "Probably desyncing (Release NPE?)");
             }
@@ -124,6 +130,13 @@ public class TASPlayer implements PlaybackMethod {
 
         if (nextframe != null && (nextframe.gui_clicked || nextframe.gui_clickmoved || nextframe.gui_released || nextframe.gui_typed)) {
             moveMouse(nextframe.gui_mouseX, nextframe.gui_mouseY);
+            if (nextframe.gui_clicked) {
+                rob.mousePress(InputEvent.getMaskForButton(nextframe.gui_mouseButton+1));
+            }
+            if (nextframe.gui_released) {
+                rob.mouseRelease(InputEvent.getMaskForButton(nextframe.gui_mouseButton+1));
+            }
+
         }
     }
 

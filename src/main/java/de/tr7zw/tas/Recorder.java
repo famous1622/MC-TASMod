@@ -131,13 +131,13 @@ public class Recorder {
 
             //Same as above, just for rightclick
             if (clickrighty == 2) {
-                rightclack = false;
+                rightclack = true;
                 needsunpressRK = true;
             } else if (clickrighty == 1 && !rkchecker) {
-                rightclack = false;
+                rightclack = true;
                 needsunpressRK = true;
             } else if (clickrighty == 1) {
-                rightclack = false;
+                rightclack = true;
                 needsunpressRK = true;
             } else if (needsunpressRK) {
                 rightclack = false;
@@ -150,7 +150,7 @@ public class Recorder {
             //Recording the movement
             recording.add(new KeyFrame(gameset.keyBindForward.isKeyDown(), gameset.keyBindBack.isKeyDown(), gameset.keyBindLeft.isKeyDown(), gameset.keyBindRight.isKeyDown(),
                     gameset.keyBindJump.isKeyDown(), gameset.keyBindSneak.isKeyDown(), gameset.keyBindSprint.isKeyDown(),
-                    gameset.keyBindDrop.isKeyDown(), gameset.keyBindInventory.isPressed(), tickpitch, tickyaw,
+                    gameset.keyBindDrop.isKeyDown(), gameset.keyBindInventory.isKeyDown(), tickpitch, tickyaw,
                     leftclack, rightclack,
                     mc.player.inventory.currentItem,
                     MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y,
